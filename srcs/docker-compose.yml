@@ -1,0 +1,86 @@
+# version: '3.8'
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"    # Mappe le port 8080 de la machine au port 80 du conteneur
+      - "8443:443"   # Mappe le port 8443 de la machine au port 443 du conteneur
+    #Lancer le service nginx apres l'app et redis
+    depends_on:
+      - mydjango
+      - redis-server
+    # env_file: .env #(Utilisation ulterieure ?)
+    restart: on-failure #Redemarrer nginx en cas de crash
+    networks:
+      - transcendance-main-network
+
+  mydjango:
+    container_name: django-app
+    build:
+      context: app
+      dockerfile: Dockerfile
+    volumes:
+      - db_data:/app/db
+    expose:
+      - "8000" # Expose le port 8000 du container sans le mapper sur la machine car on souhaite que NGINX soit le seul point d'entree
+    depends_on:
+      - redis-server
+    env_file: .env
+      # -.env
+    restart: on-failure
+    networks:
+      - transcendance-main-network
+
+  redis-server:
+    container_name: redis
+    build:
+      context: redis
+      dockerfile: Dockerfile
+    restart: on-failure
+    networks:
+      - transcendance-main-network
+
+networks:
+  transcendance-main-network:
+    driver: bridge
+
+#Volumes docker contenant le fichier de base de donnee db.sqlite3 pour faire persister les donnees lors de l'arret des containers
+volumes:
+  db_data:
+
+
+
+#Rappel de commande docker :
+
+#   -docker build -t image path = contruire une image a aprtir d'un path ou se trouve le dockerfile
+#   -docker exec -it nom_du_container /bin/bash = acceder a l'interieur du container
+#   -docker ps = affichage des conatiner qui tourne (-a ceux qui sont arrete aussi)
+#   -docker images = affichage des images docker
+#   -docker stats = voir l'utilisation des ressources (CPU, memoire etc.)
+#   -docker rm -f container = supprimer un container meme en cours d'execution
+#   -docker rmi image = supprimer une image docker
+#   -docker system prune -af  = supprimer les containers arretes et les images inutilisees
+#   -docker image prune = supprimer toutes les images inutilisees
+
+
+
+#Rappel de commande docker-compose :
+
+#   -docker compose build  = Construire les images
+#   -docker-compose up --build = Construction des images, lancement des containers et affichage des logs de chaque service
+#   -docker-compose up = Demarrer les services (-d en arrire plan)
+#   -docker-compose down = arreter les services en cours d'execution
+#   -docker-compose down --volumes = supprimer les contaianer reseaux et volumes
+#   -docker-compose restart service = Redemarrer un service
+#   -docker-compose ps = lister les container geres par le docker-compose
+#   -docker-compose logs = voir les logs des services du docker-compose
+#   -docker-compose exec service command = executer une commande dans un service
+#      Exemple : docker-compose exec mydjango /bin/bash ou docker-compose exec mydjango python manage.py migrate
+
+
+
+

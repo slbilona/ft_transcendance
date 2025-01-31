@@ -1,0 +1,936 @@
+/* === Réinitialisation et style global === */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* === Style du body avec image de fond === */
+body {
+    background-image:
+        linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.7) 100%),
+        url('../images/wallpaper.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+}
+
+.profile-picture {
+    position: absolute;
+    top: 24.4%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.image-container img {
+    position: fixed;
+    top: 24.4%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 275px;
+    max-height: 275px;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.banner {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 640px;
+    height: 80%;
+    background-image: url('../images/Banner.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+
+
+#usernameDisplay {
+    position: absolute;
+    top: 37%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    color: #ad996d;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* === Style pour le canvas du jeu === */
+#gameCanvas {
+    background: #0D1E29;
+    border: 1px solid #7f5f20;
+    max-width: 100%;
+    height: auto;
+}
+
+#gameCanvas.hidden {
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;
+}
+
+canvas {
+    background: black;
+    display: block;
+    border: 1px solid #ffffff;
+}
+
+.modal-content {
+    background-color: #0D1E29;
+    border: 2px solid #7f5f20;
+    border-radius: 0;
+    box-shadow: 0 0 20px rgba(127, 95, 32, 0.5);
+}
+
+.modal-header {
+    border-bottom: 1px solid #7f5f20;
+    padding: 1rem 1.5rem;
+}
+
+.nav-pills {
+    border-bottom: 1px solid #7f5f20;
+}
+
+.nav-pills .nav-link.custom-tab-button {
+    border-radius: 0;
+    color: #ad996d;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-pills .nav-link.custom-tab-button:hover,
+.nav-pills .nav-link.custom-tab-button.active {
+    background-color: rgba(127, 95, 32, 0.2);
+}
+
+.custom-tab-content {
+    padding: 1.5rem 0;
+}
+
+.modal-title {
+    color: #ad996d;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-close {
+    color: #ad996d;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.custom-tabs-container {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #7f5f20;
+    margin-bottom: 1rem;
+}
+
+.custom-tab-button {
+    flex: 1;
+    color: #ad996d;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.custom-tab-button:hover,
+.custom-tab-button.active {
+    color: #fff;
+    background-color: rgba(127, 95, 32, 0.2);
+    border-bottom-color: #ad996d;
+}
+
+.custom-tab-content {
+    padding: 1.5rem 0;
+}
+
+.friend-list-title {
+    color: #ad996d;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.custom-list-group {
+    background-color: transparent;
+}
+
+.custom-list-group-item {
+    background-color: rgba(173, 153, 109, 0.1);
+    border: 1px solid #7f5f20;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.custom-list-group-item:hover {
+    background-color: rgba(173, 153, 109, 0.2);
+}
+
+.custom-input {
+    background-color: rgba(173, 153, 109, 0.1);
+    border: 1px solid #7f5f20;
+    color: #fff;
+}
+
+.custom-input:focus {
+    /* background-color: rgba(173, 153, 109, 0.2); */ /* Commente par Clement */
+    border-color: #ad996d;
+    box-shadow: 0 0 0 0.2rem rgba(173, 153, 109, 0.25);
+}
+
+.custom-btn {
+    background-color: #7f5f20;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #ad996d;
+}
+
+.modal gameModal {
+    transition: none !important;
+}
+
+#gameModal {
+    z-index: 1150;
+}
+
+.modal-dialog gameModal {
+    transition: none !important;
+    transform: none !important;
+}
+
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+.nav-tabs .nav-link {
+    color: #ad996d;
+    background-color: transparent;
+    border: none;
+}
+
+.nav-tabs .nav-link.active {
+    color: #7f5f20;
+    background-color: transparent;
+    border-bottom: 2px solid #7f5f20;
+}
+
+.form-label, .form-control {
+    color: #ad996d;
+}
+
+.form-control {
+    background-color: #1a2c3a;
+    border: 1px solid #7f5f20;
+}
+
+.btn-primary, .btn-success {
+    color: #7f5f20;
+    background-color: #194452;
+    border-color: #7f5f20;
+    border-radius: 0%;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: #256579;
+    border-color: #7f5f20;
+}
+
+/* === Centrage du formulaire === */
+#playForm {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 2;
+}
+
+.play-button {
+    margin-top: 50%;
+    background-color: #194452;
+    border: 2px solid #7f5f20;
+    transition: background-color 0.3s ease;
+}
+
+.play-button:hover {
+    background-color: #256579;
+}
+
+.play-button .gradient-text {
+    background: none;
+    color: #ffffff;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+}
+
+.play-button:focus {
+    background-color: #256579;
+    color: white;
+    border-color: #7f5f20;
+}
+
+.play-button .gradient-text {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* === Style pour les boutons === */
+button {
+    width: 6.25cm;
+    height: 3cm;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border: 2px solid #7f5f20;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+button .gradient-text {
+    font-size: 0.9rem;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #ad996d, #806b49);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+button:hover {
+    background-color: #256579;
+    transition: background-color 0.3s ease;
+}
+
+button:focus {
+    background-color: #256579;
+    color: white;
+    border-color: #7f5f20;
+}
+/* /!\ a enlever z-index */
+.auth-button {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    z-index: 1;
+    font-size: 12px;
+    padding: 5px 10px;
+    width: auto;
+    height: auto;
+    color: #7f5f20;
+    background-color: #194452;
+}
+
+.logout-button {
+    position: fixed;
+    bottom: 10px;
+    left: 100px;
+    z-index: 1000;
+    font-size: 12px;
+    padding: 5px 10px;
+    width: auto;
+    height: auto;
+}
+
+.main-content {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    background-color: rgba(25, 68, 82, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    color: #ffffff;
+}
+
+.main-content h1 {
+    color: #ad996d;
+    text-align: center;
+}
+
+.main-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.main-content li {
+    background-color: #256579;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.main-content li:hover {
+    background-color: #194452;
+}
+
+.main-content button {
+    background-color: #194452;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 20px auto 0;
+}
+
+.main-content button:hover {
+    background-color: #256579;
+}
+
+/* === Fieldset et ligne de boutons === */
+fieldset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    width: 100%;
+}
+
+.remote-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    gap: 8px;
+    width: 48%;
+}
+
+.remote-buttons input[type="radio"] {
+    margin-bottom: 25px;/* Ajoute par Clement */
+    width: 48%;
+}
+
+/* === Ajoute par Clement pour le UserModal ===*/
+.UserInfoForm h5, .UserInfoForm small.text-muted, .UserInfoForm p{
+    /* color: #7f5f20 !important; */
+    color: #ad996d !important;
+}
+
+.UserInfoForm input {
+    /* color: #194452; */
+    color: black
+}
+
+#friendProfileModal .modal-body, #friendProfileModal .modal-body .text-muted {
+    color: #ad996d !important;
+}
+
+#nextGameModal .modal-body p {
+    color: #ad996d;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.row input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.remote-buttons label {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.local-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 400px;
+    gap: 8px;
+    width: 100%;
+}
+
+.local-buttons input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.local-buttons label {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+/* === Style des labels et input radio === */
+input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+label {
+    display: inline-block;
+    width: 114px;
+    height: 50px;
+    cursor: pointer;
+    background-image: url('../images/bouton.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-sizing: border-box;
+    margin: 0 10px;
+}
+
+input[type="radio"]:checked + label {
+    background-image: url('../images/bouton.png');
+    border-color: #1FA1C0;
+}
+
+label .gradient-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 0.9rem;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #ad996d, #806b49);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+label:hover {
+    opacity: 0.8;
+}
+
+input[type="radio"]:focus + label {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+/* === Style pour la sidebar gauche === */
+.page-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100%;
+    background-color: #0D1E29;
+    z-index: 1;
+}
+
+.left-navbar {
+    justify-content: space-between;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.left-navbar li, .pseudo-content{
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border-bottom: 2px solid #785E2C;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    position: relative;/*Ajoute pour UX*/
+}
+
+.left-navbar li:hover {
+    background-color: #0d2132;
+}
+
+/* pseudo-element ajoute pour UX */
+.left-navbar li::after {
+    content: var(--pseudo-content, '');
+    position: absolute;
+    top:0;
+    left:-80px;
+    width: 160px;
+    height: 80px;
+    background-color: #0d2132;
+    border-bottom: 2px solid #785E2C;
+    opacity:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #785E2C;
+    font-size: 14px;
+    font-weight: bold;
+    transition: opacity 0.25s ease-in-out, transform 0.3s ease;
+}
+
+.left-navbar li:hover::after {
+    opacity:1;
+    transform: translateX(160px);
+}
+
+.icon-tournoi, .icon-parametre, .icon-friend, .icon-historique, .icon-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.icon-tournoi img, .icon-parametre img, .icon-friend img, .icon-historique img, .icon-user img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    filter: none;
+    transition: filter 0.3s ease;
+}
+
+.left-navbar li:hover .icon-tournoi img,
+.left-navbar li:hover .icon-historique img,
+.left-navbar li:hover .icon-parametre img,
+.left-navbar li:hover .icon-friend img,
+.left-navbar li:hover .icon-user img
+{
+    filter: brightness(0) invert(1);
+}
+
+/* === Style pour la modal User profile === */
+
+
+/* === Style pour la modal d'historique === */
+.modal-dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
+}
+
+.table-wrapper {
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.match-history-table {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.match-history-table th {
+    background-color: #194452;
+    color: #ad996d;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.5rem;
+    border-bottom: 2px solid #7f5f20;
+}
+
+.match-history-table td {
+    padding: 0.5rem;
+    vertical-align: middle;
+    color: #ad996d !important;
+    border-bottom: 1px solid #7f5f20;
+}
+
+.date-cell {
+    min-width: 100px;
+    width: 15%;
+}
+
+.type-cell {
+    min-width: 60px;
+    width: 10%;
+}
+
+.players-cell {
+    min-width: 120px;
+    width: 30%;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score-cell {
+    min-width: 80px;
+    width: 15%;
+}
+
+.pagination-container {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination .page-link {
+    background-color: #194452;
+    border-color: #7f5f20;
+    color: #ad996d;
+    padding: 0.5rem 1rem;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #256579;
+    border-color: #7f5f20;
+    color: #ffffff;
+}
+
+.pagination .page-link:hover {
+    background-color: #256579;
+    border-color: #7f5f20;
+}
+
+.auth-message {
+    text-align: center;
+    padding: 2rem;
+    color: #ad996d;
+}
+
+.auth-message i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #7f5f20;
+}
+
+.auth-message p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.auth-message .btn {
+    background-color: #194452;
+    border-color: #7f5f20;
+    color: #ad996d;
+}
+
+.auth-message .btn:hover {
+    background-color: #256579;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #0D1E29;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #7f5f20;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #ad996d;
+}
+
+.table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #7f5f20 #0D1E29;
+}
+
+.match-history-table tr:hover {
+    background-color: #194452;
+}
+
+#notificationModal {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    top: auto !important;
+    left: auto !important;
+    margin: 0 !important;
+    z-index: 1100 !important;
+    pointer-events: none;
+}
+
+#notificationModal .modal-dialog {
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    max-width: 300px !important;
+    width: 100% !important;
+}
+
+#notificationModal .modal {
+    position: absolute !important;
+    display: block !important;
+    pointer-events: none;
+}
+
+#notificationModal .modal-content {
+    pointer-events: auto;
+}
+
+.notification-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #444;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none; /* Caché par défaut */
+    z-index: 1150; /* Ajustez ce chiffre */
+}
+
+.notification-popup.show {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* === Style pour la modal liveChat === */
+#message-container {
+    color: white;
+    height: 50vh;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+#nom-contact-live-chat {
+    color: white;
+}
+
+#liveChat-onlineStatus {
+    color: green;
+}
+
+#liveChat-offlineStatus {
+    color: red;
+}
+
+#en-tete-conversation-live-chat {
+    display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#messageInput {
+    width: 70vh;
+}
+
+.message-expediteur {
+    margin-left: auto; /* Aligne à droite */
+    margin-right: 10px; /* Ajoute un espace avec le bord droit */
+    background-color: #256579;
+    margin-bottom: 0.5cm;
+    padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
+    border-radius: 10px; /* Coins arrondis */
+    color: white;
+    word-wrap: break-word; /* Coupe les mots trop longs */
+    max-width: 60%; /* Largeur maximale */
+    text-align: left; /* Texte aligné à gauche à l'intérieur */
+}
+
+.message-destinataire {
+    margin-right: auto; /* Aligne à gauche */
+    margin-left: 10px; /* Ajoute un espace avec le bord gauche */
+    background-color: rgb(255, 103, 222);
+    margin-bottom: 0.5cm;
+    padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
+    border-radius: 10px; /* Coins arrondis */
+    color: white;
+    word-wrap: break-word; /* Coupe les mots trop longs */
+    max-width: 60%; /* Largeur maximale */
+    text-align: left; /* Texte aligné à gauche à l'intérieur */
+}
+
+#choix-conversation {
+    background-color: white;
+    color: black;
+    margin: 0px;
+}
+
+.message-invitation-jeu {
+    background-color: black;
+    color: white;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-bottom: 0.5cm;
+    text-align: center; /* Centrer le texte */
+}
+
+.bouton-liveChat {
+    width: auto; /* Largeur adaptée au contenu */
+    height: auto; /* Hauteur adaptée au contenu */
+    padding: 5px 10px; /* Espacement interne pour ajuster l'intérieur */
+    font-size: 16px; /* Taille du texte */
+    text-align: center; /* Centrer le texte */
+    display: inline-block; /* Pour que la taille s'ajuste au contenu */
+    white-space: nowrap; /* Empêche le texte de se casser */
+}
+
+#liveChatModal {
+    z-index: 1100;
+}
+
+#friendProfileModal {
+    z-index: 1150;
+}

@@ -1,0 +1,18 @@
+choses a faire :
+
+    - enlever les erreurs de console lorsqu'on est pas connecté
+    - trouver un moyen de stocker le score hors de blockchain (pas obligatoire je crois)
+    - peut etre ajouter un message lorsqu'on regarde le profile d'une personne qui nous a bloqué ou qu'on a bloqué
+    - modifier le bouton historique des parties
+    - mettre la modale setting en francais
+    - utiliser navigateTo pour le bouton s'inscrire/connexion (pour pouvoir utiliser les fleches)
+    - remettre le destinataireId a null lorsqu'on ferme la modale liveChat
+    - regler le pb des notif quand on recoit un message
+    - continuer a tester le live chat
+
+mots clés a chercher :
+languageFav
+language_fav
+/!\
+clement
+julien

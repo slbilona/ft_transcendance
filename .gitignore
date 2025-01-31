@@ -1,0 +1,5 @@
+.env
+private.key
+certificate.crt
+*.pyc
+__pycache__/
