@@ -105,5 +105,6 @@ header, #barre-bas1 {
     flex-grow: 1; /* Permet à la section centrale de s'étendre */
 }
 
-
-
+#profilePicture {
+    margin-left: 1rem;
+}
