@@ -108,3 +108,8 @@ header, #barre-bas1 {
 #profilePicture {
     margin-left: 1rem;
 }
+
+#profilePicture {
+    width: 3rem;
+    height: 3rem;
+}

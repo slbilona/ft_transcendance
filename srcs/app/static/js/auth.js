@@ -63,8 +63,9 @@ function fetchWithCsrf(url, options = {}) {
 		});
 }
 
+
 function updateUserInfo(username, photoProfile) {
-	const profilePictureElement = document.getElementById("profilePicture");
+	//const profilePictureElement = document.getElementById("profilePicture");
 
 	if (username) {
 		const safeUsername = escapeHtml(username);
@@ -76,14 +77,32 @@ function updateUserInfo(username, photoProfile) {
 		document.getElementById('profilButton').style.display = 'block';
 		document.getElementById('logoutButton').style.display = 'block';
 		document.querySelector('.auth-button').style.display = 'none';
-		document.getElementById('userUsername').innerHTML = safeUsername;
+		// document.getElementById('userUsername').innerHTML = safeUsername;
 
 		if (photoProfile) {
-			//profilePictureElement.src = `/static/images/${safeUsername}.jpg?timestamp=${Date.now()}`;
-			profilePictureElement.src = `/${username.photoProfile}?timestamp=${Date.now()}`;
+			document.getElementById('userUsernamePhoto').innerHTML = `
+				<img width="62" height="62" 
+					 src="/static/images/${safeUsername}.jpg?timestamp=${Date.now()}" 
+					 class="rounded-circle" 
+					 id="profilePicture">
+				<h4 id="userUsername">${safeUsername}</h4>
+			`;
+			// document.getElementById('userUsernamePhoto').innerHTML = `
+			// 	<div id="profilePicture" class="profile-picture"></div>
+			// 	<h4 id="userUsername">${safeUsername}</h4>
+			// `;
+			// document.getElementById('test').innerHTML += `<div id="profilePicture" class="profile-picture"></div>`;
+			// const profilePictureElement = document.getElementById("profilePicture");
+			// profilePictureElement.style.backgroundImage = `url(/static/images/${safeUsername}.jpg?timestamp=${Date.now()})`;
 		} else {
-			profilePictureElement.src = '/static/images/base_pfp.png';
-		}
+			document.getElementById('userUsernamePhoto').innerHTML = `
+				<img width="62" height="62" 
+					 src="/static/images/base_pfp.png" 
+					 class="rounded-circle" 
+					 id="profilePicture">
+				<h4 id="userUsername">${safeUsername}</h4>
+			`;
+		}		
 		//initWebSocket();
 	} else {
 		const usernameDisplay = document.getElementById('usernameDisplay');
@@ -97,6 +116,7 @@ function updateUserInfo(username, photoProfile) {
 		document.getElementById('profilButton').style.display = 'none';
 		document.getElementById('logoutButton').style.display = 'none';
 		document.querySelector('.auth-button').style.display = 'block';
+		document.getElementById('userUsernamePhoto').innerHTML = ``;
 	}
 }
 
@@ -238,8 +258,6 @@ async function signup(formData) {
 			}
 		}
 
-		console.log(secureFormData);
-
 		// Appel réseau pour l'inscription
 		fetchWithCsrf('/api/signup/', {
 			method: 'POST',
@@ -323,11 +341,24 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 	});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 	signupForm.addEventListener('submit', function(e) {
 		e.preventDefault();
 		const formData = new FormData(this);
 
-		signup(formData)
+		signup(formData) 
 			.then(() => {
 				alert('Votre inscription a été réussie !');
 				const authModal = bootstrap.Modal.getInstance(document.getElementById('authModal'));
