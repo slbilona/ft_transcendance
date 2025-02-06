@@ -74,7 +74,7 @@ function updateUserInfo(username, photoProfile) {
 		document.getElementById('userUsernamePhoto').style.display = 'block';
 		document.getElementById('liveChatButton').style.display = 'block';
 		document.getElementById('friendLink').style.display = 'block';
-		document.getElementById('profilButton').style.display = 'block';
+		document.getElementById('userLink').style.display = 'block';
 		document.getElementById('logoutButton').style.display = 'block';
 		document.querySelector('.auth-button').style.display = 'none';
 		// document.getElementById('userUsername').innerHTML = safeUsername;
@@ -129,24 +129,8 @@ function checkLoginStatus() {
 	})
 	.then(response => response.json())
 	.then(data => {
-		// /!\ \n a enlever
 		if (data.username) {
 			updateUserInfo(data.username, data.photoProfile, data.alias);
-			// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
-		// /!\ \n a enlever
 		} else {
 			updateUserInfo(null);
 		}
@@ -340,19 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			});
 	});
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	signupForm.addEventListener('submit', function(e) {
 		e.preventDefault();

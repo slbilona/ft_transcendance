@@ -1,5 +1,5 @@
 // const userModal = document.getElementById('userModal');
-// const userLink = document.getElementById('userLink');
+const userLink = document.getElementById('userLink');
 // const userForm = document.getElementById('userForm');
 
 function escapeHtmlUser(unsafe) {
@@ -12,41 +12,41 @@ function escapeHtmlUser(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// function updateCsrfToken2() {
-//     return fetch('/api/get-csrf-token/', {
-//         method: 'GET',
-//         credentials: 'include'
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         document.querySelector('[name=csrfmiddlewaretoken]').value = data.csrfToken;
-//     });
-// }
+function updateCsrfToken2() {
+    return fetch('/api/get-csrf-token/', {
+        method: 'GET',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.querySelector('[name=csrfmiddlewaretoken]').value = data.csrfToken;
+    });
+}
 
-// function fetchWithCsrf2(url, options = {}) {
-//     return updateCsrfToken2()
-//         .then(() => {
-//             options.headers = options.headers || {};
-//             options.headers['X-CSRFToken'] = getCsrfToken();
-//             options.credentials = 'include';
-//             return fetch(url, options);
-//         });
-// }
+function fetchWithCsrf2(url, options = {}) {
+    return updateCsrfToken2()
+        .then(() => {
+            options.headers = options.headers || {};
+            options.headers['X-CSRFToken'] = getCsrfToken();
+            options.credentials = 'include';
+            return fetch(url, options);
+        });
+}
 
-// function checkLoginStatus2() {
-//     return fetchWithCsrf2('/api/user/', {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         }
-//     })
-//     .then(response => response.json())
-//     .catch(error => {
-//         console.error('Error:', error);
-//         clearUserInfo();
-//         alert('An error occurred while fetching user information.');
-//     });
-// }
+function checkLoginStatus2() {
+    return fetchWithCsrf2('/api/user/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .catch(error => {
+        console.error('Error:', error);
+        //clearUserInfo();
+        alert('An error occurred while fetching user information.');
+    });
+}
 
 // function getCookie2(name) {
 //     let cookieValue = null;
@@ -132,23 +132,23 @@ function escapeHtmlUser(unsafe) {
 //     `;
 // }
 
-// function openuserModal() {
-//     const modal = new bootstrap.Modal(userModal);
-//     checkLoginStatus2()
-//         .then(user => {
-//             if (user && user.username) {
-//                 updateUserInfo2(user);
-//             } else {
-//                 clearUserInfo();
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             clearUserInfo();
-//             alert(t('errorFetchingUser'));
-//         });
-//     modal.show();
-// }
+function openuserModal() {
+    const modal = new bootstrap.Modal(userModal);
+    // checkLoginStatus2()
+    //     .then(user => {
+    //         if (user && user.username) {
+    //             updateUserInfo2(user);
+    //         } else {
+    //             clearUserInfo();
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //         clearUserInfo();
+    //         alert(t('errorFetchingUser'));
+    //     });
+    modal.show();
+}
 
 // window.addEventListener('userLoggedOut', function() {
 //     clearUserInfo();
@@ -160,106 +160,106 @@ function escapeHtmlUser(unsafe) {
 // });
 
 
-// // userLink.addEventListener('click', (e) => {
-// //     e.preventDefault();
-// //     history.pushState(
-// //         { modal: 'user' },
-// //         '',
-// //         '/user'
-// //     );
-// //     openuserModal();
-// // });
-
-// // window.addEventListener('popstate', (event) => {
-// //     if (event.state && event.state.modal === 'user') {
-// //         openuserModal();
-// //     } else {
-// //         const modal = bootstrap.Modal.getInstance(userModal);
-// //         if (modal) {
-// //             modal.hide();
-// //         }
-// //     }
-// // });
-
-// // userModal.addEventListener('hidden.bs.modal', () => {
-// //     if (window.location.pathname === '/user') {
-// //         history.back();
-// //     }
-// // });
-
-// // if (window.location.pathname === '/user') {
-// //     history.replaceState({ modal: 'user' }, '', '/user');
-// //     openuserModal();
-// // }
-
-
-// // let previousPath = null;
-
-// function pushModalState() {
-//     console.log("[pushModalState] : '/user'");
-//     // Sauvegarde le chemin actuel avant de le modifier
-//     previousPath = window.location.pathname;
-//     // Ajoute le nouvel état dans l'historique
+// userLink.addEventListener('click', (e) => {
+//     e.preventDefault();
 //     history.pushState(
-//         {
-//             modal: 'user',
-//             previousPath: previousPath
-//         },
+//         { modal: 'user' },
 //         '',
 //         '/user'
 //     );
-// }
-
-// function closeModal() {
-//     console.log("[closeModal]");
-//     const modal = bootstrap.Modal.getInstance(userModal);
-//     if (modal) {
-//         modal.hide();
-//     }
-// }
-
-// // Gestionnaire pour le clic sur le lien utilisateur
-// userLink.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     pushModalState();
 //     openuserModal();
 // });
 
-// // Gestionnaire pour la navigation dans l'historique
 // window.addEventListener('popstate', (event) => {
 //     if (event.state && event.state.modal === 'user') {
 //         openuserModal();
 //     } else {
-//         closeModal();
+//         const modal = bootstrap.Modal.getInstance(userModal);
+//         if (modal) {
+//             modal.hide();
+//         }
 //     }
 // });
 
-// // Gestionnaire pour la fermeture du modal
 // userModal.addEventListener('hidden.bs.modal', () => {
-//     console.log("[userModal.addEventListener('hidden.bs.modal'] : '/user'");
 //     if (window.location.pathname === '/user') {
-//         // Au lieu de history.back(), on push un nouvel état
-//         const targetPath = previousPath || '/';
-//         history.pushState(
-//             {
-//                 modal: null,
-//                 previousPath: '/user'
-//             },
-//             '',
-//             targetPath
-//         );
+//         history.back();
 //     }
 // });
 
-// // Gestion de l'état initial
 // if (window.location.pathname === '/user') {
-//     history.replaceState(
-//         {
-//             modal: 'user',
-//             previousPath: '/'
-//         },
-//         '',
-//         '/user'
-//     );
+//     history.replaceState({ modal: 'user' }, '', '/user');
 //     openuserModal();
 // }
+
+
+// // // let previousPath = null;
+
+function pushModalState() {
+    console.log("[pushModalState] : '/user'");
+    // Sauvegarde le chemin actuel avant de le modifier
+    previousPath = window.location.pathname;
+    // Ajoute le nouvel état dans l'historique
+    history.pushState(
+        {
+            modal: 'user',
+            previousPath: previousPath
+        },
+        '',
+        '/user'
+    );
+}
+
+// Gestionnaire pour le clic sur le lien utilisateur
+userLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    pushModalState();
+    openuserModal();
+});
+
+function closeModal() {
+    console.log("[closeModal]");
+    const modal = bootstrap.Modal.getInstance(userModal);
+    if (modal) {
+        modal.hide();
+    }
+}
+
+// Gestionnaire pour la navigation dans l'historique
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.modal === 'user') {
+        openuserModal();
+    } else {
+        closeModal();
+    }
+});
+
+// Gestionnaire pour la fermeture du modal
+userModal.addEventListener('hidden.bs.modal', () => {
+    console.log("[userModal.addEventListener('hidden.bs.modal'] : '/user'");
+    if (window.location.pathname === '/user') {
+        // Au lieu de history.back(), on push un nouvel état
+        const targetPath = previousPath || '/';
+        history.pushState(
+            {
+                modal: null,
+                previousPath: '/user'
+            },
+            '',
+            targetPath
+        );
+    }
+});
+
+// Gestion de l'état initial
+if (window.location.pathname === '/user') {
+    history.replaceState(
+        {
+            modal: 'user',
+            previousPath: '/'
+        },
+        '',
+        '/user'
+    );
+    openuserModal();
+}

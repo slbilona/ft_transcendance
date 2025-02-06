@@ -25,7 +25,7 @@
 		<ul class="nav nav-pills">
 			<li class="nav-item"><a href="#" class="nav-link" id="liveChatButton">live-chat</a></li>
 			<li class="nav-item"><a href="/friend/" class="nav-link" id="friendLink">Amis</a></li>
-			<li class="nav-item"><a href="#" class="nav-link" id="profilButton">Profil</a></li>
+			<li class="nav-item"><a href="/user/" class="nav-link" id="userLink">Profil</a></li>
 			<li class="nav-item"><a href="#" class="nav-link" id="logoutButton">déconnexion</a></li>
 			<li class="nav-item auth-button"><a href="#" class="nav-link" id="boutton-signup-login">connexion/inscription</a></li>
 		</ul>
@@ -160,6 +160,21 @@
 		</div>
 	</div>
 	
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/ethers@5.6.9/dist/ethers.umd.min.js"></script>
 	<script src="/static/js/csrf_utils.js"></script>

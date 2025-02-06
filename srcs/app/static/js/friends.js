@@ -224,37 +224,39 @@ function loadFriendLists() {
 	// /!\ trouver une soluton pour la photo de profile
 	.then(data => {
 		console.log("il y a une reponse positive au call api : ");
-		followingList.innerHTML = data.map(user => `
-			<li class="custom-list-group-item p-3">
-				<div class="d-flex justify-content-between align-items-center">
-					<div class="d-flex align-items-center">
-						<div class="profile-picture-small me-3"
-							style="width: 40px; height: 40px;
-									border-radius: 50%;
-									background-size: cover;
-									background-position: center;
-									background-image: url('${getProfilePictureUrl(user.username)}');">
+		if (followingList) {
+			followingList.innerHTML = data.map(user => `
+				<li class="custom-list-group-item p-3">
+					<div class="d-flex justify-content-between align-items-center">
+						<div class="d-flex align-items-center">
+							<div class="profile-picture-small me-3"
+								style="width: 40px; height: 40px;
+										border-radius: 50%;
+										background-size: cover;
+										background-position: center;
+										background-image: url('${getProfilePictureUrl(user.username)}');">
+							</div>
+							<div>
+								<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
+								<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
+							</div>
 						</div>
-						<div>
-							<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
-							<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
+						<div class="d-flex gap-2">
+							<button class="btn btn-sm custom-btn view-profile"
+									style="background-color: #194452; color: #ad996d;"
+									data-user-id="${user.id}">
+								Voir profil
+							</button>
+							<button class="btn btn-sm custom-btn delete-friend"
+									style="background-color: #194452; color: #ad996d;"
+									data-user-id="${user.id}">
+								Ne plus suivre
+							</button>
 						</div>
 					</div>
-					<div class="d-flex gap-2">
-						<button class="btn btn-sm custom-btn view-profile"
-								style="background-color: #194452; color: #ad996d;"
-								data-user-id="${user.id}">
-							Voir profil
-						</button>
-						<button class="btn btn-sm custom-btn delete-friend"
-								style="background-color: #194452; color: #ad996d;"
-								data-user-id="${user.id}">
-							Ne plus suivre
-						</button>
-					</div>
-				</div>
-			</li>
-		`).join('');
+				</li>
+			`).join('');
+		}
 		console.log("2");
 		attachEventListeners();
 	})
@@ -279,35 +281,36 @@ function loadFriendLists() {
 		return response.json();
 	})
 	.then(data => {
-		if (data.length === 0) {
-			followersList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowers')}</li>`;
-			return;
-		}
-
-		followersList.innerHTML = data.map(user => `
-			<li class="custom-list-group-item p-3">
-				<div class="d-flex justify-content-between align-items-center">
-					<div class="d-flex align-items-center">
-						<div class="profile-picture-small me-3"
-							style="width: 40px; height: 40px;
-									border-radius: 50%;
-									background-size: cover;
-									background-position: center;
-									background-image: url('${getProfilePictureUrl(user.username)}');">
+		if (followersList) {
+			if (data.length === 0) {
+				followersList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowers')}</li>`;
+				return;
+			}
+			followersList.innerHTML = data.map(user => `
+				<li class="custom-list-group-item p-3">
+					<div class="d-flex justify-content-between align-items-center">
+						<div class="d-flex align-items-center">
+							<div class="profile-picture-small me-3"
+								style="width: 40px; height: 40px;
+										border-radius: 50%;
+										background-size: cover;
+										background-position: center;
+										background-image: url('${getProfilePictureUrl(user.username)}');">
+							</div>
+							<div>
+								<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
+								<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
+							</div>
 						</div>
-						<div>
-							<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
-							<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
-						</div>
+						<button class="btn btn-sm custom-btn view-profile"
+								data-user-id="${user.id}">
+							Voir profil
+						</button>
 					</div>
-					<button class="btn btn-sm custom-btn view-profile"
-							data-user-id="${user.id}">
-						Voir profil
-					</button>
-				</div>
-			</li>
-		`).join('');
-		attachEventListeners();
+				</li>
+			`).join('');
+			attachEventListeners();
+		}
 	})
 	.catch(error => {
 		modalBody.innerHTML = `
