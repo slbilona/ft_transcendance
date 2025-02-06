@@ -1,115 +1,215 @@
 body {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 /* Appliquer overflow: hidden à l'ensemble de la page */
 html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
 }
 
 body {
-    background-color: #ef6930;
+	background-color: #ef6930;
 }
 
 /* Style de l'header */
 header {
-    /*background-image: url('../images/wallpaper.png');*/
-    border-bottom: none !important;
-    display: flex;
-    justify-content: center;  /* Centre horizontalement */
-    align-items: center;  /* Centre verticalement */
+	/*background-image: url('../images/wallpaper.png');*/
+	border-bottom: none !important;
+	display: flex;
+	justify-content: center;  /* Centre horizontalement */
+	align-items: center;  /* Centre verticalement */
 }
 
 /* Style des liens de navigation */
 .nav-link {
-    color: #1c4521 !important;
-    background-color: #fceada !important;
-    margin: 0rem 1rem;
+	color: #1c4521 !important;
+	background-color: #fceada !important;
+	margin: 0rem 1rem;
 }
 
 /* Style au survol des liens de navigation */
 .nav-link:hover {
-    color: #fceada !important;
-    background-color: #1c4521 !important;
+	color: #fceada !important;
+	background-color: #1c4521 !important;
 }
 
 /* Style des cartes (card) avec la classe .border-primary */
 .card.mb-4.rounded-3.shadow-sm.border-primary {
-    background-image: url('../images/wallpaper.png');
+	background-image: url('../images/wallpaper.png');
 }
 
 /* Style de la carte body */
 .card-body {
-    background-color: #ef6930;
-    margin: 1rem;
-    border-radius: 1rem;
+	background-color: #ef6930;
+	margin: 1rem;
+	border-radius: 1rem;
 }
 
 /* Style de la carte (appliqué à toutes les cartes) */
 .card {
-    background-image: url('../images/wallpaper.png');
-    border: 2px solid #ef6930 !important;
-    border-radius: 10px;
+	background-image: url('../images/wallpaper.png');
+	border: 2px solid #ef6930 !important;
+	border-radius: 10px;
 }
 
 /* Style de la carte au survol */
 .card:hover {
-    border-radius: 10px;
-    box-shadow: 5px 5px 15px #55511b;
+	border-radius: 10px;
+	box-shadow: 5px 5px 15px #55511b;
 }
 
 /* Centrer le contenu à l'intérieur de la page */
 .container {
-    height: 100vh; /* Prend toute la hauteur de la fenêtre */
-    display: flex; /* Utilisation de Flexbox pour centrer les éléments */
-    justify-content: center; /* Centrer horizontalement */
-    align-items: center; /* Centrer verticalement */
-    gap: 2rem; /* Espace entre les cartes (augmenter l'espace ici) */
-    padding: 1rem; /* Espace autour du contenu (si tu veux éviter que les cartes touchent les bords de la fenêtre) */
+	height: 100vh; /* Prend toute la hauteur de la fenêtre */
+	display: flex; /* Utilisation de Flexbox pour centrer les éléments */
+	justify-content: center; /* Centrer horizontalement */
+	align-items: center; /* Centrer verticalement */
+	gap: 2rem; /* Espace entre les cartes (augmenter l'espace ici) */
+	padding: 1rem; /* Espace autour du contenu (si tu veux éviter que les cartes touchent les bords de la fenêtre) */
 }
 
 .modal {
-    min-width: 1000px;
+	min-width: 1000px;
 }
 
 .modal-header {
-    background-image: url(../images/fond_header_modale.png);
+	background-image: url(../images/fond_header_modale.png);
 }
 
 .modal-body {
-    background-color: #f7bfaa;
+	background-color: #f7bfaa;
 }
 
 #authModal .nav-link {
-    margin: 0rem 0.5rem;
+	margin: 0rem 0.5rem;
+}
+
+.modal .navlink {
+	margin: 0rem 0.5rem;
 }
 
 header, #barre-bas1 {
-    background-image: url('../images/barreHautBas.png');
-    height: 12rem !important; /* Hauteur de la barre */
-    width: 100%; /* Largeur totale */
+	background-image: url('../images/barreHautBas.png');
+	height: 12rem !important; /* Hauteur de la barre */
+	width: 100%; /* Largeur totale */
 }
 
 #barre-haut2, #barre-bas2 {
-    background-color: #908a35; /* Couleur 2 */
-    height: 12rem; /* Hauteur de la barre */
-    width: 100%;
+	background-color: #908a35; /* Couleur 2 */
+	height: 12rem; /* Hauteur de la barre */
+	width: 100%;
 }
 
 #centre-contour3 {
-    background-color: #fceada; /* Couleur 3 */
-    width: 100%;
-    flex-grow: 1; /* Permet à la section centrale de s'étendre */
+	background-color: #fceada; /* Couleur 3 */
+	width: 100%;
+	flex-grow: 1; /* Permet à la section centrale de s'étendre */
 }
 
 #profilePicture {
-    margin-left: 1rem;
+	margin-left: 1rem;
 }
 
 #profilePicture {
-    width: 3rem;
-    height: 3rem;
+	width: 3rem;
+	height: 3rem;
+}
+
+.custom-list-group-item {
+	list-style-type: none;
+}
+
+#followingList, #followersList {
+	padding-left: 0;
+}
+
+.custom-list-group-item .btn, .tab-content .btn {
+	color: #1c4521 !important;
+	background-color: #fceada !important;
+	outline-color: #fceada !important;
+}
+
+.custom-list-group-item .btn:hover, .tab-content .btn:hover {
+	color: #fceada !important;
+	background-color: #1c4521 !important;
+	outline-color: #1c4521 !important;
+}
+
+#friendTabs .nav-item {
+    /* margin-right: 10px; *//*Ajoute un espace entre chaque bouton */
+}
+
+.nav-tabs {
+    border-bottom: none !important;
+}
+
+#auth42-tab {
+    border-bottom-right-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+    color: #1c4521 !important;
+    background-color: #fceada !important;
+    outline: 2px solid #1c4521 !important; /* Ajout d'un outline */
+}
+
+#auth42-tab:hover {
+    border-bottom-right-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+    color: #fceada !important;
+    background-color: #1c4521 !important;
+}
+
+
+#signup-tab {
+    outline: 2px solid #1c4521 !important; /* Ajout d'un outline */
+	border-top-right-radius: 10px !important;
+}
+
+#login-tab {
+    outline: 2px solid #1c4521 !important; /* Ajout d'un outline */
+	border-top-left-radius: 10px !important;
+}
+
+#signup-tab:hover {
+	border-top-right-radius: 10px !important;
+}
+
+#login-tab:hover {
+	border-top-left-radius: 10px !important;
+}
+
+#friend-list-tab, #add-friend-tab {
+	outline: 2px solid #1c4521 !important;
+}
+
+#add-friend-tab {
+	border-top-left-radius: 0px !important;
+	border-top-right-radius: 10px !important;
+	border-bottom-left-radius: 0px !important;
+	border-bottom-right-radius: 10px !important;
+}
+
+#friend-list-tab {
+	border-top-left-radius: 10px !important;
+	border-top-right-radius: 0px !important;
+	border-bottom-left-radius: 10px !important;
+	border-bottom-right-radius: 0px !important;
+}
+
+.custom-tabs-container ul {
+	margin: 0px 15px 5px 0px !important;
+}
+
+#followingList {
+max-height: 200px; /* Taille maximale de la div */
+    overflow-y: auto; /* Permet le défilement vertical si le contenu dépasse */
+    padding: 10px; /* Espacement intérieur */
+}
+
+#followersList {
+	max-height: 200px; /* Taille maximale de la div */
+    overflow-y: auto; /* Permet le défilement vertical si le contenu dépasse */
+    padding: 10px; /* Espacement intérieur */
 }
