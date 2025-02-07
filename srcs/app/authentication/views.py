@@ -45,21 +45,30 @@ class UserInfoAPI(APIView):
 		else:
 			return Response({'message': 'Not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+from django.contrib.auth import login
+
 class LoginAPI(APIView):
-	def post(self, request):
-		serializer = LoginSerializer(data=request.data)
-		if serializer.is_valid():
-			user = serializer.validated_data['user']  # Cela devrait renvoyer l'utilisateur authentifié
-			login(request, user)
-			# Utiliser UserSerializer pour renvoyer les infos de l'utilisateur après connexion
-			user_data = UserSerializer(user).data
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']  # Utilisateur authentifié
+            login(request, user)
+            user_data = UserSerializer(user).data
 
-			return Response({
-				"message": "Connexion réussie",
-				"user": user_data
-			}, status=status.HTTP_200_OK)
+            return Response({
+                "success": True,
+                "message": "Connexion réussie",
+                "user": user_data
+            }, status=status.HTTP_200_OK)
 
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            "success": False,
+            "message": "Échec de la connexion",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 class SignupAPI(APIView):
 	def post(self, request):
@@ -107,7 +116,7 @@ class UserDetailView(APIView):
         user = get_object_or_404(User, username=username)
         serializer = PublicUserSerializer(user)
         data = serializer.data
-        data['id'] = user.id  # Assurez-vous que l'ID est inclus dans la réponse
+        data['id'] = user.id
         return Response(data)
 
 class UserProfileView(APIView):

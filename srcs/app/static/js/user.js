@@ -1,6 +1,6 @@
 // const userModal = document.getElementById('userModal');
 const userLink = document.getElementById('userLink');
-// const userForm = document.getElementById('userForm');
+const userForm = document.getElementById('userForm');
 
 function escapeHtmlUser(unsafe) {
     if (!unsafe) return "";
@@ -43,110 +43,187 @@ function checkLoginStatus2() {
     .then(response => response.json())
     .catch(error => {
         console.error('Error:', error);
-        //clearUserInfo();
+        clearUserInfo();
         alert('An error occurred while fetching user information.');
     });
 }
 
-// function getCookie2(name) {
-//     let cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         const cookies = document.cookie.split(';');
-//         for (let i = 0; i < cookies.length; i++) {
-//             const cookie = cookies[i].trim();
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
+function getCookie2(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
-// function updateUserInfo2(user) {
-//     fetch(`/api/users/${user.username}/`, {
-//         headers: {
-//             'X-CSRFToken': getCookie2('csrftoken'),
-//         },
-//         credentials: 'same-origin'
-//     })
-//     .then(response => {
-//         if (!response.ok) throw new Error("Utilisateur non trouvé");
-//         return response.json();
-//     })
-//     .then(data => {
-//         if (!data.id) throw new Error("ID de l'utilisateur non trouvé");
-//         const userId = data.id;
+const profileModalBody = document.getElementById("userModalBody");
 
-//         fetch(`/api/userprofile/${userId}/`)
-//             .then(response => response.json())
-//             .then(data => {
-//                 const userInfoForm = document.createElement('form');
-//                 userInfoForm.innerHTML = `
-//                 <div class="UserInfoForm">
-//                     <div class="row text-center">
-//                         <div class="col-4">
-//                             <h5>${escapeHtmlUser(String(data.nbVictoires + data.nbDefaites))}</h5>
-//                             <small class="text-muted">Parties</small>
-//                         </div>
-//                         <div class="col-4">
-//                             <h5>${escapeHtmlUser(String(data.nbVictoires))}</h5>
-//                             <small class="text-muted">Victoires</small>
-//                         </div>
-//                         <div class="col-4">
-//                             <h5>${escapeHtmlUser(String(data.nbDefaites))}</h5>
-//                             <small class="text-muted">Défaites</small>
-//                         </div>
-//                     </div>
-//                     <div class="mb-3">
-//                         <p class="form-label">Nom d'utilisateur</p>
-//                         <input type="text" class="form-control" value="${escapeHtml(user.username)}" disabled>
-//                     </div>
-//                     <div class="mb-3">
-//                         <p class="form-label">Alias</p>
-//                         <input type="text" class="form-control" value="${escapeHtml(user.alias)}" disabled>
-//                     </div>
-//                     <div class="mb-3">
-//                         <p class="form-label">Email</p>
-//                         <input type="email" class="form-control" value="${escapeHtml(user.email)}" disabled>
-//                     </div>
-//                 </div>`;
-//                 userForm.innerHTML = '';
-//                 userForm.appendChild(userInfoForm);
-//             })
-//             .catch(error => {
-//                 console.log(error.message);
-//             });
-//     })
-//     .catch(error => {
-//         console.log(error.message);
-//     });
-// }
+function updateUserInfo2(user) {
+    fetch(`/api/users/${user.username}/`, {
+        headers: {
+            'X-CSRFToken': getCookie2('csrftoken'),
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Utilisateur non trouvé");
+        return response.json();
+    })
+    .then(data => {
+        if (!data.id) throw new Error("ID de l'utilisateur non trouvé");
+        const userId = data.id;
 
-// function clearUserInfo() {
-//     userForm.innerHTML = `
-//         <div class="auth-message">
-//             <i class="fas fa-lock"></i>
-//             <p>Aucune information utilisateur disponible</p>
-//         </div>
-//     `;
-// }
+        fetch(`/api/userprofile/${userId}/`)
+            .then(response => response.json())
+            .then(data => {
+                profileModalBody.innerHTML = `
+                    <div class="custom-tabs-container">
+                        <ul class="nav nav-tabs nav-fill" id="friendTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link custom-tab-button barre-choix" id="friend-list-tab"
+                                data-bs-toggle="pill" data-bs-target="#friend-list" type="button" role="tab"
+                                aria-controls="friend-list" aria-selected="true">Votre profil</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link custom-tab-button barre-choix" id="add-friend-tab" data-bs-toggle="pill"
+                                data-bs-target="#add-friend" type="button" role="tab" aria-controls="add-friend"
+                                aria-selected="false">Modifier votre profil</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content custom-tab-content" id="friendTabsContent">
+                        <div class="tab-pane fade show active" id="friend-list" role="tabpanel" aria-labelledby="friend-list-tab">
+                            <form>
+                                <div class="UserInfoForm">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <h5>${escapeHtmlUser(String(data.nbVictoires + data.nbDefaites))}</h5>
+                                            <small class="text-muted">Parties</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5>${escapeHtmlUser(String(data.nbVictoires))}</h5>
+                                            <small class="text-muted">Victoires</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5>${escapeHtmlUser(String(data.nbDefaites))}</h5>
+                                            <small class="text-muted">Défaites</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <p class="form-label">Nom d'utilisateur</p>
+                                        <input type="text" class="form-control" value="${escapeHtml(user.username)}" disabled>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <p class="form-label">Alias</p>
+                                        <input type="text" class="form-control" value="${escapeHtml(user.alias)}" disabled>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <p class="form-label">Email</p>
+                                        <input type="email" class="form-control" value="${escapeHtml(user.email)}" disabled>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="add-friend" role="tabpanel" aria-labelledby="add-friend-tab">
+                            <form id="settingsForm">
+                                <div class="mb-3">
+                                    <p class="form-label">Username</p>
+                                    <input type="text" class="form-control" id="settingsUsername" name="username">
+                                </div>
+                                <div class="mb-3">
+                                    <p class="form-label">Email</p>
+                                    <input type="email" class="form-control" id="settingsEmail" name="email">
+                                </div>
+                                <div class="mb-3">
+                                    <p class="form-label">Alias</p>
+                                    <input type="text" class="form-control" id="settingsAlias" name="alias">
+                                </div>
+                                <div class="mb-3">
+                                    <p class="form-label">Profile Photo</p>
+                                    <input type="file"
+                                        class="form-control"
+                                        id="settingsPhoto"
+                                        name="photoProfile"
+                                        accept="image/*"
+                                        title="Choisir un fichier">
+                                    <img id="photoPreview" class="mt-2" style="max-width: 200px; display: none;">
+                                </div>
+                                <div class="mb-3">
+                                    <p class="form-label">New Password</p>
+                                    <input type="password" class="form-control" id="settingsNewPassword" name="password">
+                                </div>
+                                <div class="mb-3">
+                                    <p class="form-label">Confirm New Password</p>
+                                    <input type="password" class="form-control" id="settingsConfirmPassword">
+                                </div>
+
+                                <button type="submit" class="btn">Save Changes</button>
+                            </form>
+                            <!-- Ajoute par clement  -->
+                            <div id="errorMessage" style="display: none;">
+                                <div class="auth-message">
+                                    <i class="fas fa-lock"></i>
+                                    <p>Aucune information utilisateur disponible</p>
+                                </div>;
+                            </div>
+                        </div>
+                    </div>
+                `;
+                // Ajouter l'event listener après l'insertion du formulaire
+                const settingsForm = document.getElementById('settingsForm');
+                if (settingsForm) {
+                    settingsForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const formData = new FormData(settingsForm);
+                        await updateUserProfile(formData);
+                    });
+                } else {
+                    console.error("Erreur : settingsForm non trouvé !");
+                }
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
+function clearUserInfo() {
+    userForm.innerHTML = `
+        <div class="auth-message">
+            <i class="fas fa-lock"></i>
+            <p>Aucune information utilisateur disponible</p>
+        </div>
+    `;
+}
 
 function openuserModal() {
     const modal = new bootstrap.Modal(userModal);
-    // checkLoginStatus2()
-    //     .then(user => {
-    //         if (user && user.username) {
-    //             updateUserInfo2(user);
-    //         } else {
-    //             clearUserInfo();
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //         clearUserInfo();
-    //         alert(t('errorFetchingUser'));
-    //     });
+    checkLoginStatus2()
+        .then(user => {
+            if (user && user.username) {
+                updateUserInfo2(user);
+            } else {
+                clearUserInfo();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            clearUserInfo();
+            alert(t('errorFetchingUser'));
+        });
     modal.show();
 }
 

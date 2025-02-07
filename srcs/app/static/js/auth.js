@@ -105,15 +105,11 @@ function updateUserInfo(username, photoProfile) {
 		}		
 		//initWebSocket();
 	} else {
-		const usernameDisplay = document.getElementById('usernameDisplay');
-		if (usernameDisplay) {
-			usernameDisplay.remove();
-		}
-
+		console.log("non authentifié");
 		document.getElementById('userUsernamePhoto').style.display = 'none';
 		document.getElementById('liveChatButton').style.display = 'none';
 		document.getElementById('friendLink').style.display = 'none';
-		document.getElementById('profilButton').style.display = 'none';
+		document.getElementById('userLink').style.display = 'none';
 		document.getElementById('logoutButton').style.display = 'none';
 		document.querySelector('.auth-button').style.display = 'block';
 		document.getElementById('userUsernamePhoto').innerHTML = ``;
@@ -168,33 +164,27 @@ async function login(username, password) {
 				password: validPassword
 			})
 		})
-		.then(response => {
-			if (!response.ok) {
-				return response.json().then(error => {
-					reject(new Error(error.message || 'Authentification failed' ))
-				})
-			}
-			return response.json();
-			})
+		.then(response => response.json())  // Toujours parser la réponse JSON
 		.then(data => {
-			if (data.message === "Connexion réussie") {
-				console.log("connexion reussi");
-				const safeUser = {
-					username: escapeHtml(data.user.username),
-					photoProfile: data.user.photoProfile
-				};
-				updateUserInfo(safeUser.username, safeUser.photoProfile);
-				checkLoginStatus();
-				resetAuthForms(); // Ajoute Post Merge
-				resolve(safeUser);
-			} else {
-				reject(new Error(data.message)); // Rejetez la promesse si la connexion échoue
+			if (!data.success) {
+				reject(new Error(data.message || 'Authentification échouée'));
+				return;
 			}
+			
+			console.log("Connexion réussie");
+			const safeUser = {
+				username: escapeHtml(data.user.username),
+				photoProfile: data.user.photoProfile
+			};
+			updateUserInfo(safeUser.username, safeUser.photoProfile);
+			checkLoginStatus();
+			resetAuthForms();
+			resolve(safeUser);
 		})
 		.catch(error => {
 			console.error('Error details:', error);
-			reject(new Error('Network error occurred'));
-		})
+			reject(new Error('Une erreur réseau est survenue'));
+		});		
 	})
 }
 

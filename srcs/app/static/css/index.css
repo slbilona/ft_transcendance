@@ -138,50 +138,35 @@ header, #barre-bas1 {
 	outline-color: #1c4521 !important;
 }
 
-#friendTabs .nav-item {
-    /* margin-right: 10px; *//*Ajoute un espace entre chaque bouton */
-}
-
 .nav-tabs {
     border-bottom: none !important;
 }
 
-#auth42-tab {
-    border-bottom-right-radius: 10px !important;
-    border-bottom-left-radius: 10px !important;
+.barre-choix {
     color: #1c4521 !important;
     background-color: #fceada !important;
     outline: 2px solid #1c4521 !important; /* Ajout d'un outline */
 }
 
-#auth42-tab:hover {
-    border-bottom-right-radius: 10px !important;
-    border-bottom-left-radius: 10px !important;
+.barre-choix:hover {
     color: #fceada !important;
     background-color: #1c4521 !important;
 }
 
+#auth42-tab {
+	border-radius: 0 !important;
+    border-bottom-right-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}
 
 #signup-tab {
-    outline: 2px solid #1c4521 !important; /* Ajout d'un outline */
+	border-radius: 0 !important;
 	border-top-right-radius: 10px !important;
 }
 
 #login-tab {
-    outline: 2px solid #1c4521 !important; /* Ajout d'un outline */
+	border-radius: 0 !important;
 	border-top-left-radius: 10px !important;
-}
-
-#signup-tab:hover {
-	border-top-right-radius: 10px !important;
-}
-
-#login-tab:hover {
-	border-top-left-radius: 10px !important;
-}
-
-#friend-list-tab, #add-friend-tab {
-	outline: 2px solid #1c4521 !important;
 }
 
 #add-friend-tab {
@@ -202,13 +187,7 @@ header, #barre-bas1 {
 	margin: 0px 15px 5px 0px !important;
 }
 
-#followingList {
-max-height: 200px; /* Taille maximale de la div */
-    overflow-y: auto; /* Permet le défilement vertical si le contenu dépasse */
-    padding: 10px; /* Espacement intérieur */
-}
-
-#followersList {
+#followingList, #followersList {
 	max-height: 200px; /* Taille maximale de la div */
     overflow-y: auto; /* Permet le défilement vertical si le contenu dépasse */
     padding: 10px; /* Espacement intérieur */

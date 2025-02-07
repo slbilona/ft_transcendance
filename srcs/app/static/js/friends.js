@@ -97,12 +97,12 @@ function updateFriendModalBody() {
 		<div class="custom-tabs-container">
 			<ul class="nav nav-tabs nav-fill" id="friendTabs" role="tablist">
 				<li class="nav-item" role="presentation">
-					<button class="nav-link custom-tab-button" id="friend-list-tab"
+					<button class="nav-link custom-tab-button barre-choix" id="friend-list-tab"
 					data-bs-toggle="pill" data-bs-target="#friend-list" type="button" role="tab"
 					aria-controls="friend-list" aria-selected="true">Liste d'amis</button>
 				</li>
 				<li class="nav-item" role="presentation">
-					<button class="nav-link custom-tab-button" id="add-friend-tab" data-bs-toggle="pill"
+					<button class="nav-link custom-tab-button barre-choix" id="add-friend-tab" data-bs-toggle="pill"
 					data-bs-target="#add-friend" type="button" role="tab" aria-controls="add-friend"
 					aria-selected="false">Ajouter un ami</button>
 				</li>
