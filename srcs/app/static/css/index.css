@@ -169,14 +169,14 @@ header, #barre-bas1 {
 	border-top-left-radius: 10px !important;
 }
 
-#add-friend-tab {
+#add-friend-tab, #profile-edit-tab {
 	border-top-left-radius: 0px !important;
 	border-top-right-radius: 10px !important;
 	border-bottom-left-radius: 0px !important;
 	border-bottom-right-radius: 10px !important;
 }
 
-#friend-list-tab {
+#friend-list-tab, #profile-view-tab {
 	border-top-left-radius: 10px !important;
 	border-top-right-radius: 0px !important;
 	border-bottom-left-radius: 10px !important;

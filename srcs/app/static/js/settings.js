@@ -68,11 +68,6 @@ async function updateUserProfile(formData) {
 				}
 			}
 		}
-		console.log("sanitizedFormData entries:");
-        for (let pair of sanitizedFormData.entries()) {
-            console.log(pair[0] + ": " + pair[1]);
-        }
-		console.log("avant verif mdp");
 		const settingsNewPassword = document.getElementById('settingsNewPassword');
 		const settingsConfirmPassword = document.getElementById('settingsConfirmPassword');
 		// Validation du mot de passe
@@ -88,12 +83,10 @@ async function updateUserProfile(formData) {
 				throw new Error(t('passwordsDoNotMatch'));
 			}
 		}
-		console.log("apres verif mdp");
 		// Si aucun champ n'est mis à jour
 		if (sanitizedFormData.keys().next().done) {
 			throw new Error(t('noUpdateFieldsProvided'));
 		}
-		console.log("avant call api /api/userprofileupdate/")
 		// Envoi de la requête API
 		const response = await fetchWithCsrf('/api/userprofileupdate/', {
 			method: 'PUT',
@@ -115,6 +108,12 @@ async function updateUserProfile(formData) {
 			settingsNewPassword.value = '';
 			settingsConfirmPassword.value = '';
 			checkLoginStatus();
+			const user = await checkLoginStatus2(); // Récupère l'objet utilisateur
+			if (user && user.username) {
+				updateUserInfo2(user);  // Passe `user` à la fonction
+			} else {
+				clearUserInfo();
+			}
 		} else {
 			if (response.status === 400 && responseBody) {
 				let errorMessages = [];
@@ -139,6 +138,7 @@ async function updateUserProfile(formData) {
 			alertDiv.className = 'alert alert-danger';
 			alertDiv.textContent = error.message; // Affichage de l'erreur
 			console.log("error.message : ", error.message);
+			console.error("erreur : ", error);
 			const settingsForm = document.getElementById('settingsForm');
 			settingsForm.insertBefore(alertDiv, settingsForm.firstChild);
 			setTimeout(() => alertDiv.remove(), 3000);
