@@ -65,8 +65,8 @@ function getCookie2(name) {
 
 const profileModalBody = document.getElementById("userModalBody");
 
-function rempliFriendList (data) {
-	document.getElementById('friend-list').innerHTML = `
+function rempliProfileView (data, user) {
+	document.getElementById('profile-view').innerHTML = `
 		<form>
 			<div class="UserInfoForm">
 				<div class="row text-center">
@@ -103,8 +103,8 @@ function rempliFriendList (data) {
 	`;
 }
 
-function rempliAddFriend () {
-	document.getElementById('add-friend').innerHTML = `
+function rempliProfileEdit () {
+	document.getElementById('profile-edit').innerHTML = `
 		<form id="settingsForm">
 			<div class="mb-3">
 				<p class="form-label">Username</p>
@@ -147,206 +147,78 @@ function rempliAddFriend () {
 			</div>;
 		</div>
 	`;
-}
-
-function updateUserInfo2(user) {
-    fetch(`/api/users/${user.username}/`, {
-        headers: {
-            'X-CSRFToken': getCookie2('csrftoken'),
-        },
-        credentials: 'same-origin'
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Utilisateur non trouvé");
-        return response.json();
-    })
-    .then(data => {
-        if (!data.id) throw new Error("ID de l'utilisateur non trouvé");
-        const userId = data.id;
-
-        fetch(`/api/userprofile/${userId}/`)
-            .then(response => response.json())
-            .then(data => {
-                profileModalBody.innerHTML = `
-				<div class="custom-tabs-container">
-					<ul class="nav nav-tabs nav-fill" id="userProfileTabs" role="tablist">
-						<li class="nav-item" role="presentation">
-							<button class="nav-link custom-tab-button barre-choix" id="profile-view-tab"
-							data-bs-toggle="pill" data-bs-target="#profile-view" type="button" role="tab"
-							aria-controls="profile-view" aria-selected="true">Votre profil</button>
-						</li>
-						<li class="nav-item" role="presentation">
-							<button class="nav-link custom-tab-button barre-choix" id="profile-edit-tab" data-bs-toggle="pill"
-							data-bs-target="#profile-edit" type="button" role="tab" aria-controls="profile-edit"
-							aria-selected="false">Modifier votre profil</button>
-						</li>
-					</ul>
-				</div>
-				<div class="tab-content custom-tab-content" id="userProfileTabsContent">
-					<div class="tab-pane fade show active" id="profile-view" role="tabpanel" aria-labelledby="profile-view-tab">
-						<form>
-							<div class="UserInfoForm">
-								<div class="row text-center">
-									<div class="col-4">
-										<h5>${escapeHtmlUser(String(data.nbVictoires + data.nbDefaites))}</h5>
-										<small class="text-muted">Parties</small>
-									</div>
-									<div class="col-4">
-										<h5>${escapeHtmlUser(String(data.nbVictoires))}</h5>
-										<small class="text-muted">Victoires</small>
-									</div>
-									<div class="col-4">
-										<h5>${escapeHtmlUser(String(data.nbDefaites))}</h5>
-										<small class="text-muted">Défaites</small>
-									</div>
-								</div>
-
-								<div class="mb-3">
-									<p class="form-label">Nom d'utilisateur</p>
-									<input type="text" class="form-control" value="${escapeHtml(user.username)}" disabled>
-								</div>
-
-								<div class="mb-3">
-									<p class="form-label">Alias</p>
-									<input type="text" class="form-control" value="${escapeHtml(user.alias)}" disabled>
-								</div>
-
-								<div class="mb-3">
-									<p class="form-label">Email</p>
-									<input type="email" class="form-control" value="${escapeHtml(user.email)}" disabled>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="tab-pane fade" id="profile-edit" role="tabpanel" aria-labelledby="profile-edit-tab">
-						<form id="settingsForm">
-							<div class="mb-3">
-								<p class="form-label">Username</p>
-								<input type="text" class="form-control" id="profileSettingsUsername" name="username">
-							</div>
-							<div class="mb-3">
-								<p class="form-label">Email</p>
-								<input type="email" class="form-control" id="profileSettingsEmail" name="email">
-							</div>
-							<div class="mb-3">
-								<p class="form-label">Alias</p>
-								<input type="text" class="form-control" id="profileSettingsAlias" name="alias">
-							</div>
-							<div class="mb-3">
-								<p class="form-label">Profile Photo</p>
-								<input type="file"
-									class="form-control"
-									id="profileSettingsPhoto"
-									name="photoProfile"
-									accept="image/*"
-									title="Choisir un fichier">
-								<img id="photoPreview" class="mt-2" style="max-width: 200px; display: none;">
-							</div>
-							<div class="mb-3">
-								<p class="form-label">New Password</p>
-								<input type="password" class="form-control" id="settingsNewPassword" name="password">
-							</div>
-							<div class="mb-3">
-								<p class="form-label">Confirm New Password</p>
-								<input type="password" class="form-control" id="settingsConfirmPassword">
-							</div>
-
-							<button type="submit" class="btn">Save Changes</button>
-						</form>
-						<!-- Message d'erreur -->
-						<div id="profileErrorMessage" style="display: none;">
-							<div class="auth-message">
-								<i class="fas fa-lock"></i>
-								<p>Aucune information utilisateur disponible</p>
-							</div>
-						</div>
-					</div>
-				</div>
-                `;
-                // Ajouter l'event listener après l'insertion du formulaire
-                const settingsForm = document.getElementById('settingsForm');
-                if (settingsForm) {
-                    settingsForm.addEventListener('submit', async (e) => {
-                        e.preventDefault();
-                        const formData = new FormData(settingsForm);
-                        await updateUserProfile(formData);
-                    });
-                } else {
-                    console.error("Erreur : settingsForm non trouvé !");
-                }
-            })
-            .catch(error => {
-                console.log(error.message);
-            });
-    })
-    .catch(error => {
-        console.log(error.message);
-    });
+	const settingsForm = document.getElementById('settingsForm');
+	if (settingsForm) {
+		settingsForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const formData = new FormData(settingsForm);
+			await updateUserProfile(formData);
+		});
+	} else {
+		console.error("Erreur : settingsForm non trouvé !");
+	}
 }
 
 function refreshVueProfile (user) {
-	fetch(`/api/userprofile/${userId}/`)
-	.then(response => response.json())
+	fetch(`/api/users/${user.username}/`, {
+		headers: {
+			'X-CSRFToken': getCookie2('csrftoken'),
+		},
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (!response.ok) throw new Error("Utilisateur non trouvé");
+		return response.json();
+	})
 	.then(data => {
-		rempliFriendList(data);
-		rempliAddFriend(data);
-		// Ajouter l'event listener après l'insertion du formulaire
-		const settingsForm = document.getElementById('settingsForm');
-		if (settingsForm) {
-			settingsForm.addEventListener('submit', async (e) => {
-				e.preventDefault();
-				const formData = new FormData(settingsForm);
-				await updateUserProfile(formData);
+		if (!data.id) throw new Error("ID de l'utilisateur non trouvé");
+		const userId = data.id;
+
+		fetch(`/api/userprofile/${userId}/`)
+			.then(response => response.json())
+			.then(data => {
+				rempliProfileView(data, user);
+			})
+			.catch(error => {
+				console.log(error.message);
+				console.error("erreur : ", error);
 			});
-		} else {
-			console.error("Erreur : settingsForm non trouvé !");
-		}
 	})
 	.catch(error => {
 		console.log(error.message);
 	});
 }
 
-// function updateUserInfo2(user) {
-// 	fetch(`/api/users/${user.username}/`, {
-// 		headers: {
-// 			'X-CSRFToken': getCookie2('csrftoken'),
-// 		},
-// 		credentials: 'same-origin'
-// 	})
-// 	.then(response => {
-// 		if (!response.ok) throw new Error("Utilisateur non trouvé");
-// 		return response.json();
-// 	})
-// 	.then(data => {
-// 		if (!data.id) throw new Error("ID de l'utilisateur non trouvé");
-// 		const userId = data.id;
+function updateUserInfo2(user) {
+	fetch(`/api/users/${user.username}/`, {
+		headers: {
+			'X-CSRFToken': getCookie2('csrftoken'),
+		},
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (!response.ok) throw new Error("Utilisateur non trouvé");
+		return response.json();
+	})
+	.then(data => {
+		if (!data.id) throw new Error("ID de l'utilisateur non trouvé");
+		const userId = data.id;
 
-// 		fetch(`/api/userprofile/${userId}/`)
-// 			.then(response => response.json())
-// 			.then(data => {
-// 				rempliFriendList(data);
-// 				rempliAddFriend(data);
-// 				// Ajouter l'event listener après l'insertion du formulaire
-// 				const settingsForm = document.getElementById('settingsForm');
-// 				if (settingsForm) {
-// 					settingsForm.addEventListener('submit', async (e) => {
-// 						e.preventDefault();
-// 						const formData = new FormData(settingsForm);
-// 						await updateUserProfile(formData);
-// 					});
-// 				} else {
-// 					console.error("Erreur : settingsForm non trouvé !");
-// 				}
-// 			})
-// 			.catch(error => {
-// 				console.log(error.message);
-// 			});
-// 	})
-// 	.catch(error => {
-// 		console.log(error.message);
-// 	});
-// }
+		fetch(`/api/userprofile/${userId}/`)
+			.then(response => response.json())
+			.then(data => {
+				rempliProfileView(data, user);
+				rempliProfileEdit(data);
+			})
+			.catch(error => {
+				console.log(error.message);
+				console.error("erreur : ", error);
+			});
+	})
+	.catch(error => {
+		console.log(error.message);
+	});
+}
 
 function clearUserInfo() {
 	userForm.innerHTML = `

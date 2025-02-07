@@ -107,10 +107,15 @@ async function updateUserProfile(formData) {
 
 			settingsNewPassword.value = '';
 			settingsConfirmPassword.value = '';
+			document.getElementById('settingsUsername').value = '';
+			document.getElementById('settingsEmail').value = '';
+			document.getElementById('settingsAlias').value = '';
+			document.getElementById('settingsPhoto').value = ''; // Si tu veux vider le champ photo aussi.
+
 			checkLoginStatus();
 			const user = await checkLoginStatus2(); // Récupère l'objet utilisateur
 			if (user && user.username) {
-				updateUserInfo2(user);  // Passe `user` à la fonction
+				refreshVueProfile(user);  // Passe `user` à la fonction
 			} else {
 				clearUserInfo();
 			}
