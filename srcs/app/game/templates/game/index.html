@@ -23,9 +23,10 @@
 			<h4 id="userUsername"></h4> -->
 		</div>
 		<ul class="nav nav-pills">
-			<li class="nav-item"><a href="#" class="nav-link" id="liveChatButton">live-chat</a></li>
+			<li class="nav-item"><a href="#" class="nav-link" id="liveChatLink">live-chat</a></li>
 			<li class="nav-item"><a href="/friend/" class="nav-link" id="friendLink">Amis</a></li>
 			<li class="nav-item"><a href="/user/" class="nav-link" id="userLink">Profil</a></li>
+			<!-- /!\ enlever # -->
 			<li class="nav-item"><a href="#" class="nav-link" id="logoutButton">déconnexion</a></li>
 			<li class="nav-item auth-button"><a href="#" class="nav-link" id="boutton-signup-login">connexion/inscription</a></li>
 		</ul>
@@ -168,9 +169,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="userModalBody">
-
-
-					
 					<div class="custom-tabs-container">
 						<ul class="nav nav-tabs nav-fill" id="userProfileTabs" role="tablist">
 							<li class="nav-item" role="presentation">
@@ -185,17 +183,37 @@
 							</li>
 						</ul>
 					</div>
-					
 					<div class="tab-content custom-tab-content" id="userProfileTabsContent">
-						<div class="tab-pane fade show active" id="profile-view" role="tabpanel" aria-labelledby="profile-view-tab">
-							
-						</div>
-						<div class="tab-pane fade" id="profile-edit" role="tabpanel" aria-labelledby="profile-edit-tab">
-							
-						</div>
+						<div class="tab-pane fade show active" id="profile-view" role="tabpanel" aria-labelledby="profile-view-tab"></div>
+						<div class="tab-pane fade" id="profile-edit" role="tabpanel" aria-labelledby="profile-edit-tab"></div>
 					</div>
-				
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="liveChatModal" tabindex="-1" aria-labelledby="liveChatLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="liveChatLabel">Live-Chat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+					<div id="liste-amis-live-chat">
+						<!-- Champ de recherche -->
+						<input type="text" id="searchInput" placeholder="Rechercher un utilisateur">
+
+						<!-- Conteneur pour afficher les résultats -->
+						<div id="userListContainer"></div>
+						<ul id="liste-amis-live-chat-ul"></ul>
+
+					</div>
+					<div id="conversation-live-chat">
+						<div id="en-tete-conversation-live-chat"></div>
+						<div id="message-container"></div>
+						<div id="envoie-ou-message-bloque"></div>
+					</div>
                 </div>
             </div>
         </div>
@@ -212,6 +230,6 @@
 	<script src="/static/js/historique.js"></script> -->
 	<script src="/static/js/user.js"></script> 
 	<script src="/static/js/settings.js"></script>
-	<!-- <script src="/static/js/liveChat.js"></script> -->
+	<script src="/static/js/liveChat.js"></script>
 </body>
 </html>

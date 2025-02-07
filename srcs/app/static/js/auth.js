@@ -72,7 +72,7 @@ function updateUserInfo(username, photoProfile) {
 		window.dispatchEvent(new Event('userLoggedIn'));
 
 		document.getElementById('userUsernamePhoto').style.display = 'block';
-		document.getElementById('liveChatButton').style.display = 'block';
+		document.getElementById('liveChatLink').style.display = 'block';
 		document.getElementById('friendLink').style.display = 'block';
 		document.getElementById('userLink').style.display = 'block';
 		document.getElementById('logoutButton').style.display = 'block';
@@ -103,11 +103,11 @@ function updateUserInfo(username, photoProfile) {
 				<h4 id="userUsername">${safeUsername}</h4>
 			`;
 		}		
-		//initWebSocket();
+		initWebSocket();
 	} else {
 		console.log("non authentifié");
 		document.getElementById('userUsernamePhoto').style.display = 'none';
-		document.getElementById('liveChatButton').style.display = 'none';
+		document.getElementById('liveChatLink').style.display = 'none';
 		document.getElementById('friendLink').style.display = 'none';
 		document.getElementById('userLink').style.display = 'none';
 		document.getElementById('logoutButton').style.display = 'none';
