@@ -267,18 +267,38 @@ function listeAmisLiveChat() {
 	document.getElementById('userListContainer').innerHTML = '';
 	document.getElementById('searchInput').addEventListener('input', handleSearchInput);
 	destinataireId = null;
-	
+
 	fetch('/api/listeconversation/')
 		.then(response => response.json())
 		.then(data => {
-			// Accédez directement à 'data.conversations' au lieu de 'data'
 			if (data.error) {
-				console.log("aucune conversation trouvé");
-				return ;
+				console.log("aucune conversation trouvée");
+				return;
 			}
-			listeConversation.innerHTML = data.conversations.map(user => `
+
+			const listeConversation = document.getElementById('liste-amis-live-chat-ul');
+			listeConversation.innerHTML = '';
+
+			const users = new Map();
+
+			// Ajouter les utilisateurs des conversations
+			data.conversations.forEach(user => {
+				users.set(user.id, user);
+			});
+
+			// Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
+			data.following.forEach(user => {
+				if (!users.has(user.id)) {
+					users.set(user.id, user);
+				}
+			});
+
+			// Générer la liste des utilisateurs
+			listeConversation.innerHTML = Array.from(users.values()).map(user => `
 				<li>
-					<button data-user-id="${user.id}" onclick="HistoriqueMessages(${user.id}, '${user.username}')">${user.username}</button>
+					<button class="btn nomListeConversation" data-user-id="${user.id}" onclick="HistoriqueMessages(${user.id}, '${user.username}')">
+						${user.username}
+					</button>
 				</li>
 			`).join('');
 		})

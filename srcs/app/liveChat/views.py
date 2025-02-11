@@ -83,45 +83,50 @@ class MessageHistory(APIView):
 			)
 		
 class listeConversation(APIView):
-	authentication_classes = [SessionAuthentication]
-	permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
-	def get(self, request):
-		try:
-			# Vérifiez si l'utilisateur est authentifié
-			if not request.user.is_authenticated:
-				return Response({"error": "Non connecté"}, status=status.HTTP_401_UNAUTHORIZED)
-
-			user = request.user
-			# Récupérez toutes les conversations où l'utilisateur est impliqué
-			conversations = Conversation.objects.filter(Q(user_1=user) | Q(user_2=user))
-			
-			if conversations.exists():
-				conversation_data = []
-				for conversation in conversations:
-					if conversation.user_1 == user:
-						username = conversation.user_2.username
-						user_id = conversation.user_2.id
-						online = getattr(conversation.user_2, 'onlineStatus', False)
-					else:
-						username = conversation.user_1.username
-						user_id = conversation.user_1.id
-						online = getattr(conversation.user_1, 'onlineStatus', False)
-					
-					conversation_data.append({
-						"username": username,
-						"id": user_id,
-						"online": online
-					})
-				
-				return Response({"conversations": conversation_data}, status=status.HTTP_200_OK)
-			else:
-				# Aucun résultat trouvé
-				return Response({"error": "aucune conversation trouvée"}, status=status.HTTP_200_OK)
-
-		except Exception as e:
-			# Capturez et renvoyez l’erreur avec le statut HTTP 500
-			return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def get(self, request):
+        try:
+            user = request.user
+            
+            # Récupérer les conversations
+            conversations = Conversation.objects.filter(Q(user_1=user) | Q(user_2=user))
+            conversation_users = set()
+            conversation_data = []
+            
+            for conversation in conversations:
+                if conversation.user_1 == user:
+                    contact = conversation.user_2
+                else:
+                    contact = conversation.user_1
+                
+                conversation_users.add(contact.id)
+                conversation_data.append({
+                    "username": contact.username,
+                    "id": contact.id,
+                    "online": contact.onlineStatus
+                })
+            
+            # Récupérer les following
+            following = user.following.all()
+            following_data = []
+            
+            for followed in following:
+                if followed.id not in conversation_users:  # Éviter les doublons
+                    following_data.append({
+                        "username": followed.username,
+                        "id": followed.id,
+                        "online": followed.onlineStatus
+                    })
+            
+            return Response({
+                "conversations": conversation_data,
+                "following": following_data
+            }, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class listeUtilisateurs(APIView):
 	authentication_classes = [SessionAuthentication]

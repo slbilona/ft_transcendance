@@ -192,3 +192,160 @@ header, #barre-bas1 {
     overflow-y: auto; /* Permet le défilement vertical si le contenu dépasse */
     padding: 10px; /* Espacement intérieur */
 }
+
+
+
+
+
+#message-container {
+    color: white;
+    height: 50vh;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+#searchInput, #userListContainer {
+    width: 90%; /* Même largeur */
+    display: block; /* Pour prendre toute la ligne */
+    margin: 0 auto; /* Centre horizontalement */
+    border-radius: 5px;
+}
+
+#userListContainer {
+    position: absolute; /* Position absolue pour s'afficher par-dessus */
+    left: 50%; /* Centre horizontalement */
+    transform: translateX(-50%); /* Ajustement pour être bien centré */
+    max-height: 200px; /* Ajustable selon le besoin */
+    overflow-y: auto;
+    z-index: 3000; /* S'assurer qu'il est au-dessus */
+    background: white; /* Ajouter un fond pour éviter qu'il soit transparent */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ajoute une ombre pour plus de visibilité */
+}
+
+#searchInput {
+    width: 90%; /* Presque toute la largeur de la modale */
+    display: block; /* S'assurer qu'il prend bien toute la ligne */
+    margin: 0px auto; /* Centrer horizontalement */
+    border-radius: 5px;
+}
+
+#liste-amis-live-chat {
+    position: relative; /* Nécessaire pour que #userListContainer soit positionné correctement */
+}
+
+#liste-amis-live-chat-ul {
+	height: 50vh;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+#liste-amis-live-chat-ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+	width: 100%;
+	margin: 0;
+}
+
+.nomListeConversation {
+    width: 200px; /* Ajuste cette valeur selon tes préférences */
+    height: 40px; /* Définit une hauteur fixe */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+	color: #1c4521 !important;
+    background-color: #fceada !important;
+	margin: 5px;
+}
+
+.nomListeConversation:hover {
+	color: #fceada !important;
+    background-color: #1c4521 !important;
+}
+
+#nom-contact-live-chat {
+    color: white;
+}
+
+#liveChat-onlineStatus {
+    color: green;
+}
+
+#liveChat-offlineStatus {
+    color: red;
+}
+
+#en-tete-conversation-live-chat {
+    display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#messageInput {
+    width: 70vh;
+}
+
+.message-expediteur {
+    margin-left: auto; /* Aligne à droite */
+    margin-right: 10px; /* Ajoute un espace avec le bord droit */
+    background-color: #256579;
+    margin-bottom: 0.5cm;
+    padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
+    border-radius: 10px; /* Coins arrondis */
+    color: white;
+    word-wrap: break-word; /* Coupe les mots trop longs */
+    max-width: 60%; /* Largeur maximale */
+    text-align: left; /* Texte aligné à gauche à l'intérieur */
+}
+
+.message-destinataire {
+    margin-right: auto; /* Aligne à gauche */
+    margin-left: 10px; /* Ajoute un espace avec le bord gauche */
+    background-color: rgb(255, 103, 222);
+    margin-bottom: 0.5cm;
+    padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
+    border-radius: 10px; /* Coins arrondis */
+    color: white;
+    word-wrap: break-word; /* Coupe les mots trop longs */
+    max-width: 60%; /* Largeur maximale */
+    text-align: left; /* Texte aligné à gauche à l'intérieur */
+}
+
+#choix-conversation {
+	color: #1c4521 !important;
+    background-color: #fceada !important;
+    margin: 0px;
+	z-index: 2000;
+}
+
+#choix-conversation:hover {
+	color: #fceada !important;
+    background-color: #1c4521 !important;
+}
+
+.message-invitation-jeu {
+    background-color: black;
+    color: white;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-bottom: 0.5cm;
+    text-align: center; /* Centrer le texte */
+}
+
+.bouton-liveChat {
+    width: auto; /* Largeur adaptée au contenu */
+    height: auto; /* Hauteur adaptée au contenu */
+    padding: 5px 10px; /* Espacement interne pour ajuster l'intérieur */
+    font-size: 16px; /* Taille du texte */
+    text-align: center; /* Centrer le texte */
+    display: inline-block; /* Pour que la taille s'ajuste au contenu */
+    white-space: nowrap; /* Empêche le texte de se casser */
+}
+
+#liveChatModal {
+    z-index: 1100;
+}
