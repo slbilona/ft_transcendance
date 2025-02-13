@@ -9,6 +9,7 @@ choses a faire :
     - remettre le destinataireId a null lorsqu'on ferme la modale liveChat
     - regler le pb des notif quand on recoit un message
     - continuer a tester le live chat
+    - pas de message qun dje me connecte sans compte existant
 
 mots clés a chercher :
 languageFav

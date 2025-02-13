@@ -6,6 +6,7 @@ from django.db import models
 from channels.db import database_sync_to_async
 from authentication.models import User
 from web3 import Web3, AsyncWeb3, AsyncHTTPProvider, exceptions
+import sys
 
 # Create your models here.
 
@@ -50,6 +51,9 @@ class Play(models.Model):
 			player.nbVictoires += 1
 			await database_sync_to_async(player.save)()
 
+			print(f"\n\n\Apres sauvegarde victoire : user {player.id} username : {player.username} - victoires : {player.nbVictoires}, defaites : {player.nbDefaites}, online : {player.onlineStatus}")
+			sys.stdout.flush()
+
 	async def add_defeat(self, nb_player):
 		if nb_player == 1:
 			player = self.player1
@@ -65,6 +69,8 @@ class Play(models.Model):
 		if player is not None :
 			player.nbDefaites += 1
 			await database_sync_to_async(player.save)()
+			print(f"\n\n\Apres sauvegarde defaite : user {player.id} username : {player.username} - victoires : {player.nbVictoires}, defaites : {player.nbDefaites}, online : {player.onlineStatus}")
+			sys.stdout.flush()
 
 	def add_player(self, player):
 		if self.player1 is None:

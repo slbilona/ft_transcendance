@@ -340,13 +340,20 @@ const PongGame = (function() {
 			navigateTo('Jeu de Pong', '/', 'The game has been terminated.');
 		});
 
-		document.getElementById('playForm').addEventListener('submit', function(event) {
+		
+			console.log("je suis entré ici");
+
+		
+		// Fonction générique pour gérer la soumission du formulaire
+		function handleFormSubmission(event) {
+			console.log("ici aussi");
 			event.preventDefault();
-
-			const gameMode = document.querySelector('input[name="game_mode"]:checked').value;
-
+	
+			const form = event.target; // Récupère le formulaire soumis
+			const gameMode = form.querySelector('input[name="game_mode"]:checked').value;
+	
 			let remote, nbPlayers;
-
+	
 			switch (gameMode) {
 				case 'remote_1v1':
 					remote = true;
@@ -365,15 +372,24 @@ const PongGame = (function() {
 					nbPlayers = 4;
 					break;
 			}
+			
+			console.log("apres le switch, remote = ", remote, " nbPlayers = ", nbPlayers);
 
 			isLocalGame = !remote;
-
+	
 			if (remote) {
 				fetchAvailableGames(remote, nbPlayers);
 			} else {
 				createNewGame(remote, nbPlayers, false);
 			}
+		}
+	
+		// Ajoute l'événement de soumission à tous les formulaires concernés
+		document.querySelectorAll('form[id^="playForm"]').forEach(form => {
+			form.addEventListener('submit', handleFormSubmission);
 		});
+		
+
 
 		document.addEventListener('keydown', function(event) {
 			if (event.key in keyState) {
@@ -424,18 +440,6 @@ const PongGame = (function() {
 				games.forEach(game => {
 					const listItem = document.createElement('li');
 					listItem.textContent = `Game ${game.id} (${game.player_connected}/${game.nb_players} players)`;
-					// if (game.player_connected == 1)
-					// {
-					//     isPlayer2 = true;
-					// }
-					// else if(game.player_connected == 2)
-					// {
-					//     isPlayer3 = true;
-					// }
-					// else if(game.player_connected == 3)
-					// {
-					//     isPlayer4 = true;
-					// }
 					//Ajoute Post Merge
 					listItem.addEventListener('click', () => {
 						if (game.player_connected == 1) {
@@ -450,10 +454,6 @@ const PongGame = (function() {
 						joinGame(game.id);
 						container.style.display = 'none';
 					});
-					// listItem.addEventListener('click', () => {
-					//     joinGame(game.id);
-					//     container.style.display = 'none';
-					// });
 					gameList.appendChild(listItem);
 				});
 				container.appendChild(gameList);

@@ -66,6 +66,7 @@ const errorMessages2 = {
     startNextGame: "Jouer",
     nextGameVs: "{player1} VS {player2}",
     noFollowers: "Aucun abonné",
+    noFollowing: "Aucun abonnement",
     settingsModalTitle: "Mettre a jour le profil",
     settingsUsername: "Nom d\'utilisateur",
     settingsEmail: "Email",

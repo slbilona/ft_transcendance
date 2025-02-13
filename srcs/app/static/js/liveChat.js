@@ -294,6 +294,7 @@ function listeAmisLiveChat() {
 			});
 
 			// Générer la liste des utilisateurs
+			// /!\ ajouter la photo de profile de chaque utilisateur
 			listeConversation.innerHTML = Array.from(users.values()).map(user => `
 				<li>
 					<button class="btn nomListeConversation" data-user-id="${user.id}" onclick="HistoriqueMessages(${user.id}, '${user.username}')">
@@ -411,6 +412,9 @@ function HistoriqueMessages(id, destinataireUsername) {
 // et affiche un champ de message pour envoyer des messages si aucune restriction n'est en place
 function affichageConversation(id, destinataireUsername, data) {
 	enTeteConv.innerHTML = `
+		<button class="btn img-button" onclick="listeAmisLiveChat()">
+			<img src="/static/images/icons8-arrière-52-vert.png" alt="Retour">
+		</button>
 		<h6 id="nom-contact-live-chat">${destinataireUsername}</h6>
 		<p class="liveChat-online-offline-Status" id="${data.destinataire_onlineStatus ? 'liveChat-onlineStatus' : 'liveChat-offlineStatus'}">
 			${data.destinataire_onlineStatus ? 'en ligne' : 'hors ligne'}
@@ -442,9 +446,11 @@ function affichageConversation(id, destinataireUsername, data) {
 			<button class="bouton-liveChat" id="bouton-bloquer" onclick="bloquerUtilisateur(${id}, '${destinataireUsername}')">Bloquer</button>
 		`;
 		envoieOuBloque.innerHTML = `
-			<input type="text" id="messageInput" placeholder="Entrez votre message">
-			<button class="bouton-liveChat" id="boutonEnvoieMessage">Envoyer</button>
-			<button class="bouton-liveChat" id="inviterPartiePong" onclick="inviterPartiePong(${id})">Partie</button>
+			<div id="chatFooter">
+				<input type="text" id="messageInput" placeholder="Entrez votre message">
+				<button class="bouton-liveChat" id="boutonEnvoieMessage">Envoyer</button>
+				<button class="bouton-liveChat" id="inviterPartiePong" onclick="inviterPartiePong(${id})">Partie</button>
+			</div>
 		`;
 
 		const boutonEnvoieMessage = document.getElementById('boutonEnvoieMessage');

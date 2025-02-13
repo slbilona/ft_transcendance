@@ -1,6 +1,6 @@
 const friendModal = document.getElementById('friendModal');
 const friendLink = document.getElementById('friendLink');
-// const friendProfileModal = new bootstrap.Modal(document.getElementById('friendProfileModal'));
+const friendProfileModal = new bootstrap.Modal(document.getElementById('friendProfileModal'));
 const modalBody = document.getElementById('friendModalBody');
 let previousPath = null;
 
@@ -225,6 +225,10 @@ function loadFriendLists() {
 	.then(data => {
 		console.log("il y a une reponse positive au call api : ");
 		if (followingList) {
+			if (data.length === 0) {
+				followingList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowing')}</li>`;
+				return;
+			}
 			followingList.innerHTML = data.map(user => `
 				<li class="custom-list-group-item p-3">
 					<div class="d-flex justify-content-between align-items-center">
@@ -265,7 +269,7 @@ function loadFriendLists() {
 		modalBody.innerHTML = `
 			<div class="auth-message">
 				<i class="fas fa-lock"></i>
-				<p>Aucune information utilisateur disponible1</p>
+				<p>Aucune information utilisateur disponible</p>
 			</div>`;
 		return;
 	});
@@ -316,7 +320,7 @@ function loadFriendLists() {
 		modalBody.innerHTML = `
 		<div class="auth-message">
 			<i class="fas fa-lock"></i>
-			<p>Aucune information utilisateur disponible2</p>
+			<p>Aucune information utilisateur disponible</p>
 		</div>`;
 	});
 }
@@ -378,6 +382,9 @@ function handleViewProfile(e) {
 				//     ? `<span class="text-success">En ligne</span>`
 				//     : `<span class="text-muted">Déconnecté</span>`;
 
+				console.log("[handleViewProfile] data : ", data);
+
+				// /!\ remplacer la div par une img de la photo de profile de l'utilisateur
 				document.getElementById('friendProfileContent').innerHTML = `
 					<div class="text-center mb-3">
 						<div class="profile-picture-large mx-auto mb-2"
@@ -389,7 +396,7 @@ function handleViewProfile(e) {
 						</div>
 						<h4>${escapeHtmlUser(data.username)}</h4>
 						<p class="text-muted">${escapeHtmlUser(data.alias)}</p>
-						<div class="mb-2">
+						<div class="mb-2" id="${data.onlineStatus ? 'liveChat-onlineStatus' : 'liveChat-offlineStatus'}">
 							${data.onlineStatus ? "En ligne" : "Hors ligne"}
 						</div>
 					</div>

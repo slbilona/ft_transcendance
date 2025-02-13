@@ -1,5 +1,6 @@
 //Ajoute post Merge
 function resetAuthForms() {
+	console.log("[resetAuthForms]");
 	const loginForm = document.getElementById('loginForm');
 	const signupForm = document.getElementById('signupForm');
 
@@ -8,6 +9,7 @@ function resetAuthForms() {
 }
 
 function escapeHtml(unsafe) {
+	console.log("[escapeHtml]");
 	return unsafe
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
@@ -17,6 +19,7 @@ function escapeHtml(unsafe) {
 }
 
 function validateInput(input, type) {
+	console.log("[validateInput]");
 	input = input.trim();
 
 	switch(type) {
@@ -42,6 +45,7 @@ function validateInput(input, type) {
 }
 
 function updateCsrfToken() {
+	console.log("[updateCsrfToken]");
 	return fetch('/api/get-csrf-token/', {
 		method: 'GET',
 		credentials: 'include'
@@ -54,6 +58,7 @@ function updateCsrfToken() {
 
 //requête avec le token CSRF à jour
 function fetchWithCsrf(url, options = {}) {
+	console.log("[fetchWithCsrf]");
 	return updateCsrfToken()
 		.then(() => {
 			options.headers = options.headers || {};
@@ -65,6 +70,7 @@ function fetchWithCsrf(url, options = {}) {
 
 
 function updateUserInfo(username, photoProfile) {
+	console.log("[updateUserInfo]");
 	//const profilePictureElement = document.getElementById("profilePicture");
 
 	if (username) {
@@ -117,6 +123,7 @@ function updateUserInfo(username, photoProfile) {
 }
 
 function checkLoginStatus() {
+	console.log("[checkLoginStatus]");
 	return fetchWithCsrf('/api/user/', {
 		method: 'GET',
 		headers: {
@@ -127,7 +134,8 @@ function checkLoginStatus() {
 	.then(data => {
 		if (data.username) {
 			updateUserInfo(data.username, data.photoProfile, data.alias);
-		} else {
+		}
+		else {
 			updateUserInfo(null);
 		}
 	})
@@ -138,6 +146,7 @@ function checkLoginStatus() {
 }
 
 async function login(username, password) {
+	console.log("[login]");
 	return new Promise((resolve, reject) => {
 		const validUsername = validateInput(username, 'username');
 		const validPassword = validateInput(password, 'password');
@@ -189,6 +198,7 @@ async function login(username, password) {
 }
 
 async function signup(formData) {
+	console.log("[signup]");
 	return new Promise((resolve, reject) => {
 		const username = formData.get('username');
 		const email = formData.get('email');
@@ -261,12 +271,12 @@ async function signup(formData) {
 }
 
 async function logout() {
-	// /!\ \n a enlever
+	console.log("[logout]");
 	// Ferme la connexion WebSocket si elle est ouverte
-	// if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-	//     console.log("Fermeture de la WebSocket à la déconnexion.");
-	//     chatSocket.close();
-	// }
+	if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+	    console.log("Fermeture de la WebSocket à la déconnexion.");
+	    chatSocket.close();
+	}
 
 	return fetchWithCsrf('/api/logout/', {
 		method: 'GET',
@@ -298,6 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const logoutButton = document.getElementById('logoutButton');
 
 	loginForm.addEventListener('submit', function(e) {
+		console.log("[loginForm.addEventListener]");
 		e.preventDefault();
 		const username = document.getElementById('loginUsername').value;
 		const password = document.getElementById('loginPassword').value;
@@ -309,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			})
 			.catch(error => {
 				console.log('Error:', error);
+				alert(error);
 				if (error.message && error.message === "Authentification failed") {
 					alert('Erreur de connexion: ' + 'L\'identifiant ou mot de passe est incorrect. Veuillez réessayer');
 				}
@@ -316,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	signupForm.addEventListener('submit', function(e) {
+		console.log("[signupForm.addEventListener]");
 		e.preventDefault();
 		const formData = new FormData(this);
 
@@ -364,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	logoutButton.addEventListener('click', function() {
+		console.log("[logoutButton.addEventListener]");
 		logout()
 			.then(() => {
 			})
@@ -384,6 +398,7 @@ const bouttonSignupLogin = document.getElementById('boutton-signup-login');
 
 // Gestionnaire pour le clic sur le lien utilisateur
 bouttonSignupLogin.addEventListener('click', (e) => {
+	console.log("[bouttonSignupLogin.addEventListener]");
 	e.preventDefault();
 	pushModalState5();
 	openSignupLoginModal();
@@ -405,6 +420,7 @@ function pushModalState5() {
 }
 
 function openSignupLoginModal() {
+	console.log("[openSignupLoginModal]");
 	const modal = new bootstrap.Modal(authModal);
 	modal.show();
 }
@@ -419,6 +435,7 @@ function closeModal5() {
 
 // Gestionnaire pour la navigation dans l'historique
 window.addEventListener('popstate', (event) => {
+	console.log("[window.addEventListener]");
 	if (event.state && event.state.modal === 'connexion') {
 		openSignupLoginModal();
 	} else {
@@ -445,6 +462,7 @@ authModal.addEventListener('hidden.bs.modal', () => {
 
 // Gestion de l'état initial
 if (window.location.pathname === '/connexion') {
+	console.log("[if (window.location.pathname === '/connexion')]");
 	history.replaceState(
 		{
 			modal: 'connexion',

@@ -41,13 +41,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		if self.user.is_authenticated:
+			# Recharger les données de l'utilisateur depuis la base
+			await database_sync_to_async(self.user.refresh_from_db)()
+
+			# Debugging avant modification
+			print(f"\n\n\nAvant accept: user {self.user.id} - username : {self.user.username} - victoires : {self.user.nbVictoires}, defaites : {self.user.nbDefaites}, online : {self.user.onlineStatus}")
+			sys.stdout.flush()
+
+			# Mise à jour du statut en ligne
 			self.user.onlineStatus = False
 			await database_sync_to_async(self.user.save)()
-			
+
+			# Debugging après modification
+			print(f"\n\n\nAprès accept: user {self.user.id} - victoires : {self.user.nbVictoires}, defaites : {self.user.nbDefaites}, online : {self.user.onlineStatus}")
+			sys.stdout.flush()
+
 			# Retirer des groupes
 			await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
 			await self.channel_layer.group_discard("global_users", self.channel_name)
-			
+
 			# Informer tous les utilisateurs de la déconnexion
 			await self.channel_layer.group_send(
 				"global_users",
@@ -57,6 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					"status": "disconnected",
 				}
 			)
+			# print("A")
 			
 	async def connection_status(self, event):
 		user_id = event["user_id"]
@@ -156,26 +169,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	async def handle_pong_invitation(self, destinataire):
 		style = "jeu"
 
-		# Etape 2: chercher ou créer la conversation
+		# Étape 2 : Chercher ou créer la conversation
 		conversation = await sync_to_async(Conversation.objects.filter(
 			(Q(user_1=self.user) & Q(user_2=destinataire)) |
 			(Q(user_1=destinataire) & Q(user_2=self.user))
 		).first)()
-		
+
 		if not conversation:
 			conversation = await sync_to_async(Conversation.objects.create)(
 				user_1=self.user, user_2=destinataire
 			)
-		
-		# Etape 3: créer le message dans la base de données et passer la variable invitationAJouer a True
+		else:
+			# Rafraîchir pour s'assurer d'avoir la version la plus récente
+			await database_sync_to_async(conversation.refresh_from_db)()
+
+		# Étape 3 : Créer le message dans la base de données et mettre `invitationAJouer` à True
 		message_obj = await sync_to_async(Message.objects.create)(
 			style=style, expediteur=self.user, destinataire=destinataire,
 			message="invitation à jouer", conversation=conversation
 		)
 
-		await sync_to_async(setattr)(conversation, 'invitationAJouer', True)
-		await sync_to_async(conversation.save)()
-
+		# Modifier la conversation en base
+		conversation.invitationAJouer = True
+		await database_sync_to_async(conversation.save)()
 
 		#Etape 4: Envoyer un message aux deux personnes qui leur indique qu'une invitation a été lancé
 		message_data = {
@@ -208,16 +224,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		# Attendre 60 secondes
 		await asyncio.sleep(60)
 
-		# Étape 6: vérifier si la variable invitationAJouer est toujours True
+		# Étape 6: Vérifier si l'invitation est toujours active
 		conversation_refreshed = await sync_to_async(Conversation.objects.get)(id=conversation_id)
 		if conversation_refreshed.invitationAJouer:
-			# Étape 7: repasser la variable à False et mettre à jour le message dans la base de données
-			await sync_to_async(setattr)(conversation_refreshed, 'invitationAJouer', False)
-			await sync_to_async(conversation_refreshed.save)()
-			await sync_to_async(setattr)(message_obj, 'message', "temps écoulé")
-			await sync_to_async(message_obj.save)()
+			# Étape 7: Rafraîchir les données du message avant de le modifier
+			await database_sync_to_async(message_obj.refresh_from_db)()
 
-			# Étape 8: envoyer un message aux deux personnes pour dire que le temps est écoulé
+			# Repasser l'invitation à False et modifier le message
+			conversation_refreshed.invitationAJouer = False
+			await database_sync_to_async(conversation_refreshed.save)()
+
+			message_obj.message = "temps écoulé"
+			await database_sync_to_async(message_obj.save)()
+
+			# Étape 8: Envoyer un message aux deux utilisateurs
 			message_data = {
 				"style": "jeu",
 				"expediteur_id": self.user.id,
@@ -236,11 +256,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					"type": "pong_invitation_event",
 					"message_data": message_data
 				})
+
 			await self.send(text_data=json.dumps({
-				'type': "pong_invitation",
-				'message': message_data
+				"type": "pong_invitation",
+				"message": message_data
 			}))
-	
+
 	async def pong_invitation_event(self, event):
 		message_data = event["message_data"]
 		await self.send(text_data=json.dumps({
@@ -252,26 +273,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		message_id_db = data.get("message_id_db")
 		style = "jeu"
 
-        # Etape 1: mettre a jour le message dans la basse de données
+		# Étape 1: Mettre à jour le message dans la base de données
 		try:
 			message = await sync_to_async(Message.objects.get)(id=message_id_db)
 		except Message.DoesNotExist:
 			await self.send(text_data=json.dumps({"error": "Message non trouvé"}))
 			return
-		
-		await sync_to_async(setattr)(message, 'message', "invitation annulée")
-		await sync_to_async(message.save)()
 
-		#Etape 2: chercher la conversation et mettre invitationAJouer à False
+		# Rafraîchir les données du message pour éviter les conflits
+		await database_sync_to_async(message.refresh_from_db)()
+		message.message = "invitation annulée"
+		await database_sync_to_async(message.save)()
+
+		# Étape 2: Chercher la conversation et mettre invitationAJouer à False
 		conversation = await sync_to_async(Conversation.objects.filter(
 			(Q(user_1=self.user) & Q(user_2=destinataire)) |
 			(Q(user_1=destinataire) & Q(user_2=self.user))
 		).first)()
 
-		await sync_to_async(setattr)(conversation, 'invitationAJouer', False)
-		await sync_to_async(conversation.save)()
-		
-        # Etape 2: renvoyer l'info aux deux personnes
+		if conversation:  # Vérifier si la conversation existe
+			conversation.invitationAJouer = False
+			await database_sync_to_async(conversation.save)()
+
+		# Étape 3: Renvoyer l'info aux deux utilisateurs
 		message_data = {
 			"style": style,
 			"expediteur_id": self.user.id,
@@ -293,7 +317,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			{
 				"type": "pong_invitation_annulée_event",
 				"message_data": message_data
-			})
+			}
+		)
 		
 	async def pong_invitation_annulée_event(self, event):
 		await self.send(text_data=json.dumps({
@@ -305,29 +330,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		message_id_db = data.get("message_id_db")
 		style = "jeu"
 
-        # Etape 1: mettre a jour le message dans la basse de données
+		# Étape 1: Mettre à jour le message dans la base de données
 		try:
-			message = await sync_to_async(Message.objects.get)(id=message_id_db)
+			message = await database_sync_to_async(Message.objects.get)(id=message_id_db)
 		except Message.DoesNotExist:
 			await self.send(text_data=json.dumps({"error": "Message non trouvé"}))
 			return
-		
-		await sync_to_async(setattr)(message, 'message', "invitation refusée")
-		await sync_to_async(message.save)()
 
-		#Etape 2: chercher la conversation et mettre invitationAJouer à False
+		await database_sync_to_async(message.refresh_from_db)()  # Rafraîchir avant modification
+		message.message = "invitation refusée"
+		await database_sync_to_async(message.save)()
+
+		# Étape 2: Chercher la conversation et mettre `invitationAJouer` à False
 		try:
-			conversation = await sync_to_async(Conversation.objects.filter(
-				(Q(user_1=self.user) & Q(user_2=destinataire)) |
-				(Q(user_1=destinataire) & Q(user_2=self.user))
-			).first)()
-			await sync_to_async(setattr)(conversation, 'invitationAJouer', False)
-			await sync_to_async(conversation.save)()
+			conversation = await database_sync_to_async(Conversation.objects.get)(
+				Q(user_1=self.user, user_2=destinataire) |
+				Q(user_1=destinataire, user_2=self.user)
+			)
 		except Conversation.DoesNotExist:
 			await self.send(text_data=json.dumps({"error": "Conversation non trouvée"}))
 			return
 
-        # Etape 2: renvoyer l'info aux deux personnes
+		await database_sync_to_async(conversation.refresh_from_db)()  # Rafraîchir avant modification
+		conversation.invitationAJouer = False
+		await database_sync_to_async(conversation.save)()
+
+		# Étape 3: Renvoyer l'info aux deux personnes
 		message_data = {
 			"style": style,
 			"expediteur_id": destinataire.id,
@@ -336,7 +364,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			"destinataire_username": self.user.username,
 			"message_id": message.id,
 			"message": "invitation refusée",
-			"date": message.date.isoformat() # Utilisation de isoformat() pour la date
+			"date": message.date.isoformat()  # Utilisation de isoformat() pour la date
 		}
 
 		await self.send(text_data=json.dumps({
@@ -349,7 +377,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			{
 				"type": "pong_invitation_refusée_event",
 				"message_data": message_data
-			})
+			}
+		)
 
 	async def pong_invitation_refusée_event(self, event):
 		await self.send(text_data=json.dumps({
@@ -362,39 +391,41 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		gameId = data.get("gameId")
 		style = "jeu"
 
-		# Etape 1: mettre a jour le message dans la basse de données
+		# Étape 1: Mettre à jour le message dans la base de données
 		try:
-			message = await sync_to_async(Message.objects.get)(id=message_id_db)
+			message = await database_sync_to_async(Message.objects.get)(id=message_id_db)
 		except Message.DoesNotExist:
 			await self.send(text_data=json.dumps({"error": "Message non trouvé"}))
 			return
 		
 		try:
-			game = await sync_to_async(Play.objects.get)(id=gameId)
+			game = await database_sync_to_async(Play.objects.get)(id=gameId)
 		except Play.DoesNotExist:
 			await self.send(text_data=json.dumps({"error": "Partie non trouvée"}))
 			return
 
-		await sync_to_async(setattr)(message, 'play', game)
-		await sync_to_async(setattr)(message, 'message', "invitation acceptée")
-		await sync_to_async(message.save)()
+		await database_sync_to_async(message.refresh_from_db)()  # Rafraîchir avant modification
+		message.play = game
+		message.message = "invitation acceptée"
+		await database_sync_to_async(message.save)()
 
-
-		#Etape 2: chercher la conversation et mettre invitationAJouer à False
+		# Étape 2: Chercher la conversation et mettre `invitationAJouer` à False
 		try:
-			conversation = await sync_to_async(Conversation.objects.filter(
-				(Q(user_1=self.user) & Q(user_2=destinataire)) |
-				(Q(user_1=destinataire) & Q(user_2=self.user))
-			).first)()
-			await sync_to_async(setattr)(conversation, 'invitationAJouer', False)
-			await sync_to_async(conversation.save)()
+			conversation = await database_sync_to_async(Conversation.objects.get)(
+				Q(user_1=self.user, user_2=destinataire) |
+				Q(user_1=destinataire, user_2=self.user)
+			)
 		except Conversation.DoesNotExist:
 			await self.send(text_data=json.dumps({"error": "Conversation non trouvée"}))
 			return
 
-		print("\ndestinataire : '", destinataire.username, "', expediteur : '", self.user.username, "'\n", flush=True)
+		await database_sync_to_async(conversation.refresh_from_db)()  # Rafraîchir avant modification
+		conversation.invitationAJouer = False
+		await database_sync_to_async(conversation.save)()
 
-        # Etape 2: renvoyer l'info aux deux personnes
+		print(f"\nDestinataire : '{destinataire.username}', Expéditeur : '{self.user.username}'\n", flush=True)
+
+		# Étape 3: Renvoyer l'info aux deux personnes
 		message_data = {
 			"style": style,
 			"expediteur_id": destinataire.id,
@@ -404,7 +435,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			"message_id": message.id,
 			"message": "invitation acceptée",
 			"gameId": message.play.id,
-			"date": message.date.isoformat() # Utilisation de isoformat() pour la date
+			"date": message.date.isoformat()  # Utilisation de isoformat() pour la date
 		}
 
 		await self.send(text_data=json.dumps({
@@ -417,11 +448,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			{
 				"type": "pong_invitation_acceptée_event",
 				"message_data": message_data
-			})
-		
+			}
+		)
+
 		await asyncio.sleep(2)
 
-		await self.wait_for_game_to_finish(destinataire, message)
+		# Étape 4: Attendre la fin du jeu avec gestion des erreurs
+		try:
+			await self.wait_for_game_to_finish(destinataire, message)
+		except Exception as e:
+			print(f"Erreur lors de l'attente de la fin du jeu : {e}", flush=True)
+
 		
 	async def pong_invitation_acceptée_event(self, event):
 		await self.send(text_data=json.dumps({
@@ -458,29 +495,38 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		}
 
 	async def wait_for_game_to_finish(self, destinataire, message):
-		print("\nen attente de la fin du jeu\n", flush=True)
-		#Attendre que la partie soit terminée.
+		print("\nEn attente de la fin du jeu\n", flush=True)
+
+		# Attendre que la partie soit terminée
 		while True:
 			# Rafraîchir l'objet Play depuis la base de données
-			await sync_to_async(message.play.refresh_from_db)()
+			await database_sync_to_async(message.play.refresh_from_db)()
 
 			# Vérifier si la partie est terminée
-			if message.play.is_finished:
+			if message.play is None or message.play.is_finished:
 				break
-			print("\nest ce fini ?\n", flush=True)
+			print("\nEst-ce fini ?\n", flush=True)
 
 			# Attendre 1 seconde avant de vérifier à nouveau
 			await asyncio.sleep(1)
 
 		print("\nFin du jeu\n", flush=True)
 
-
 		# Une fois que la partie est terminée, récupérer les résultats
-		results = await self.get_game_results(message)
+		try:
+			results = await self.get_game_results(message)
+		except Exception as e:
+			print(f"Erreur lors de la récupération des résultats du jeu : {e}", flush=True)
+			return
 
-		winners = results['winners']
-		losers = results['losers']
-		score = results['score']
+		winners = results.get('winners', [])
+		losers = results.get('losers', [])
+		score = results.get('score', {})
+
+		# Mise à jour du message avec les résultats
+		await database_sync_to_async(message.refresh_from_db)()
+		message.message = "resultats partie"
+		await database_sync_to_async(message.save)()
 
 		message_data = {
 			"style": "jeu",
@@ -491,15 +537,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			"message_id": message.id,
 			"message": "resultats partie",
 			"gameId": message.play.id,
-			'winners': winners,
-			'losers': losers,
-			'score': score,
-			"date": message.date.isoformat() # Utilisation de isoformat() pour la date
+			"winners": winners,
+			"losers": losers,
+			"score": score,
+			"date": message.date.isoformat()  # Utilisation de isoformat() pour la date
 		}
 
-		await sync_to_async(setattr)(message, 'message', "resultats partie")
-		await sync_to_async(message.save)()
-
+		# Envoyer les résultats au client
 		await self.send(text_data=json.dumps({
 			"type": "pong_invitation",
 			"message": message_data
@@ -510,7 +554,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			{
 				"type": "pong_invitation_resultats_event",
 				"message_data": message_data
-			})
+			}
+		)
 		
 	async def pong_invitation_resultats_event(self, event):
 		await self.send(text_data=json.dumps({

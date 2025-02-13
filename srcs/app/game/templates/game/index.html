@@ -39,7 +39,20 @@
 				<div class="card custom-card">
 					<div class="card-body">
 						<h1 class="card-title pricing-card-title">remote</h1>
-						<button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button>
+						<form id="playForm" class="visible">
+							{% csrf_token %}
+							<fieldset>
+								<div class="remote-buttons">
+									<input type="radio" name="game_mode" id="remote_1v1" value="remote_1v1">
+									<label for="remote_1v1"><span class="gradient-text">Distant 1v1</span></label>
+		
+									<input type="radio" name="game_mode" id="remote_2v2" value="remote_2v2">
+									<label for="remote_2v2"><span class="gradient-text">Distant 2v2</span></label>
+								</div>
+								<button type="submit" class="play-button"><span class="gradient-text">Jouer</span></button>
+							</fieldset>
+						</form>
+						<!-- <button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button> -->
 					</div>
 				</div>
 			</div>
@@ -65,7 +78,20 @@
 							<li>Phone and email support</li>
 							<li>Help center access</li>
 						</ul> -->
-						<button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button>
+						<form id="playForm2" class="visible">
+							{% csrf_token %}
+							<fieldset>
+								<div class="remote-buttons">
+									<input type="radio" name="game_mode" id="local_1v1" value="local_1v1" checked>
+									<label for="local_1v1"><span class="gradient-text">Local 1v1</span></label>
+					
+									<input type="radio" name="game_mode" id="local_2v2" value="local_2v2">
+									<label for="local_2v2"><span class="gradient-text">Local 2v2</span></label>
+								</div>
+								<button type="submit" class="play-button"><span class="gradient-text">Jouer</span></button>
+							</fieldset>
+						</form>
+						<!-- <button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button> -->
 					</div>
 				</div>
 			</div>
@@ -73,6 +99,23 @@
 	</div>
 	<div id="barre-bas2"></div>
 	<div id="barre-bas1"></div>
+	<div id="notification-popup" class="notification-popup"></div>
+
+
+    <div class="modal" id="gameModal" tabindex="-1" aria-labelledby="gameModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gameModalLabel">Jeu de Pong</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="gameCanvas" width="800" height="600"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 	<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -146,7 +189,6 @@
 		</div>
 	</div>
 	
-
 	<div class="modal fade" id="friendModal" tabindex="-1" aria-labelledby="friendModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content">
@@ -161,6 +203,19 @@
 		</div>
 	</div>
 	
+    <div class="modal fade" id="friendProfileModal" tabindex="-1" aria-labelledby="friendProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="friendProfileModalLabel">Profil de l'ami</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="friendProfileContent">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -225,8 +280,8 @@
 	<script src="/static/js/erreurs.js"></script>
 	<script src="/static/js/auth.js"></script>
 	<script src="/static/js/friends.js"></script>
-	<!-- <script src="/static/js/main.js"></script>
-	<script src="/static/js/tournament.js"></script>
+	<script src="/static/js/main.js"></script>
+	<!-- <script src="/static/js/tournament.js"></script>
 	<script src="/static/js/historique.js"></script> -->
 	<script src="/static/js/user.js"></script> 
 	<script src="/static/js/settings.js"></script>

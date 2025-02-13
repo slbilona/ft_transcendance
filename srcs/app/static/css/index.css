@@ -14,6 +14,16 @@ body {
 	background-color: #ef6930;
 }
 
+.btn {
+	color: #1c4521 !important;
+	background-color: #fceada !important;
+}
+
+.btn:hover {
+	color: #fceada !important;
+	background-color: #1c4521 !important;
+}
+
 /* Style de l'header */
 header {
 	/*background-image: url('../images/wallpaper.png');*/
@@ -202,6 +212,7 @@ header, #barre-bas1 {
     height: 50vh;
     max-height: 50vh;
     overflow-y: auto;
+    margin-top: 5px;
 }
 
 #searchInput, #userListContainer {
@@ -234,19 +245,17 @@ header, #barre-bas1 {
 }
 
 #liste-amis-live-chat-ul {
-	height: 50vh;
+    height: 50vh;
     max-height: 50vh;
     overflow-y: auto;
-}
-
-#liste-amis-live-chat-ul {
     list-style: none;
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-	width: 100%;
-	margin: 0;
+    justify-content: center; /* Centre les éléments verticalement */
+    width: 100%;
+    margin: 0;
 }
 
 .nomListeConversation {
@@ -281,18 +290,50 @@ header, #barre-bas1 {
 
 #en-tete-conversation-live-chat {
     display: flex;
-	justify-content: space-between;
-	align-items: center;
+    justify-content: space-between; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    text-align: center; /* Assure que le texte est bien centré */
+    width: 100%; /* Prend toute la largeur disponible */
+    height: 100%; /* S'assure qu'il prend toute la hauteur s'il est dans un conteneur défini */
+}
+
+
+#chatFooter {
+    display: flex; /* Utilisation de flexbox */
+    align-items: center; /* Alignement vertical */
+    justify-content: space-between; /* Espacement des éléments */
+    width: 100%; /* Prend toute la largeur de la modale */
+    padding: 10px; /* Ajoute un peu d'espace autour */
+    gap: 10px; /* Espacement entre les éléments */
 }
 
 #messageInput {
-    width: 70vh;
+    flex: 1; /* Prend le plus d'espace possible */
+    padding: 8px; /* Ajoute un padding pour le confort */
+    border: 1px solid #ccc; /* Bordure discrète */
+    border-radius: 5px; /* Coins arrondis */
+}
+
+.bouton-liveChat {
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    padding: 8px 12px; /* Ajoute du padding */
+    border: none;
+    color: #1c4521 !important;
+    background-color: #fceada !important;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer;
+    flex-shrink: 0; /* Empêche les boutons de rétrécir */
+}
+
+.bouton-liveChat:hover {
+    color: #fceada !important;
+    background-color: #1c4521 !important; /* Légère variation au survol */
 }
 
 .message-expediteur {
     margin-left: auto; /* Aligne à droite */
     margin-right: 10px; /* Ajoute un espace avec le bord droit */
-    background-color: #256579;
+    background-color: #908a35;
     margin-bottom: 0.5cm;
     padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
     border-radius: 10px; /* Coins arrondis */
@@ -305,7 +346,7 @@ header, #barre-bas1 {
 .message-destinataire {
     margin-right: auto; /* Aligne à gauche */
     margin-left: 10px; /* Ajoute un espace avec le bord gauche */
-    background-color: rgb(255, 103, 222);
+    background-color: #ef6930 ;
     margin-bottom: 0.5cm;
     padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
     border-radius: 10px; /* Coins arrondis */
@@ -348,4 +389,61 @@ header, #barre-bas1 {
 
 #liveChatModal {
     z-index: 1100;
+}
+
+.notification-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #444;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none; /* Caché par défaut */
+    z-index: 1150; /* Ajustez ce chiffre */
+}
+
+.notification-popup.show {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#imgRetourliveChat {
+    width: 35px;
+    height: 35px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#imgRetourliveChat:hover {
+    content: url("../images/icons8-arrière-52-vert.png"); /* Remplace l'image */
+}
+
+.img-button {
+    width: 35px;
+    height: 35px;
+    background-color: #fceada !important;
+    border: none;
+    padding: 0;
+    cursor: pointer; /* Affiche la main au survol */
+    display: flex; /* Garde le contenu centré */
+    align-items: center;
+    justify-content: center;
+}
+
+.img-button:hover {
+    background-color: #1c4521 !important;
+}
+
+.img-button img {
+    width: 30px;
+    height: 30px;
+}
+
+.img-button:hover img {
+    content: url("../images/icons8-arrière-52-beige.png"); /* Change l'image au survol */
+}
+
+#friendProfileModal {
+    z-index: 1150;
 }
