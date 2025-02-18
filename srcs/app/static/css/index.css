@@ -447,3 +447,8 @@ header, #barre-bas1 {
 #friendProfileModal {
     z-index: 1150;
 }
+
+#gameModal .modal-dialog {
+    max-width: 830px; /* Largeur */
+    height: 750px; /* Hauteur */
+}

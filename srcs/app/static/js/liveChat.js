@@ -516,25 +516,37 @@ function bloquerUtilisateur(idDestinataire, destinataireUsername) {
 			'Content-Type': 'application/json',
 		},
 	})
-	.then(response => response.json())
-	.then(data => {
+	.then(response => {
+		console.log("Statut HTTP:", response.status);
+		return response.text();  // Lire la réponse en texte brut pour debug
+	})
+	.then(text => {
+		console.log("Réponse brute du serveur:", text);
+		
+		let data;
+		try {
+			data = JSON.parse(text);  // Tente de parser le texte en JSON
+		} catch (error) {
+			console.error("Erreur JSON:", error);
+			return;  // Stoppe l'exécution si le JSON est invalide
+		}
+	
 		if (data.error) {
 			console.error(data.error);
 			alert(data.error);
 		} else {
-
 			chatSocket.send(JSON.stringify({
-				'type': "block_user",  // Type d'événement correct
-				'block_type': "bloqueur",  // Fix du champ
+				'type': "block_user",
+				'block_type': "bloqueur",
 				'destinataire_id': idDestinataire
 			}));
-
+	
 			console.log(data.message);
 			alert(data.message);
-			HistoriqueMessages(idDestinataire, destinataireUsername)
+			HistoriqueMessages(idDestinataire, destinataireUsername);
 		}
 	})
-	.catch(error => console.error('Erreur:', error));
+	.catch(error => console.error('Erreur Fetch:', error));	
 }
 
 // Débloque un utilisateur en envoyant une requête POST au serveur,

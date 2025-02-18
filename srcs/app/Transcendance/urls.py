@@ -21,7 +21,7 @@ from game import views
 from game.views import PlayCreateAPIView, PlayDetailAPIView, PlaySubscribeAPIView, PlayListAPIView
 from game.views import TournamentViewSet
 from authentication.views import LoginAPI, SignupAPI, Logout, UserInfoAPI, UserProfileView, UserProfileUpdateView, UserDeleteView
-from authentication.views import AddFriendView, SuppFriendView, FollowingListView, FollowersListView, UserDetailView, MatchHistoryView
+from authentication.views import AddFriendView, SuppFriendView, FollowingListView, FollowersListView, UserDetailView, MatchHistoryView, BloquerUtilisateurView, DebloquerUtilisateurView
 from liveChat.views import MessageHistory, listeConversation, listeUtilisateurs
 from authentication.views import get_csrf_token
 
@@ -52,6 +52,8 @@ urlpatterns = [
     path('api/play/list', PlayListAPIView.as_view(), name='play-list'),
     path('api/messageHistory/<int:id>/', MessageHistory.as_view()),
     path('api/listeconversation/', listeConversation.as_view()),
+    path('bloquer-utilisateur/<int:id>/', BloquerUtilisateurView.as_view(), name='bloquer_utilisateur'),
+    path('debloquer-utilisateur/<int:id>/', DebloquerUtilisateurView.as_view(), name='debloquer_utilisateur'),
     path('api/utilisateurs/', listeUtilisateurs.as_view(), name='utilisateurs-list'),
 	re_path(r'^.*$', views.index, name='index'),
 ]

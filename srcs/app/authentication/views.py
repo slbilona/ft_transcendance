@@ -288,3 +288,31 @@ class FollowersListView(APIView):
         } for user in followers_users]
         return Response(followers_data, status=status.HTTP_200_OK)
 
+class BloquerUtilisateurView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id, *args, **kwargs):
+        user_to_block = get_object_or_404(User, id=id)
+        current_user = request.user
+
+        if current_user == user_to_block:
+            return Response({"error": "Vous ne pouvez pas vous bloquer vous-même."}, status=400)
+
+        current_user.blockedUser.add(user_to_block)
+        current_user.save()
+        return Response({"message": f"L'utilisateur {user_to_block.username} a été bloqué avec succès."})
+	
+class DebloquerUtilisateurView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id, *args, **kwargs):
+        user_to_unblock = get_object_or_404(User, id=id)
+        current_user = request.user
+
+        if current_user == user_to_unblock:
+            return Response({"error": "Vous ne pouvez pas vous débloquer vous-même."}, status=400)
+
+        current_user.blockedUser.remove(user_to_unblock)
+        current_user.save()
+        return Response({"message": f"L'utilisateur {user_to_unblock.username} a été débloqué avec succès."})
+	

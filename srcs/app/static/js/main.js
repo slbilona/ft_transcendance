@@ -125,7 +125,9 @@ const PongGame = (function() {
 	function draw(ctx) {
 		const canvas = ctx.canvas;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.fillStyle = 'white';
+		// /!\ a voir de quel couleur on met les desins et les ecritures
+		ctx.fillStyle = '#1c4521';
+		// ctx.fillStyle = 'white';
 
 		const paddleWidth = 10, paddleHeight = 100, ballSize = 10;
 
