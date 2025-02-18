@@ -148,7 +148,9 @@ class TournamentSerializer(serializers.ModelSerializer):
 		return transformed_results
 
 class PlayListSerializer(serializers.ModelSerializer):
+    player1_username = serializers.CharField(source="player1.username", read_only=True)
 
-	class Meta:
-		model = Play
-		fields = ['id', 'nb_players', 'player_connected']
+    class Meta:
+        model = Play
+        fields = ['id', 'nb_players', 'player_connected', 'player1', 'player1_username']
+

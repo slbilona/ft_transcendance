@@ -68,7 +68,7 @@ header {
 /* Style de la carte au survol */
 .card:hover {
 	border-radius: 10px;
-	box-shadow: 5px 5px 15px #55511b;
+	box-shadow: 5px 5px 15px #f8cdaa;
 }
 
 /* Centrer le contenu à l'intérieur de la page */
@@ -451,4 +451,8 @@ header, #barre-bas1 {
 #gameModal .modal-dialog {
     max-width: 830px; /* Largeur */
     height: 750px; /* Hauteur */
+}
+
+.main-content {
+    list-style-type: none;
 }
