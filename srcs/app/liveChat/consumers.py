@@ -401,7 +401,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		try:
 			game = await database_sync_to_async(Play.objects.get)(id=gameId)
 		except Play.DoesNotExist:
-			await self.send(text_data=json.dumps({"error": "Partie non trouvée"}))
+			await self.send(text_data=json.dumps({"error": "Partie non trouvée", "message": gameId}))
 			return
 
 		await database_sync_to_async(message.refresh_from_db)()  # Rafraîchir avant modification

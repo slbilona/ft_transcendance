@@ -23,10 +23,11 @@
 			<h4 id="userUsername"></h4> -->
 		</div>
 		<ul class="nav nav-pills">
-			<li class="nav-item"><a href="#" class="nav-link" id="liveChatLink">live-chat</a></li>
+			<!-- /!\ verifier les href -->
+			<li class="nav-item"><a href="/liveChat/" class="nav-link" id="liveChatLink">live-chat</a></li>
 			<li class="nav-item"><a href="/friend/" class="nav-link" id="friendLink">Amis</a></li>
 			<li class="nav-item"><a href="/user/" class="nav-link" id="userLink">Profil</a></li>
-			<!-- /!\ enlever # -->
+			<li class="nav-item"><a href="/historique/" class="nav-link" id="historiqueLink">historique</a></li>
 			<li class="nav-item"><a href="#" class="nav-link" id="logoutButton">déconnexion</a></li>
 			<li class="nav-item auth-button"><a href="#" class="nav-link" id="boutton-signup-login">connexion/inscription</a></li>
 		</ul>
@@ -49,7 +50,7 @@
 									<input type="radio" name="game_mode" id="remote_2v2" value="remote_2v2">
 									<label for="remote_2v2"><span class="gradient-text">Distant 2v2</span></label>
 								</div>
-								<button type="submit" class="play-button"><span class="gradient-text">Jouer</span></button>
+								<button type="submit" class="btn play-button">Jouer</button>
 							</fieldset>
 						</form>
 						<!-- <button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button> -->
@@ -60,7 +61,7 @@
 				<div class="card custom-card">
 					<div class="card-body">
 						<h1 class="card-title pricing-card-title">Tournoi local</h1>
-						<button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button>
+						<button id="tournamentLink" type="button" class="w-100 btn">Jouer</button>
 					</div>
 				</div>
 			</div>
@@ -88,7 +89,7 @@
 									<input type="radio" name="game_mode" id="local_2v2" value="local_2v2">
 									<label for="local_2v2"><span class="gradient-text">Local 2v2</span></label>
 								</div>
-								<button type="submit" class="play-button"><span class="gradient-text">Jouer</span></button>
+								<button type="submit" class="btn play-button">Jouer</button>
 							</fieldset>
 						</form>
 						<!-- <button type="button" class="w-100 btn btn-lg btn-primary">Jouer</button> -->
@@ -102,19 +103,19 @@
 	<div id="notification-popup" class="notification-popup"></div>
 
 
-    <div class="modal" id="gameModal" tabindex="-1" aria-labelledby="gameModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="gameModalLabel">Jeu de Pong</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <canvas id="gameCanvas" width="800" height="600"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal" id="gameModal" tabindex="-1" aria-labelledby="gameModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="gameModalLabel">Jeu de Pong</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<canvas id="gameCanvas" width="800" height="600"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 	<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
@@ -203,27 +204,27 @@
 		</div>
 	</div>
 	
-    <div class="modal fade" id="friendProfileModal" tabindex="-1" aria-labelledby="friendProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="friendProfileModalLabel">Profil de l'ami</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="friendProfileContent">
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="friendProfileModal" tabindex="-1" aria-labelledby="friendProfileModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="friendProfileModalLabel">Profil de l'ami</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="friendProfileContent">
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="userModalBody">
+	<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="userModalLabel">Profile</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="userModalBody">
 					<div class="custom-tabs-container">
 						<ul class="nav nav-tabs nav-fill" id="userProfileTabs" role="tablist">
 							<li class="nav-item" role="presentation">
@@ -242,19 +243,19 @@
 						<div class="tab-pane fade show active" id="profile-view" role="tabpanel" aria-labelledby="profile-view-tab"></div>
 						<div class="tab-pane fade" id="profile-edit" role="tabpanel" aria-labelledby="profile-edit-tab"></div>
 					</div>
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal fade" id="liveChatModal" tabindex="-1" aria-labelledby="liveChatLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="liveChatLabel">Live-Chat</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+	<div class="modal fade" id="liveChatModal" tabindex="-1" aria-labelledby="liveChatLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="liveChatLabel">Live-Chat</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
 					<div id="liste-amis-live-chat">
 						<!-- Champ de recherche -->
 						<input type="text" id="searchInput" placeholder="Rechercher un utilisateur">
@@ -269,24 +270,80 @@
 						<div id="message-container"></div>
 						<div id="envoie-ou-message-bloque"></div>
 					</div>
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-    <div class="modal fade" id="remoteGameAvailableModal" tabindex="-1" aria-labelledby="remoteGameAvailableLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="remoteGameAvailableLabelh5"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body main-content"></div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="remoteGameAvailableModal" tabindex="-1" aria-labelledby="remoteGameAvailableLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="remoteGameAvailableLabelh5"></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body main-content"></div>
+			</div>
+		</div>
+	</div>
 
+	<div class="modal fade" id="tournamentModal" tabindex="-1" aria-labelledby="tournamentModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="tournamentModalLabel" data-i18n="tournamentModalTitle">Créer un tournoi</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="tournamentForm">
+						<div class="mb-3">
+							<p for="playerCount" class="form-label" data-i18n="playerCount">Nombre de joueurs</p>
+							<select class="form-select" id="playerCount" required>
+								<option value="4">4</option>
+								<option value="8">8</option>
+							</select>
+						</div>
+						<div id="aliasInputs">
+						</div>
+						<button type="submit" class="btn" data-i18n="createTournament">Créer le tournoi</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="nextGameModal" tabindex="-1" aria-labelledby="nextGameModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="nextGameModalLabel">Prochaine partie</h5>
+				</div>
+				<div class="modal-body text-center">
+					<button type="button" class="btn btn-primary" id="startNextGameButton">Jouer</button>
+				</div>
+				<div class="modal-body">
+					<form id="nextGameForm">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="historiqueModal" tabindex="-1" aria-labelledby="historiqueModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="historiqueModalLabel" data-i18n="historiqueModalTitle">Historique des parties</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="historiqueForm">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/ethers@5.6.9/dist/ethers.umd.min.js"></script>
@@ -295,8 +352,8 @@
 	<script src="/static/js/auth.js"></script>
 	<script src="/static/js/friends.js"></script>
 	<script src="/static/js/main.js"></script>
-	<!-- <script src="/static/js/tournament.js"></script>
-	<script src="/static/js/historique.js"></script> -->
+	<script src="/static/js/tournament.js"></script>
+	<script src="/static/js/historique.js"></script>
 	<script src="/static/js/user.js"></script> 
 	<script src="/static/js/settings.js"></script>
 	<script src="/static/js/liveChat.js"></script>

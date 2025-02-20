@@ -369,11 +369,13 @@ header, #barre-bas1 {
 }
 
 .message-invitation-jeu {
-    background-color: black;
-    color: white;
+    background-color: #ffaf00;
+    color: #1c4521;
     margin-right: 5%;
     margin-left: 5%;
     margin-bottom: 0.5cm;
+    padding: 10px 15px; /* Ajoute de l'espace à l'intérieur */
+    border-radius: 10px; /* Coins arrondis */
     text-align: center; /* Centrer le texte */
 }
 
@@ -395,7 +397,7 @@ header, #barre-bas1 {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: #444;
+    background: #1c4521;
     color: white;
     padding: 15px;
     border-radius: 8px;

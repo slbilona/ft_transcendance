@@ -273,36 +273,41 @@ const PongGame = (function() {
 	}
 
 	function createNewGame(remote, nbPlayers, private) {
-		const data = {
-			remote: remote,
-			nb_players: nbPlayers,
+        console.log(`[createNewGame] Creating new game. Remote: ${remote}, Players: ${nbPlayers}`);
+        const data = {
+            remote: remote,
+            nb_players: nbPlayers,
             private: private
-		};
+        };
 
-		return fetchWithCsrf(`api/play/create`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken()
-			},
-			body: JSON.stringify(data),
-			credentials: 'include'
-		})
-		.then(response => response.json())
-		.then(result => {
-			console.log(`[createNewGame] Game creation response:`, result);
-			const gameId = result.id;
-			const newUrl = `/game/${gameId}`;
-			const newTitle = `Pong Game ${gameId}`;
-			const newContent = `Playing Pong Game ${gameId}`;
-			navigateTo(newTitle, newUrl, newContent, gameId);
-			initializeGame(gameId, nbPlayers, true);
-		})
-		.catch(error => {
-			console.error('[createNewGame] Error:', error);
-			alert(error.message);
-		});
-	}
+        console.log(`[createNewGame] Sending game creation request with data:`, data);
+
+        return fetchWithCsrf(`api/play/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(`[createNewGame] Game creation response:`, result);
+            const gameId = result.id;
+            const newUrl = `/game/${gameId}`;
+            const newTitle = `Pong Game ${gameId}`;
+            const newContent = `Playing Pong Game ${gameId}`;
+            navigateTo(newTitle, newUrl, newContent, gameId);
+            initializeGame(gameId, nbPlayers, true);
+
+            return gameId;
+        })
+        .catch(error => {
+            console.error('[createNewGame] Error:', error);
+            alert(error.message);
+        });
+    }
 
 	function joinGame(gameId) {
 		fetchWithCsrf(`/api/play/join/${gameId}`, {

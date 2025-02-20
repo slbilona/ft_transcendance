@@ -1,3 +1,5 @@
+//const PongGame = require("./main");
+
 let chatSocket;
 const listeConversation = document.getElementById('liste-amis-live-chat-ul');
 let destinataireId = null;
@@ -23,7 +25,7 @@ function initWebSocket() {
 // gere les messages recus
 function handleIncomingMessage(e) {
 	const data = JSON.parse(e.data);
-
+	console.log("PongGmae : ", PongGame);
 	if (data.type === 'message') {
 		afficherMessage(data);
 	} else if (data.type === 'block_user') {
@@ -51,6 +53,8 @@ function handleIncomingMessage(e) {
 				onlineStatusElement.id = "liveChat-offlineStatus";  // Change l'id de l'élément
 			}
 		}
+	} else if (data.type === 'Partie non trouvée') {
+		console.log
 	} else {
 		console.warn("Le type de message n'est pas reconnu. data : '", data, "' mesage : '", data.type, "', data.message : '", data.message, "'");
 	}
@@ -141,9 +145,8 @@ function afficherInvitationJeu(message, messageElement) {
 			`;
 	
 			// Appel de la fonction joinGame et vérification du succès
-			console.log(PongGame.joinGame(message.gameId));
+			console.log("réponse joingam : ", PongGame.joinGame(message.gameId));
 		}
-			
 	} else if (message.message === "resultats partie"){
 		if (message.winners.includes(parseInt(destinataireId)) && destinataireId === message.destinataire_id) {
 			messageElement.innerHTML = `
@@ -166,6 +169,10 @@ function afficherInvitationJeu(message, messageElement) {
 				Vous avez gagné, ${message.expediteur_username} a perdu
 			`;
 		}
+	} else if (message.message === "Partie non trouvée"){
+		messageElement.innerHTML = `
+			Erreur<br>
+		`;
 	} else {
 		console.log("Une erreur est survenue, message.mesage = '", message.message, "'");
 	}
@@ -202,6 +209,11 @@ function inviterPartiePong(IdDestinataire) {
 function invitationAccepte(expediteur_id, message_id) {
     PongGame.createNewGame(true, 2, true)
         .then(gameId => {
+            if (gameId === null || gameId === undefined) {
+                console.error("Game ID invalide. Le message WebSocket ne sera pas envoyé.");
+                return;
+            }
+
             chatSocket.send(JSON.stringify({
                 'type': "pong_invitation_accepté",
                 'destinataire_id': expediteur_id,
@@ -213,6 +225,7 @@ function invitationAccepte(expediteur_id, message_id) {
             console.error("Erreur lors de la création du jeu ou de l'envoi via WebSocket :", error);
         });
 }
+
 
 // affiche les messages recus
 function afficherMessage(data) {

@@ -146,7 +146,8 @@ tournamentForm.addEventListener('submit', async (e) => {
                 alias_names: aliasNames,
             }),
         });
-
+        console.log(playerCount);
+        console.log(aliasNames);
         if (response.status === 201) {
             const tournamentData = await response.json();
             bootstrap.Modal.getInstance(tournamentModal).hide();
