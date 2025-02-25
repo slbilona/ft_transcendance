@@ -342,13 +342,87 @@ PongGame.fetchGameDetails = async function(gameId) {
         });
 };
 
+function openTournamentResultsModal() {
+    const modal = new bootstrap.Modal(tournamentResultsModal);
+    modal.show();
+}
+
+function pushModalState8() {
+    console.log("[pushModalState] : '/tournamentResults'");
+    // Sauvegarde le chemin actuel avant de le modifier
+    previousPath = window.location.pathname;
+    // Ajoute le nouvel état dans l'historique
+    history.pushState(
+        {
+            modal: 'tournamentResultsModal',
+            previousPath: previousPath
+        },
+        '',
+        '/tournamentResults'
+    );
+}
+
+// Gestionnaire pour la fermeture du modal
+tournamentResultsModal.addEventListener('hidden.bs.modal', () => {
+    console.log("[tournamentResultsModal.addEventListener('hidden.bs.modal'] : '/tournamentResults'");
+    if (window.location.pathname === '/tournamentResults') {
+		destinataireId = null;
+        // Au lieu de history.back(), on push un nouvel état
+        const targetPath = previousPath || '/';
+        history.pushState(
+            {
+                modal: null,
+                previousPath: '/tournamentResults'
+            },
+            '',
+            targetPath
+        );
+    }
+});
+
+function closeModal8() {
+    console.log("[closeModal8]");
+    const modal = bootstrap.Modal.getInstance(tournamentModal);
+    if (modal) {
+        modal.hide();
+    }
+}
+
+// Gestionnaire pour la navigation dans l'historique
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.modal === 'liveChat') {
+        openLiveChatModal();
+    } else {
+        closeModal8();
+    }
+});
+
+// Gestion de l'état initial
+if (window.location.pathname === '/tournamentResults') {
+    history.replaceState(
+        {
+            modal: 'tournamentResultsModal',
+            previousPath: '/'
+        },
+        '',
+        '/tournamentResults'
+    );
+    openTournamentResultsModal();
+}
+
 async function displayTournamentResults(tournamentId) {
+    console.log("[displayTournamentResults]")
     try {
         const response = await fetch(`/api/tournaments/${tournamentId}/`);
         const data = await response.json();
 
         if (response.status === 200) {
             console.log('Résultats du tournoi:', data);
+            pushModalState8();
+            openTournamentResultsModal();
+            divResults = document.getElementById("divTournamentResults");
+            divResults.innerHTML = `Vainqueur du tournoi<br>${data.results.winner}`;
+
         } else {
             throw new Error('Erreur inattendue');
         }

@@ -107,7 +107,7 @@ function rempliProfileEdit () {
 	document.getElementById('profile-edit').innerHTML = `
 		<form id="settingsForm">
 			<div class="mb-3">
-				<p class="form-label">Username</p>
+				<p class="form-label">Nom d'utilisateur</p>
 				<input type="text" class="form-control" id="settingsUsername" name="username">
 			</div>
 			<div class="mb-3">
@@ -119,7 +119,7 @@ function rempliProfileEdit () {
 				<input type="text" class="form-control" id="settingsAlias" name="alias">
 			</div>
 			<div class="mb-3">
-				<p class="form-label">Profile Photo</p>
+				<p class="form-label">Photo de profile</p>
 				<input type="file"
 					class="form-control"
 					id="settingsPhoto"
@@ -129,17 +129,16 @@ function rempliProfileEdit () {
 				<img id="photoPreview" class="mt-2" style="max-width: 200px; display: none;">
 			</div>
 			<div class="mb-3">
-				<p class="form-label">New Password</p>
+				<p class="form-label">Nouveau mot de passe</p>
 				<input type="password" class="form-control" id="settingsNewPassword" name="password">
 			</div>
 			<div class="mb-3">
-				<p class="form-label">Confirm New Password</p>
+				<p class="form-label">Confirmer le nouveau mot de passe</p>
 				<input type="password" class="form-control" id="settingsConfirmPassword">
 			</div>
 
-			<button type="submit" class="btn">Save Changes</button>
+			<button type="submit" class="btn">Sauvegarder les modifications</button>
 		</form>
-		<!-- Ajoute par clement  -->
 		<div id="errorMessage" style="display: none;">
 			<div class="auth-message">
 				<i class="fas fa-lock"></i>

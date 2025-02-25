@@ -455,6 +455,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		# Étape 4: Attendre la fin du jeu avec gestion des erreurs
 		try:
+			print(f"Avant d'attendre la fin du jeu : {message.play}", flush=True)
 			await self.wait_for_game_to_finish(destinataire, message)
 		except Exception as e:
 			print(f"Erreur lors de l'attente de la fin du jeu : {e}", flush=True)
@@ -495,12 +496,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		}
 
 	async def wait_for_game_to_finish(self, destinataire, message):
-		print("\nEn attente de la fin du jeu\n", flush=True)
-
-		# Attendre que la partie soit terminée
+		print("\nen attente de la fin du jeu\n", flush=True)
+		#Attendre que la partie soit terminée.
 		while True:
 			# Rafraîchir l'objet Play depuis la base de données
-			await database_sync_to_async(message.play.refresh_from_db)()
+			message.play = await database_sync_to_async(Play.objects.get)(id=message.play.id)
 
 			# Vérifier si la partie est terminée
 			if message.play is None or message.play.is_finished:
@@ -512,21 +512,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		print("\nFin du jeu\n", flush=True)
 
+
 		# Une fois que la partie est terminée, récupérer les résultats
-		try:
-			results = await self.get_game_results(message)
-		except Exception as e:
-			print(f"Erreur lors de la récupération des résultats du jeu : {e}", flush=True)
-			return
+		results = await self.get_game_results(message)
 
-		winners = results.get('winners', [])
-		losers = results.get('losers', [])
-		score = results.get('score', {})
-
-		# Mise à jour du message avec les résultats
-		await database_sync_to_async(message.refresh_from_db)()
-		message.message = "resultats partie"
-		await database_sync_to_async(message.save)()
+		winners = results['winners']
+		losers = results['losers']
+		score = results['score']
 
 		message_data = {
 			"style": "jeu",
@@ -537,13 +529,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			"message_id": message.id,
 			"message": "resultats partie",
 			"gameId": message.play.id,
-			"winners": winners,
-			"losers": losers,
-			"score": score,
-			"date": message.date.isoformat()  # Utilisation de isoformat() pour la date
+			'winners': winners,
+			'losers': losers,
+			'score': score,
+			"date": message.date.isoformat() # Utilisation de isoformat() pour la date
 		}
 
-		# Envoyer les résultats au client
+		await sync_to_async(setattr)(message, 'message', "resultats partie")
+		await sync_to_async(message.save)()
+
 		await self.send(text_data=json.dumps({
 			"type": "pong_invitation",
 			"message": message_data
@@ -554,8 +548,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			{
 				"type": "pong_invitation_resultats_event",
 				"message_data": message_data
-			}
-		)
+			})
 		
 	async def pong_invitation_resultats_event(self, event):
 		await self.send(text_data=json.dumps({
