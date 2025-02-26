@@ -10,6 +10,7 @@ from channels.db import database_sync_to_async
 import sys
 from game.models import Play
 import asyncio
+from game.pong_game import PongGame
 
 User = get_user_model()
 
@@ -454,13 +455,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		await asyncio.sleep(2)
 
 		# Étape 4: Attendre la fin du jeu avec gestion des erreurs
+		# Récupérer l'instance du jeu
+		game_group_name = 'game_' + str(gameId)
+		pong_game_instance = PongGame.get_instance(gameId, game_group_name)
+
+		# Attente asynchrone jusqu'à ce que la partie commence
+		while not pong_game_instance.is_running:
+			print(f"En attente du lancement de la partie {gameId}...", flush=True)
+			await asyncio.sleep(1)  # On attend 1 seconde avant de vérifier à nouveau
+
+		# Une fois que is_running est True, on attend la fin du jeu
 		try:
-			print(f"Avant d'attendre la fin du jeu : {message.play}", flush=True)
+			print(f"Début de l'attente de la fin du jeu : {message.play}", flush=True)
 			await self.wait_for_game_to_finish(destinataire, message)
 		except Exception as e:
 			print(f"Erreur lors de l'attente de la fin du jeu : {e}", flush=True)
 
-		
 	async def pong_invitation_acceptée_event(self, event):
 		await self.send(text_data=json.dumps({
 			"type": "pong_invitation",
@@ -498,20 +508,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	async def wait_for_game_to_finish(self, destinataire, message):
 		print("\nen attente de la fin du jeu\n", flush=True)
 		#Attendre que la partie soit terminée.
+		await sync_to_async(message.play.refresh_from_db)()
+
 		while True:
 			# Rafraîchir l'objet Play depuis la base de données
-			message.play = await database_sync_to_async(Play.objects.get)(id=message.play.id)
+			await sync_to_async(message.play.refresh_from_db)()
 
 			# Vérifier si la partie est terminée
-			if message.play is None or message.play.is_finished:
+			if message.play.is_finished:
 				break
-			print("\nEst-ce fini ?\n", flush=True)
+			print("\nest ce fini ?\n", flush=True)
 
 			# Attendre 1 seconde avant de vérifier à nouveau
 			await asyncio.sleep(1)
 
 		print("\nFin du jeu\n", flush=True)
-
 
 		# Une fois que la partie est terminée, récupérer les résultats
 		results = await self.get_game_results(message)

@@ -11,6 +11,7 @@ choses a faire :
     - continuer a tester le live chat
     - pas de message qun dje me connecte sans compte existant
     - invitation de partie dans le liveChat
+    - regler les parties dans le liveChat
 
 mots clés a chercher :
 languageFav

@@ -27,7 +27,7 @@ const PongGame = (function() {
 		socket.onopen = function(e) {
 			console.log(`[WebSocket] Connection established for game ${gameId}`);
 		};
-
+		console.log("1");
 		socket.onmessage = function(e) {
 			const data = JSON.parse(e.data);
 			if (data.message === 'end_game') {
@@ -37,15 +37,16 @@ const PongGame = (function() {
 				draw(ctx);
 			}
 		};
-
+		console.log("2");
 		socket.onclose = function(e) {
 			terminateGame();
 		};
-
+		console.log("3");
 		socket.onerror = function(error) {
 		};
-
+		console.log("4");
 		gameLoopInterval = setInterval(updatePaddlePositions, 1000 / 60);
+		console.log("5");
 	}
 
 	function checkIfTournamentGame() {
@@ -440,91 +441,12 @@ const PongGame = (function() {
 			}
 		}
 
-		// function displayAvailableGames(games, nbPlayers) {
-        //     let container = document.querySelector('.main-content');
-        //     if (!container) {
-        //         container = document.createElement('div');
-        //         container.className = 'main-content';
-        //         document.body.insertBefore(container, document.getElementById('gameModal'));
-        //     }
-
-        //     container.style.display = 'block';
-        //     container.innerHTML = '';
-
-        //     const title = document.createElement('h1');
-        //     title.textContent = nbPlayers === 2 ? 'Available 1v1 Games' : 'Available 2v2 Games';
-        //     container.appendChild(title);
-
-        //     if (games.length > 0) {
-        //         const gameList = document.createElement('ul');
-        //         games.forEach(game => {
-        //             const listItem = document.createElement('li');
-        //             listItem.textContent = `Game ${game.id} (${game.player_connected}/${game.nb_players} players)`;
-        //             // if (game.player_connected == 1)
-        //             // {
-        //             //     isPlayer2 = true;
-        //             // }
-        //             // else if(game.player_connected == 2)
-        //             // {
-        //             //     isPlayer3 = true;
-        //             // }
-        //             // else if(game.player_connected == 3)
-        //             // {
-        //             //     isPlayer4 = true;
-        //             // }
-        //             //Ajoute Post Merge
-        //             listItem.addEventListener('click', () => {
-        //                 if (game.player_connected == 1) {
-        //                     isPlayer2 = true;
-        //                 }
-        //                 else if (game.player_connected == 2) {
-        //                     isPlayer3 = true;
-        //                 }
-        //                 else if (game.player_connected == 3) {
-        //                     isPlayer4 = true;
-        //                 }
-        //                 joinGame(game.id);
-        //                 container.style.display = 'none';
-        //             });
-        //             // listItem.addEventListener('click', () => {
-        //             //     joinGame(game.id);
-        //             //     container.style.display = 'none';
-        //             // });
-        //             gameList.appendChild(listItem);
-        //         });
-        //         container.appendChild(gameList);
-        //     } else {
-        //         const noGamesMessage = document.createElement('p');
-        //         noGamesMessage.textContent = 'No available games found.';
-        //         container.appendChild(noGamesMessage);
-        //     }
-
-        //     const newGameButton = document.createElement('button');
-        //     newGameButton.textContent = 'Create New Game';
-        //     newGameButton.addEventListener('click', () => {
-        //         createNewGame(true, nbPlayers);
-        //         container.style.display = 'none';
-        //     });
-        //     container.appendChild(newGameButton);
-
-        // }
-
 		function displayAvailableGames(games, nbPlayers) {
 			openRemoteGameAvailableModal();
 			let container = document.querySelector('.main-content');
-			// if (!container) {
-			// 	container = document.createElement('div');
-			// 	container.className = 'main-content';
-			// 	document.body.insertBefore(container, document.getElementById('gameModal'));
-			// }
-
-			// container.style.display = 'block';
 			container.innerHTML = '';
 			title = document.getElementById("remoteGameAvailableLabelh5");
-			// const title = document.createElement('h1');
-			// title.textContent = nbPlayers === 2 ? 'Available 1v1 Games' : 'Available 2v2 Games';
 			title.textContent = nbPlayers === 2 ? 'Available 1v1 Games' : 'Available 2v2 Games';
-			// container.appendChild(title);
 
 			if (games.length > 0) {
 				const gameList = document.createElement('ul');
