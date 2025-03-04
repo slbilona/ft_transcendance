@@ -204,7 +204,7 @@ window.addEventListener('userLoggedIn', () => {
 });
 
 function getProfilePictureUrl(username) {
-	return `/static/images/${escapeHtmlFriend(username)}.jpg`;
+	return `/media/${escapeHtmlFriend(username)}.jpg`;
 }
 
 function loadFriendLists() {
@@ -233,13 +233,7 @@ function loadFriendLists() {
 				<li class="custom-list-group-item p-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="d-flex align-items-center">
-							<div class="profile-picture-small me-3"
-								style="width: 40px; height: 40px;
-										border-radius: 50%;
-										background-size: cover;
-										background-position: center;
-										background-image: url('${getProfilePictureUrl(user.username)}');">
-							</div>
+							<img width="40px" height="40px"src="${getProfilePictureUrl(user.username)}"class="rounded-circle me-3" id="profilePictureFollowingList">
 							<div>
 								<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
 								<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
@@ -294,13 +288,7 @@ function loadFriendLists() {
 				<li class="custom-list-group-item p-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="d-flex align-items-center">
-							<div class="profile-picture-small me-3"
-								style="width: 40px; height: 40px;
-										border-radius: 50%;
-										background-size: cover;
-										background-position: center;
-										background-image: url('${getProfilePictureUrl(user.username)}');">
-							</div>
+							<img width="40px" height="40px"src="${getProfilePictureUrl(user.username)}"class="rounded-circle me-3" id="profilePictureFollowersList">
 							<div>
 								<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
 								<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
@@ -387,13 +375,7 @@ function handleViewProfile(e) {
 				// /!\ remplacer la div par une img de la photo de profile de l'utilisateur
 				document.getElementById('friendProfileContent').innerHTML = `
 					<div class="text-center mb-3">
-						<div class="profile-picture-large mx-auto mb-2"
-							style="width: 100px; height: 100px;
-									border-radius: 50%;
-									background-size: cover;
-									background-position: center;
-									background-image: url('${getProfilePictureUrl(data.username)}');">
-						</div>
+						<img width="100px" height="100px" src="${getProfilePictureUrl(data.username)}" class="rounded-circle" id="profilePictureFriendProfile">
 						<h4>${escapeHtmlUser(data.username)}</h4>
 						<p class="text-muted">${escapeHtmlUser(data.alias)}</p>
 						<div class="mb-2" id="${data.onlineStatus ? 'liveChat-onlineStatus' : 'liveChat-offlineStatus'}">

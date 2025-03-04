@@ -17,6 +17,8 @@ services:
     restart: on-failure #Redemarrer nginx en cas de crash
     networks:
       - transcendance-main-network
+    volumes:
+      - media_data:/app/media
 
   mydjango:
     container_name: django-app
@@ -24,8 +26,8 @@ services:
       context: app
       dockerfile: Dockerfile
     volumes:
-      - srcs_db_data:/app/db   # Volume pour db.sqlite3
-      - srcs_db_data:/app/media  # Ajout du volume pour les images
+      - db_data:/app/db  # Volume pour la base de données
+      - media_data:/app/media # Volume persistant pour les images
     expose:
       - "8000"
     depends_on:
@@ -50,7 +52,8 @@ networks:
 
 #Volumes docker contenant le fichier de base de donnee db.sqlite3 pour faire persister les donnees lors de l'arret des containers
 volumes:
-  srcs_db_data:
+  db_data:
+  media_data:  # 📂 Nouveau volume pour stocker les images
 
 
 

@@ -458,3 +458,7 @@ header, #barre-bas1 {
 .main-content {
     list-style-type: none;
 }
+
+#userUsername {
+    margin: 1rem;
+}

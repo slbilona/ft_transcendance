@@ -312,8 +312,16 @@ function listeAmisLiveChat() {
 			// /!\ ajouter la photo de profile de chaque utilisateur
 			listeConversation.innerHTML = Array.from(users.values()).map(user => `
 				<li>
-					<button class="btn nomListeConversation" data-user-id="${user.id}" onclick="HistoriqueMessages(${user.id}, '${user.username}')">
-						${user.username}
+					<button class="btn nomListeConversation d-flex align-items-center" 
+							data-user-id="${user.id}" 
+							onclick="HistoriqueMessages(${user.id}, '${user.username}')">
+						
+						<img width="30px" height="30px" 
+							src="${getProfilePictureUrl(user.username)}" 
+							class="rounded-circle" 
+							id="profilePictureLiveChatList">
+
+						<p class="flex-grow-1 d-flex align-items-center justify-content-center m-0">${user.username}</p>
 					</button>
 				</li>
 			`).join('');

@@ -210,3 +210,6 @@ REST_FRAMEWORK = {
 	'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',#LimitOffsetPagination (plus avances)
 	'PAGE_SIZE': 5,
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # Si les fichiers sont stockés dans un dossier 'media' relatif au projet
