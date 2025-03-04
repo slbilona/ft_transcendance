@@ -24,13 +24,13 @@ services:
       context: app
       dockerfile: Dockerfile
     volumes:
-      - db_data:/app/db
+      - srcs_db_data:/app/db   # Volume pour db.sqlite3
+      - srcs_db_data:/app/media  # Ajout du volume pour les images
     expose:
-      - "8000" # Expose le port 8000 du container sans le mapper sur la machine car on souhaite que NGINX soit le seul point d'entree
+      - "8000"
     depends_on:
       - redis-server
     env_file: .env
-      # -.env
     restart: on-failure
     networks:
       - transcendance-main-network
@@ -50,7 +50,7 @@ networks:
 
 #Volumes docker contenant le fichier de base de donnee db.sqlite3 pour faire persister les donnees lors de l'arret des containers
 volumes:
-  db_data:
+  srcs_db_data:
 
 
 

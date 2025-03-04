@@ -12,6 +12,7 @@ choses a faire :
     - pas de message qun dje me connecte sans compte existant
     - invitation de partie dans le liveChat
     - regler les parties dans le liveChat
+    - verifier la connexion dans la partie affichage du profile d'un ami
 
 mots clés a chercher :
 languageFav

@@ -87,13 +87,22 @@ function updateUserInfo(username, photoProfile) {
 		// document.getElementById('userUsername').innerHTML = safeUsername;
 
 		if (photoProfile) {
+			console.log("photoProfile : ", photoProfile);
+			console.log(`/static/images/${safeUsername}.jpg?timestamp=${Date.now()}`);
 			document.getElementById('userUsernamePhoto').innerHTML = `
-				<img width="62" height="62" 
-					 src="/static/images/${safeUsername}.jpg?timestamp=${Date.now()}" 
-					 class="rounded-circle" 
+				<img width="62" height="62"
+					 src="/static/images/${safeUsername}.jpg?timestamp=${Date.now()}"
+					 class="rounded-circle"
 					 id="profilePicture">
 				<h4 id="userUsername">${safeUsername}</h4>
 			`;
+			// document.getElementById('userUsernamePhoto').innerHTML = `
+			// 	<img width="62" height="62" 
+			// 		 src="/static/images/${photoProfile}" 
+			// 		 class="rounded-circle" 
+			// 		 id="profilePicture">
+			// 	<h4 id="userUsername">${safeUsername}</h4>
+			// `;
 			// document.getElementById('userUsernamePhoto').innerHTML = `
 			// 	<div id="profilePicture" class="profile-picture"></div>
 			// 	<h4 id="userUsername">${safeUsername}</h4>
