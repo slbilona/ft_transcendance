@@ -42,6 +42,20 @@ function handleIncomingMessage(e) {
 		invitationJeu(data.message);
 		messageContainer.scrollTop = messageContainer.scrollHeight;
 	} else if (data.type === 'connection_status') {
+		const onlineStatusElementProfileView = document.getElementsByClassName("onlineOrOfflineStatus")[0]; // Accéder au premier élément avec cette classe
+		if(onlineStatusElementProfileView) {
+			console.log("onlineStatusElementProfileView existe");
+			if (data.status === "connected") {
+				onlineStatusElementProfileView.innerHTML = `en ligne`;  // Met à jour le texte
+				onlineStatusElementProfileView.id = "liveChat-onlineStatus";  // Change l'id de l'élément
+			} else {
+				onlineStatusElementProfileView.innerHTML = `hors ligne`;  // Met à jour le texte
+				onlineStatusElementProfileView.id = "liveChat-offlineStatus";  // Change l'id de l'élément
+			}
+		}
+		else {
+			console.log("onlineStatusElementProfileView n'existe pas");
+		}
 		if (destinataireId === data.user_id) {
 			const onlineStatusElement = document.getElementsByClassName("liveChat-online-offline-Status")[0]; // Accéder au premier élément avec cette classe
 			
@@ -271,64 +285,129 @@ function showNotification(message) {
 	}, 5000);
 }
 
+// // Affiche la liste des amis,
+// // réinitialise le champ de recherche,
+// // charge les conversations depuis l'API
+// function listeAmisLiveChat() {
+// 	console.log("[listeAmisLiveChat]");
+// 	document.getElementById('liste-amis-live-chat').style.display = 'block';
+// 	document.getElementById('conversation-live-chat').style.display = 'none';
+// 	document.getElementById('searchInput').value = '';
+// 	document.getElementById('userListContainer').innerHTML = '';
+// 	document.getElementById('searchInput').addEventListener('input', handleSearchInput);
+// 	destinataireId = null;
+
+// 	fetch('/api/listeconversation/')
+// 		.then(response => response.json())
+// 		.then(data => {
+// 			if (data.error) {
+// 				console.log("aucune conversation trouvée");
+// 				return;
+// 			}
+
+// 			const listeConversation = document.getElementById('liste-amis-live-chat-ul');
+// 			listeConversation.innerHTML = '';
+
+// 			const users = new Map();
+
+// 			// Ajouter les utilisateurs des conversations
+// 			data.conversations.forEach(user => {
+// 				users.set(user.id, user);
+// 			});
+
+// 			// Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
+// 			data.following.forEach(user => {
+// 				if (!users.has(user.id)) {
+// 					users.set(user.id, user);
+// 				}
+// 			});
+
+// 			// Générer la liste des utilisateurs
+// 			// /!\ ajouter la photo de profile de chaque utilisateur
+// 			listeConversation.innerHTML = Array.from(users.values()).map(user => `
+// 				<li>
+// 					<button class="btn nomListeConversation d-flex align-items-center" 
+// 							data-user-id="${user.id}" 
+// 							onclick="HistoriqueMessages(${user.id}, '${user.username}')">
+						
+// 						<img width="30px" height="30px" 
+// 							src="${getProfilePictureUrl(user.username)}" 
+// 							class="rounded-circle" 
+// 							id="profilePictureLiveChatList">
+
+// 						<p class="flex-grow-1 d-flex align-items-center justify-content-center m-0">${user.username}</p>
+// 					</button>
+// 				</li>
+// 			`).join('');
+// 		})
+// 		.catch(error => {
+// 			console.error('Erreur lors de la récupération des abonnements :', error);
+// 		});
+// }
+
 // Affiche la liste des amis,
 // réinitialise le champ de recherche,
 // charge les conversations depuis l'API
-function listeAmisLiveChat() {
-	console.log("[listeAmisLiveChat]");
-	document.getElementById('liste-amis-live-chat').style.display = 'block';
-	document.getElementById('conversation-live-chat').style.display = 'none';
-	document.getElementById('searchInput').value = '';
-	document.getElementById('userListContainer').innerHTML = '';
-	document.getElementById('searchInput').addEventListener('input', handleSearchInput);
-	destinataireId = null;
+async function listeAmisLiveChat() {
+    console.log("[listeAmisLiveChat]");
+    document.getElementById('liste-amis-live-chat').style.display = 'block';
+    document.getElementById('conversation-live-chat').style.display = 'none';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('userListContainer').innerHTML = '';
+    document.getElementById('searchInput').addEventListener('input', handleSearchInput);
+    destinataireId = null;
 
-	fetch('/api/listeconversation/')
-		.then(response => response.json())
-		.then(data => {
-			if (data.error) {
-				console.log("aucune conversation trouvée");
-				return;
-			}
+    try {
+        const response = await fetch('/api/listeconversation/');
+        const data = await response.json();
 
-			const listeConversation = document.getElementById('liste-amis-live-chat-ul');
-			listeConversation.innerHTML = '';
+        if (data.error) {
+            console.log("Aucune conversation trouvée");
+            return;
+        }
 
-			const users = new Map();
+        const listeConversation = document.getElementById('liste-amis-live-chat-ul');
+        listeConversation.innerHTML = '';
 
-			// Ajouter les utilisateurs des conversations
-			data.conversations.forEach(user => {
-				users.set(user.id, user);
-			});
+        const users = new Map();
 
-			// Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
-			data.following.forEach(user => {
-				if (!users.has(user.id)) {
-					users.set(user.id, user);
-				}
-			});
+        // Ajouter les utilisateurs des conversations
+        data.conversations.forEach(user => {
+            users.set(user.id, user);
+        });
 
-			// Générer la liste des utilisateurs
-			// /!\ ajouter la photo de profile de chaque utilisateur
-			listeConversation.innerHTML = Array.from(users.values()).map(user => `
-				<li>
-					<button class="btn nomListeConversation d-flex align-items-center" 
-							data-user-id="${user.id}" 
-							onclick="HistoriqueMessages(${user.id}, '${user.username}')">
-						
-						<img width="30px" height="30px" 
-							src="${getProfilePictureUrl(user.username)}" 
-							class="rounded-circle" 
-							id="profilePictureLiveChatList">
+        // Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
+        data.following.forEach(user => {
+            if (!users.has(user.id)) {
+                users.set(user.id, user);
+            }
+        });
 
-						<p class="flex-grow-1 d-flex align-items-center justify-content-center m-0">${user.username}</p>
-					</button>
-				</li>
-			`).join('');
-		})
-		.catch(error => {
-			console.error('Erreur lors de la récupération des abonnements :', error);
-		});
+        // Générer la liste des utilisateurs avec leur photo de profil
+        const usersArray = Array.from(users.values());
+
+        listeConversation.innerHTML = (await Promise.all(usersArray.map(async (user) => {
+            const profilePicUrl = await getProfilePictureUrl(user.username);
+            return `
+                <li>
+                    <button class="btn nomListeConversation d-flex align-items-center" 
+                            data-user-id="${user.id}" 
+                            onclick="HistoriqueMessages(${user.id}, '${user.username}')">
+                        
+                        <img width="30px" height="30px" 
+                            src="${profilePicUrl}" 
+                            class="rounded-circle" 
+                            id="profilePictureLiveChatList">
+
+                        <p class="flex-grow-1 d-flex align-items-center justify-content-center m-0">${user.username}</p>
+                    </button>
+                </li>
+            `;
+        }))).join('');
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des abonnements :', error);
+    }
 }
 
 // Fonction pour gérer la recherche en temps réel

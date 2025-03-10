@@ -13,6 +13,7 @@ choses a faire :
     - invitation de partie dans le liveChat
     - regler les parties dans le liveChat
     - verifier la connexion dans la partie affichage du profile d'un ami
+    - photo dans l'affichage des followers, following
 
 mots clés a chercher :
 languageFav

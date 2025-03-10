@@ -316,3 +316,13 @@ class DebloquerUtilisateurView(APIView):
 		current_user.save()
 		return Response({"message": f"L'utilisateur {user_to_unblock.username} a été débloqué avec succès."})
 	
+class ProfilePictureRequest(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request, username, *args, **kwargs):
+		user = get_object_or_404(User, username=username)
+		if not user.photoProfile:
+			photo_url =  "/static/images/base_pfp.png"
+		else:
+			photo_url = user.photoProfile.url
+		return Response({"photoProfile": photo_url}, status=200)
