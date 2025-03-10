@@ -451,17 +451,6 @@ function closeModal5() {
 	if (modal) {
 		modal.hide();
 	}
-
-	// Attendre la fermeture de la modale avant de changer le focus
-	setTimeout(() => {
-		if (!authModal.classList.contains('show')) {
-			console.log("[closeModal5] Remettre le focus sur le bouton d'ouverture");
-			bouttonSignupLogin.focus();
-		}
-		
-		// Vérifie quel élément a le focus après la fermeture de la modale
-		console.log("Élément ayant le focus après la fermeture de la modale : ", document.activeElement);
-	}, 300); // Un petit délai pour éviter que le focus soit perdu
 }
 
 // Gestionnaire pour la navigation dans l'historique
@@ -476,11 +465,7 @@ window.addEventListener('popstate', (event) => {
 
 // Gestionnaire pour la fermeture du modal
 authModal.addEventListener('hidden.bs.modal', () => {
-	console.log("[authModal.addEventListener('hidden.bs.modal')]");
-
-	// Vérifie quel élément a le focus au moment où la modale est fermée
-	console.log("Élément ayant le focus après la fermeture de la modale : ", document.activeElement);
-
+	console.log("[authModal.addEventListener('hidden.bs.modal'] : '/connexion'");
 	if (window.location.pathname === '/connexion') {
 		// Au lieu de history.back(), on push un nouvel état
 		const targetPath = previousPath || '/';
