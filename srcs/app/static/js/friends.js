@@ -200,129 +200,163 @@ function handleAddFriend(e) {
 }
 
 window.addEventListener('userLoggedIn', () => {
-    loadFriendLists();
+	loadFriendLists();
 });
 
-function getProfilePictureUrl(username) {
-	return `/static/images/${escapeHtmlFriend(username)}.jpg`;
+// function getProfilePictureUrl(username) {
+// 	return new Promise((resolve, reject) => {
+// 	const imageUrl = `/media/${username}?timestamp=${Date.now()}`;
+
+// 	const img = new Image();
+// 	img.onload = function() {
+// 		console.log(`la photo '/media/${username}?timestamp=${Date.now()}'existe`);
+// 		resolve(`/media/${escapeHtmlFriend(username)}.jpg`);
+// 	};
+// 	img.onerror = function() {
+// 		console.log(`la photo '/media/${username}?timestamp=${Date.now()}' n'existe pas`);
+// 		resolve(`/static/images/base_pfp.png`);
+// 	};
+// 	img.src = imageUrl; // Lance la vérification de l'image
+// 	});
+// }
+
+async function getProfilePictureUrl(username) {
+	try {
+		const response = await fetch(`api/profilepicturerequest/${username}/`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': getCsrfToken(), // Ajoutez votre token CSRF ici si nécessaire
+			},
+		})
+		if (!response.ok) {
+			throw new Error(`Erreur HTTP: ${response.status}`);
+		}
+		const data = await response.json();
+		return data.photoProfile
+	} catch (error) {
+		console.error('Erreur lors de la récupération de la photo de profile :', error);
+	}
 }
 
-function loadFriendLists() {
-	const followingList = document.getElementById('followingList');
-	const followersList = document.getElementById('followersList');
-	console.log("call api /api/following/");
-	fetch('/api/following/', {
-		headers: {
-			'X-CSRFToken': getCookie('csrftoken'),
-		},
-		credentials: 'same-origin'
-	})
-	.then(response => {
-		if (!response.ok) throw new Error('Erreur lors du chargement des amis');
-		return response.json();
-	})
-	// /!\ trouver une soluton pour la photo de profile
-	.then(data => {
-		console.log("il y a une reponse positive au call api : ");
-		if (followingList) {
-			if (data.length === 0) {
-				followingList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowing')}</li>`;
-				return;
-			}
-			followingList.innerHTML = data.map(user => `
-				<li class="custom-list-group-item p-3">
-					<div class="d-flex justify-content-between align-items-center">
-						<div class="d-flex align-items-center">
-							<div class="profile-picture-small me-3"
-								style="width: 40px; height: 40px;
-										border-radius: 50%;
-										background-size: cover;
-										background-position: center;
-										background-image: url('${getProfilePictureUrl(user.username)}');">
-							</div>
-							<div>
-								<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
-								<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
-							</div>
-						</div>
-						<div class="d-flex gap-2">
-							<button class="btn btn-sm custom-btn view-profile"
-									style="background-color: #194452; color: #ad996d;"
-									data-user-id="${user.id}">
-								Voir profil
-							</button>
-							<button class="btn btn-sm custom-btn delete-friend"
-									style="background-color: #194452; color: #ad996d;"
-									data-user-id="${user.id}">
-								Ne plus suivre
-							</button>
-						</div>
-					</div>
-				</li>
-			`).join('');
-		}
-		console.log("2");
-		attachEventListeners();
-	})
-	.catch(error => {
-		console.log("erreur : ", error);
-		modalBody.innerHTML = `
-			<div class="auth-message">
-				<i class="fas fa-lock"></i>
-				<p>Aucune information utilisateur disponible</p>
-			</div>`;
-		return;
-	});
-	console.log("call api /api/followers/");
-	fetch('/api/followers/', {
-		headers: {
-			'X-CSRFToken': getCookie('csrftoken'),
-		},
-		credentials: 'same-origin'
-	})
-	.then(response => {
-		if (!response.ok) throw new Error('Erreur lors du chargement des followers');
-		return response.json();
-	})
-	.then(data => {
-		if (followersList) {
-			if (data.length === 0) {
-				followersList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowers')}</li>`;
-				return;
-			}
-			followersList.innerHTML = data.map(user => `
-				<li class="custom-list-group-item p-3">
-					<div class="d-flex justify-content-between align-items-center">
-						<div class="d-flex align-items-center">
-							<div class="profile-picture-small me-3"
-								style="width: 40px; height: 40px;
-										border-radius: 50%;
-										background-size: cover;
-										background-position: center;
-										background-image: url('${getProfilePictureUrl(user.username)}');">
-							</div>
-							<div>
-								<div class="fw-bold">${escapeHtmlUser(user.username)}</div>
-								<small class="text-muted">${escapeHtmlUser(user.alias)}</small>
-							</div>
-						</div>
-						<button class="btn btn-sm custom-btn view-profile"
-								data-user-id="${user.id}">
-							Voir profil
-						</button>
-					</div>
-				</li>
-			`).join('');
-			attachEventListeners();
-		}
-	})
-	.catch(error => {
-		modalBody.innerHTML = `
-		<div class="auth-message">
-			<i class="fas fa-lock"></i>
-			<p>Aucune information utilisateur disponible</p>
-		</div>`;
-	});
+async function loadFriendLists() {
+    const followingList = document.getElementById('followingList');
+    const followersList = document.getElementById('followersList');
+    
+    console.log("call api /api/following/");
+    
+    try {
+        // Récupère les données des personnes suivies
+        const followingResponse = await fetch('/api/following/', {
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            credentials: 'same-origin'
+        });
+        
+        if (!followingResponse.ok) throw new Error('Erreur lors du chargement des amis');
+        
+        const followingData = await followingResponse.json();
+        console.log("Il y a une réponse positive au call API : ");
+        
+        if (followingList) {
+            if (followingData.length === 0) {
+                followingList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowing')}</li>`;
+            } else {
+                // Attendre que toutes les Promises se résolvent avant d'appliquer .join('')
+                const items = await Promise.all(followingData.map(async (user) => {
+                    const profilePicUrl = await getProfilePictureUrl(user.username);
+                    return `
+                        <li class="custom-list-group-item p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img width="40px" height="40px" src="${profilePicUrl}" class="rounded-circle me-3" id="profilePictureFollowingList">
+                                    <div>
+                                        <div class="fw-bold">${escapeHtmlUser(user.username)}</div>
+                                        <small class="text-muted">${escapeHtmlUser(user.alias)}</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm custom-btn view-profile" style="background-color: #194452; color: #ad996d;" data-user-id="${user.id}">
+                                        Voir profil
+                                    </button>
+                                    <button class="btn btn-sm custom-btn delete-friend" style="background-color: #194452; color: #ad996d;" data-user-id="${user.id}">
+                                        Ne plus suivre
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                }));
+
+                followingList.innerHTML = items.join('');
+            }
+        }
+        
+        console.log("2");
+        attachEventListeners();
+    } catch (error) {
+        console.log("Erreur : ", error);
+        modalBody.innerHTML = `
+            <div class="auth-message">
+                <i class="fas fa-lock"></i>
+                <p>Aucune information utilisateur disponible</p>
+            </div>`;
+    }
+
+    console.log("call api /api/followers/");
+
+    try {
+        // Récupère les données des followers
+        const followersResponse = await fetch('/api/followers/', {
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            credentials: 'same-origin'
+        });
+
+        if (!followersResponse.ok) throw new Error('Erreur lors du chargement des followers');
+        
+        const followersData = await followersResponse.json();
+        
+        if (followersList) {
+            if (followersData.length === 0) {
+                followersList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowers')}</li>`;
+            } else {
+                // Attendre que toutes les Promises se résolvent avant d'appliquer .join('')
+                const items = await Promise.all(followersData.map(async (user) => {
+                    const profilePicUrl = await getProfilePictureUrl(user.username);
+                    return `
+                        <li class="custom-list-group-item p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img width="40px" height="40px" src="${profilePicUrl}" class="rounded-circle me-3" id="profilePictureFollowersList">
+                                    <div>
+                                        <div class="fw-bold">${escapeHtmlUser(user.username)}</div>
+                                        <small class="text-muted">${escapeHtmlUser(user.alias)}</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm custom-btn view-profile" data-user-id="${user.id}">
+                                    Voir profil
+                                </button>
+                            </div>
+                        </li>
+                    `;
+                }));
+
+                followersList.innerHTML = items.join('');
+            }
+
+            attachEventListeners();
+        }
+    } catch (error) {
+        console.log("Erreur : ", error);
+        modalBody.innerHTML = `
+        <div class="auth-message">
+            <i class="fas fa-lock"></i>
+            <p>Aucune information utilisateur disponible</p>
+        </div>`;
+    }
 }
 
 function attachEventListeners() {
@@ -367,58 +401,49 @@ function handleDeleteFriend(e) {
 	}
 }
 
-function handleViewProfile(e) {
-	e.preventDefault();
-	const userId = e.target.getAttribute('data-user-id');
-	if (userId) {
-		fetch(`/api/userprofile/${userId}/`)
-			.then(response => {
-				if (!response.ok) throw new Error('L\'utilisateur n\'existe pas');
-					return response.json();
-			})
-			.then(data => {
-				// /!\ a modifier avec onlinestatus
-				// const onlineStatus = data.is_online
-				//     ? `<span class="text-success">En ligne</span>`
-				//     : `<span class="text-muted">Déconnecté</span>`;
+async function handleViewProfile(e) {
+    e.preventDefault();
+    const userId = e.target.getAttribute('data-user-id');
+    if (userId) {
+        try {
+            const response = await fetch(`/api/userprofile/${userId}/`);
+            if (!response.ok) throw new Error("L'utilisateur n'existe pas");
 
-				console.log("[handleViewProfile] data : ", data);
+            const data = await response.json();
+            console.log("[handleViewProfile] data : ", data);
 
-				// /!\ remplacer la div par une img de la photo de profile de l'utilisateur
-				document.getElementById('friendProfileContent').innerHTML = `
-					<div class="text-center mb-3">
-						<div class="profile-picture-large mx-auto mb-2"
-							style="width: 100px; height: 100px;
-									border-radius: 50%;
-									background-size: cover;
-									background-position: center;
-									background-image: url('${getProfilePictureUrl(data.username)}');">
-						</div>
-						<h4>${escapeHtmlUser(data.username)}</h4>
-						<p class="text-muted">${escapeHtmlUser(data.alias)}</p>
-						<div class="mb-2" id="${data.onlineStatus ? 'liveChat-onlineStatus' : 'liveChat-offlineStatus'}">
-							${data.onlineStatus ? "En ligne" : "Hors ligne"}
-						</div>
-					</div>
-					<div class="row text-center">
-						<div class="col-4">
-							<h5>${data.nbVictoires + data.nbDefaites}</h5>
-							<small class="text-muted">Parties</small>
-						</div>
-						<div class="col-4">
-							<h5>${data.nbVictoires}</h5>
-							<small class="text-muted">Victoires</small>
-						</div>
-						<div class="col-4">
-							<h5>${data.nbDefaites}</h5>
-							<small class="text-muted">Défaites</small>
-						</div>
-					</div>
-				`;
-				friendProfileModal.show();
-			})
-			.catch(error => console.log(error));
-	}
+            // Récupérer l'URL de la photo de profil
+            const profilePicUrl = await getProfilePictureUrl(data.username);
+
+            document.getElementById('friendProfileContent').innerHTML = `
+                <div class="text-center mb-3">
+                    <img width="100px" height="100px" src="${profilePicUrl}" class="rounded-circle" id="profilePictureFriendProfile">
+                    <h4>${escapeHtmlUser(data.username)}</h4>
+                    <p class="text-muted">${escapeHtmlUser(data.alias)}</p>
+                    <div class="mb-2 onlineOrOfflineStatus" id="${data.onlineStatus ? 'liveChat-onlineStatus' : 'liveChat-offlineStatus'}">
+                        ${data.onlineStatus ? "En ligne" : "Hors ligne"}
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h5>${data.nbVictoires + data.nbDefaites}</h5>
+                        <small class="text-muted">Parties</small>
+                    </div>
+                    <div class="col-4">
+                        <h5>${data.nbVictoires}</h5>
+                        <small class="text-muted">Victoires</small>
+                    </div>
+                    <div class="col-4">
+                        <h5>${data.nbDefaites}</h5>
+                        <small class="text-muted">Défaites</small>
+                    </div>
+                </div>
+            `;
+            friendProfileModal.show();
+        } catch (error) {
+            console.log("[handleViewProfile] Erreur :", error);
+        }
+    }
 }
 
 function getCookie(name) {

@@ -87,20 +87,38 @@ function updateUserInfo(username, photoProfile) {
 		// document.getElementById('userUsername').innerHTML = safeUsername;
 
 		if (photoProfile) {
-			document.getElementById('userUsernamePhoto').innerHTML = `
-				<img width="62" height="62" 
-					 src="/static/images/${safeUsername}.jpg?timestamp=${Date.now()}" 
-					 class="rounded-circle" 
-					 id="profilePicture">
-				<h4 id="userUsername">${safeUsername}</h4>
-			`;
-			// document.getElementById('userUsernamePhoto').innerHTML = `
-			// 	<div id="profilePicture" class="profile-picture"></div>
-			// 	<h4 id="userUsername">${safeUsername}</h4>
-			// `;
-			// document.getElementById('test').innerHTML += `<div id="profilePicture" class="profile-picture"></div>`;
-			// const profilePictureElement = document.getElementById("profilePicture");
-			// profilePictureElement.style.backgroundImage = `url(/static/images/${safeUsername}.jpg?timestamp=${Date.now()})`;
+			// Construire l'URL de l'image en utilisant le chemin relatif vers le dossier MEDIA
+			// const imageUrl = photoProfile.trim() + '?timestamp=' + Date.now();
+			const imageUrl = `${photoProfile}?timestamp=${Date.now()}`;
+
+
+			// Créer un objet Image pour vérifier si l'image existe
+			const img = new Image();
+			img.onload = function() {
+				// Si l'image se charge correctement, l'URL est valide
+				console.log("Image existante : ", imageUrl);
+				// Mettre à jour l'image dans l'élément HTML
+				document.getElementById('userUsernamePhoto').innerHTML = `
+					<img width="62" height="62"
+						src="${imageUrl}"
+						class="rounded-circle"
+						id="profilePicture">
+					<h4 id="userUsername">${safeUsername}</h4>
+				`;
+			};
+			img.onerror = function() {
+				// Si l'image ne se charge pas, afficher un message d'erreur
+				console.log("Image non trouvée : ", imageUrl);
+				// Tu peux aussi mettre une image par défaut ici, si tu veux
+				document.getElementById('userUsernamePhoto').innerHTML = `
+					<img width="62" height="62"
+						src="/static/images/base_pfp.png"
+						class="rounded-circle"
+						id="profilePicture">
+					<h4 id="userUsername">${safeUsername}</h4>
+				`;
+			};
+			img.src = imageUrl; // Lance la vérification de l'image
 		} else {
 			document.getElementById('userUsernamePhoto').innerHTML = `
 				<img width="62" height="62" 

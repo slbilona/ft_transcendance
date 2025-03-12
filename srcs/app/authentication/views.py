@@ -28,7 +28,7 @@ from django.views.decorators.http import require_GET
 
 @require_GET
 def get_csrf_token(request):
-    return JsonResponse({'csrfToken': get_token(request)})
+	return JsonResponse({'csrfToken': get_token(request)})
 
 #APIView pour des actions specifiques
 #ModelViewset pour les operations CRUD directement liee a un model
@@ -51,24 +51,24 @@ from rest_framework.views import APIView
 from django.contrib.auth import login
 
 class LoginAPI(APIView):
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']  # Utilisateur authentifié
-            login(request, user)
-            user_data = UserSerializer(user).data
+	def post(self, request):
+		serializer = LoginSerializer(data=request.data)
+		if serializer.is_valid():
+			user = serializer.validated_data['user']  # Utilisateur authentifié
+			login(request, user)
+			user_data = UserSerializer(user).data
 
-            return Response({
-                "success": True,
-                "message": "Connexion réussie",
-                "user": user_data
-            }, status=status.HTTP_200_OK)
+			return Response({
+				"success": True,
+				"message": "Connexion réussie",
+				"user": user_data
+			}, status=status.HTTP_200_OK)
 
-        return Response({
-            "success": False,
-            "message": "Échec de la connexion",
-            "errors": serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+		return Response({
+			"success": False,
+			"message": "Échec de la connexion",
+			"errors": serializer.errors
+		}, status=status.HTTP_400_BAD_REQUEST)
 
 class SignupAPI(APIView):
 	def post(self, request):
@@ -83,15 +83,15 @@ class SignupAPI(APIView):
 			user.set_password(serializer.validated_data['password'])
 
 			if 'photoProfile' in request.FILES:
-				photo = request.FILES['photoProfile']
-				filename = f'{user.username}.jpg'
-				filepath = os.path.join(settings.BASE_DIR, 'static', 'images', filename)
+							photo = request.FILES['photoProfile']
+							filename = f'{user.username}.jpg'
+							filepath = os.path.join(settings.MEDIA_ROOT, filename)  # Enregistrement dans le dossier MEDIA_ROOT
 
-				with open(filepath, 'wb+') as destination:
-					for chunk in photo.chunks():
-						destination.write(chunk)
+							with open(filepath, 'wb+') as destination:
+								for chunk in photo.chunks():
+									destination.write(chunk)
 
-				user.photoProfile = f'images/{filename}'
+							user.photoProfile = f'{filename}'  # Pas de sous-dossier, juste le fichier
 
 			user.save()
 			login(request, user)
@@ -103,8 +103,8 @@ class SignupAPI(APIView):
 		else:
 			logger.error(f"Validation errors: {serializer.errors}")
 		return Response({
-                "errors": serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+				"errors": serializer.errors
+			}, status=status.HTTP_400_BAD_REQUEST)
 
 class Logout(APIView):
 	def get(self, request):
@@ -112,12 +112,12 @@ class Logout(APIView):
 		return Response({"message": "Déconnexion réussie"}, status.HTTP_200_OK)
 
 class UserDetailView(APIView):
-    def get(self, request, username):
-        user = get_object_or_404(User, username=username)
-        serializer = PublicUserSerializer(user)
-        data = serializer.data
-        data['id'] = user.id
-        return Response(data)
+	def get(self, request, username):
+		user = get_object_or_404(User, username=username)
+		serializer = PublicUserSerializer(user)
+		data = serializer.data
+		data['id'] = user.id
+		return Response(data)
 
 class UserProfileView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -158,66 +158,66 @@ class MatchHistoryView(generics.ListAPIView):
 		).order_by('-date')
 		#La pagination est faites automatiquement par DRF grace a la reqquete qui contient des parametres sur la pages souhaitees
 		# return Play.objects.filter(
-        #     (Q(player1=user) |
-        #      Q(player2=user) |
-        #      Q(player3=user) |
-        #      Q(player4=user)) &
-        #     Q(is_finished=True)
-        # ).order_by('-date')
+		#     (Q(player1=user) |
+		#      Q(player2=user) |
+		#      Q(player3=user) |
+		#      Q(player4=user)) &
+		#     Q(is_finished=True)
+		# ).order_by('-date')
 
 class UserProfileUpdateView(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        user = request.user
-        serializer = UserUpdateSerializer(user)
-        return Response(serializer.data)
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		user = request.user
+		serializer = UserUpdateSerializer(user)
+		return Response(serializer.data)
 
-    def put(self, request):
-        user = request.user
-        old_username = user.username
-        serializer = UserUpdateSerializer(user, data=request.data, partial=True, context={'request': request})
+	def put(self, request):
+		user = request.user
+		old_username = user.username
+		serializer = UserUpdateSerializer(user, data=request.data, partial=True, context={'request': request})
 
-        if serializer.is_valid():
-            # Gérer le changement de photo de profil
-            if 'photoProfile' in request.FILES:
-                photo = request.FILES['photoProfile']
-                old_filename = f'{old_username}.jpg'
-                new_filename = f'{user.username}.jpg'
-                old_filepath = os.path.join(settings.BASE_DIR, 'static', 'images', old_filename)
-                new_filepath = os.path.join(settings.BASE_DIR, 'static', 'images', new_filename)
+		if serializer.is_valid():
+			# Gérer le changement de photo de profil
+			if 'photoProfile' in request.FILES:
+				photo = request.FILES['photoProfile']
+				old_filename = f'{old_username}.jpg'
+				new_filename = f'{user.username}.jpg'
+				old_filepath = os.path.join(settings.MEDIA_ROOT, old_filename)
+				new_filepath = os.path.join(settings.MEDIA_ROOT, new_filename)
 
-                # Supprimer l'ancienne photo si elle existe
-                if os.path.exists(old_filepath):
-                    os.remove(old_filepath)
+				# Supprimer l'ancienne photo si elle existe
+				if os.path.exists(old_filepath):
+					os.remove(old_filepath)
 
-                # Enregistrer la nouvelle photo
-                with open(new_filepath, 'wb+') as destination:
-                    for chunk in photo.chunks():
-                        destination.write(chunk)
+				# Enregistrer la nouvelle photo
+				with open(new_filepath, 'wb+') as destination:
+					for chunk in photo.chunks():
+						destination.write(chunk)
 
-                # Mettre à jour le chemin de la photo de profil
-                user.photoProfile = f'images/{new_filename}'
-                user.save()
+				# Mettre à jour le chemin de la photo de profil
+				user.photoProfile = f'{new_filename}'
+				user.save()
 
-            # Si le nom d'utilisateur change, renommer la photo de profil
-            if 'username' in serializer.validated_data and serializer.validated_data['username'] != old_username:
-                old_filename = f'{old_username}.jpg'
-                new_filename = f'{serializer.validated_data["username"]}.jpg'
-                old_filepath = os.path.join(settings.BASE_DIR, 'static', 'images', old_filename)
-                new_filepath = os.path.join(settings.BASE_DIR, 'static', 'images', new_filename)
+			# Si le nom d'utilisateur change, renommer la photo de profil
+			if 'username' in serializer.validated_data and serializer.validated_data['username'] != old_username:
+				old_filename = f'{old_username}.jpg'
+				new_filename = f'{serializer.validated_data["username"]}.jpg'
+				old_filepath = os.path.join(settings.MEDIA_ROOT, old_filename)
+				new_filepath = os.path.join(settings.MEDIA_ROOT, new_filename)
 
-                # Renommer le fichier si l'ancienne photo existe
-                if os.path.exists(old_filepath):
-                    os.rename(old_filepath, new_filepath)
-                    user.photoProfile = f'images/{new_filename}'
-                    user.save()
+				# Renommer le fichier si l'ancienne photo existe
+				if os.path.exists(old_filepath):
+					os.rename(old_filepath, new_filepath)
+					user.photoProfile = f'{new_filename}'
+					user.save()
 
-            # Save the user with the serializer to update other fields
-            user_updated = serializer.save()
+			# Save the user with the serializer to update other fields
+			user_updated = serializer.save()
 
-            return Response(UserSerializer(user_updated).data, status=status.HTTP_200_OK)
+			return Response(UserSerializer(user_updated).data, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDeleteView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -227,92 +227,102 @@ class UserDeleteView(APIView):
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddFriendView(APIView):
-    permission_classes = [IsAuthenticated]
-    def post(self, request, user_id):
-        user_to_follow = get_object_or_404(User, id=user_id)
-        if request.user == user_to_follow:
-            return Response({"detail": "Vous ne pouvez pas vous suivre vous-même."},
-                          status=status.HTTP_400_BAD_REQUEST)
+	permission_classes = [IsAuthenticated]
+	def post(self, request, user_id):
+		user_to_follow = get_object_or_404(User, id=user_id)
+		if request.user == user_to_follow:
+			return Response({"detail": "Vous ne pouvez pas vous suivre vous-même."},
+						  status=status.HTTP_400_BAD_REQUEST)
 
-        # Vérifier si l'utilisateur est déjà dans la liste des following
-        if user_to_follow in request.user.following.all():
-            return Response({"detail": "Vous suivez déjà cet utilisateur."},
-                          status=status.HTTP_400_BAD_REQUEST)
+		# Vérifier si l'utilisateur est déjà dans la liste des following
+		if user_to_follow in request.user.following.all():
+			return Response({"detail": "Vous suivez déjà cet utilisateur."},
+						  status=status.HTTP_400_BAD_REQUEST)
 
-        request.user.following.add(user_to_follow)
-        return Response({
-            "detail": f"Vous suivez maintenant {user_to_follow.username}.",
-            "user": {
-                "id": user_to_follow.id,
-                "username": user_to_follow.username
-            }
-        }, status=status.HTTP_200_OK)
+		request.user.following.add(user_to_follow)
+		return Response({
+			"detail": f"Vous suivez maintenant {user_to_follow.username}.",
+			"user": {
+				"id": user_to_follow.id,
+				"username": user_to_follow.username
+			}
+		}, status=status.HTTP_200_OK)
 
 class SuppFriendView(APIView):
-    permission_classes = [IsAuthenticated]
-    def delete(self, request, user_id):
-        user_to_unfollow = get_object_or_404(User, id=user_id)
+	permission_classes = [IsAuthenticated]
+	def delete(self, request, user_id):
+		user_to_unfollow = get_object_or_404(User, id=user_id)
 
-        # Vérifier si l'utilisateur est bien dans la liste des following
-        if user_to_unfollow not in request.user.following.all():
-            return Response({"detail": "Vous ne suivez pas cet utilisateur."},
-                          status=status.HTTP_400_BAD_REQUEST)
+		# Vérifier si l'utilisateur est bien dans la liste des following
+		if user_to_unfollow not in request.user.following.all():
+			return Response({"detail": "Vous ne suivez pas cet utilisateur."},
+						  status=status.HTTP_400_BAD_REQUEST)
 
-        request.user.following.remove(user_to_unfollow)
-        return Response({
-            "detail": f"Vous ne suivez plus {user_to_unfollow.username}.",
-            "user_id": user_id
-        }, status=status.HTTP_200_OK)
+		request.user.following.remove(user_to_unfollow)
+		return Response({
+			"detail": f"Vous ne suivez plus {user_to_unfollow.username}.",
+			"user_id": user_id
+		}, status=status.HTTP_200_OK)
 
 class FollowingListView(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        following_users = request.user.following.all()
-        following_data = [{
-            "id": user.id,
-            "username": user.username,
-            "alias": user.alias,
-            "photoProfile": user.photoProfile.url if user.photoProfile else None
-        } for user in following_users]
-        return Response(following_data, status=status.HTTP_200_OK)
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		following_users = request.user.following.all()
+		following_data = [{
+			"id": user.id,
+			"username": user.username,
+			"alias": user.alias,
+			"photoProfile": user.photoProfile.url if user.photoProfile else None
+		} for user in following_users]
+		return Response(following_data, status=status.HTTP_200_OK)
 
 class FollowersListView(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        followers_users = request.user.followers.all()
-        followers_data = [{
-            "id": user.id,
-            "username": user.username,
-            "alias": user.alias,
-            "photoProfile": user.photoProfile.url if user.photoProfile else None
-        } for user in followers_users]
-        return Response(followers_data, status=status.HTTP_200_OK)
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		followers_users = request.user.followers.all()
+		followers_data = [{
+			"id": user.id,
+			"username": user.username,
+			"alias": user.alias,
+			"photoProfile": user.photoProfile.url if user.photoProfile else None
+		} for user in followers_users]
+		return Response(followers_data, status=status.HTTP_200_OK)
 
 class BloquerUtilisateurView(APIView):
-    permission_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated]
 
-    def post(self, request, id, *args, **kwargs):
-        user_to_block = get_object_or_404(User, id=id)
-        current_user = request.user
+	def post(self, request, id, *args, **kwargs):
+		user_to_block = get_object_or_404(User, id=id)
+		current_user = request.user
 
-        if current_user == user_to_block:
-            return Response({"error": "Vous ne pouvez pas vous bloquer vous-même."}, status=400)
+		if current_user == user_to_block:
+			return Response({"error": "Vous ne pouvez pas vous bloquer vous-même."}, status=400)
 
-        current_user.blockedUser.add(user_to_block)
-        current_user.save()
-        return Response({"message": f"L'utilisateur {user_to_block.username} a été bloqué avec succès."})
+		current_user.blockedUser.add(user_to_block)
+		current_user.save()
+		return Response({"message": f"L'utilisateur {user_to_block.username} a été bloqué avec succès."})
 	
 class DebloquerUtilisateurView(APIView):
-    permission_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated]
 
-    def post(self, request, id, *args, **kwargs):
-        user_to_unblock = get_object_or_404(User, id=id)
-        current_user = request.user
+	def post(self, request, id, *args, **kwargs):
+		user_to_unblock = get_object_or_404(User, id=id)
+		current_user = request.user
 
-        if current_user == user_to_unblock:
-            return Response({"error": "Vous ne pouvez pas vous débloquer vous-même."}, status=400)
+		if current_user == user_to_unblock:
+			return Response({"error": "Vous ne pouvez pas vous débloquer vous-même."}, status=400)
 
-        current_user.blockedUser.remove(user_to_unblock)
-        current_user.save()
-        return Response({"message": f"L'utilisateur {user_to_unblock.username} a été débloqué avec succès."})
+		current_user.blockedUser.remove(user_to_unblock)
+		current_user.save()
+		return Response({"message": f"L'utilisateur {user_to_unblock.username} a été débloqué avec succès."})
 	
+class ProfilePictureRequest(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request, username, *args, **kwargs):
+		user = get_object_or_404(User, username=username)
+		if not user.photoProfile:
+			photo_url =  "/static/images/base_pfp.png"
+		else:
+			photo_url = user.photoProfile.url
+		return Response({"photoProfile": photo_url}, status=200)

@@ -21,7 +21,7 @@ from game import views
 from auth_app.views import get_42_auth_url, callback_42, login_with_42, login_page, welcome  # 🔹 Assure-toi que cette ligne est bien là !
 from game.views import PlayCreateAPIView, PlayDetailAPIView, PlaySubscribeAPIView, PlayListAPIView
 from game.views import TournamentViewSet
-from authentication.views import LoginAPI, SignupAPI, Logout, UserInfoAPI, UserProfileView, UserProfileUpdateView, UserDeleteView
+from authentication.views import LoginAPI, SignupAPI, Logout, UserInfoAPI, UserProfileView, UserProfileUpdateView, UserDeleteView, ProfilePictureRequest
 from authentication.views import AddFriendView, SuppFriendView, FollowingListView, FollowersListView, UserDetailView, MatchHistoryView, BloquerUtilisateurView, DebloquerUtilisateurView
 from liveChat.views import MessageHistory, listeConversation, listeUtilisateurs
 from authentication.views import get_csrf_token
@@ -58,6 +58,7 @@ urlpatterns = [
     path('bloquer-utilisateur/<int:id>/', BloquerUtilisateurView.as_view(), name='bloquer_utilisateur'),
     path('debloquer-utilisateur/<int:id>/', DebloquerUtilisateurView.as_view(), name='debloquer_utilisateur'),
     path('api/utilisateurs/', listeUtilisateurs.as_view(), name='utilisateurs-list'),
+    path('api/profilepicturerequest/<str:username>/', ProfilePictureRequest.as_view()),
 	re_path(r'^.*$', views.index, name='index'),
     path('auth/', include('auth_app.urls')),  # ✅ Redirige vers `auth_app.urls`
      path('get-42-url/', get_42_auth_url, name='get_42_auth_url'),
