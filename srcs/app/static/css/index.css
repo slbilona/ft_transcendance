@@ -54,8 +54,13 @@ header {
 /* Style de la carte body */
 .card-body {
 	background-color: #ef6930;
-	margin: 1rem;
-	border-radius: 1rem;
+    margin: 1rem;
+	border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
 }
 
 /* Style de la carte (appliqué à toutes les cartes) */
@@ -63,6 +68,7 @@ header {
 	background-image: url('../images/wallpaper.png');
 	border: 2px solid #ef6930 !important;
 	border-radius: 10px;
+    height: 250px;
 }
 
 /* Style de la carte au survol */
