@@ -57,10 +57,9 @@ header {
     margin: 1rem;
 	border-radius: 10px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-direction: column;
-
 }
 
 /* Style de la carte (appliqué à toutes les cartes) */
@@ -73,7 +72,6 @@ header {
 
 /* Style de la carte au survol */
 .card:hover {
-	border-radius: 10px;
 	box-shadow: 5px 5px 15px #f8cdaa;
 }
 
@@ -85,6 +83,11 @@ header {
 	align-items: center; /* Centrer verticalement */
 	gap: 2rem; /* Espace entre les cartes (augmenter l'espace ici) */
 	padding: 1rem; /* Espace autour du contenu (si tu veux éviter que les cartes touchent les bords de la fenêtre) */
+}
+
+.play-button {
+    width: 130px;
+    margin-top: 10px;
 }
 
 .modal {
