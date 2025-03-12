@@ -103,19 +103,14 @@ ASGI_APPLICATION = 'Transcendance.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db/db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'mydb'),
+        'USER': os.getenv('POSTGRES_USER', 'myuser'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'mypassword'),
+        'HOST': 'postgres-db',
+        'PORT': '5432',
     }
 }
-
-#ilona
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.environ.get("DJANGO_DB_PATH", BASE_DIR / "db/db.sqlite3"),
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -210,3 +205,6 @@ REST_FRAMEWORK = {
 	'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',#LimitOffsetPagination (plus avances)
 	'PAGE_SIZE': 5,
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # Si les fichiers sont stockés dans un dossier 'media' relatif au projet

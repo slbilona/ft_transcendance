@@ -25,7 +25,7 @@ function initWebSocket() {
 // gere les messages recus
 function handleIncomingMessage(e) {
 	const data = JSON.parse(e.data);
-	console.log("PongGmae : ", PongGame);
+	console.log("data.type : '", data.type, "', data.message : '", data.message, "'");
 	if (data.type === 'message') {
 		afficherMessage(data);
 	} else if (data.type === 'block_user') {
@@ -42,6 +42,20 @@ function handleIncomingMessage(e) {
 		invitationJeu(data.message);
 		messageContainer.scrollTop = messageContainer.scrollHeight;
 	} else if (data.type === 'connection_status') {
+		const onlineStatusElementProfileView = document.getElementsByClassName("onlineOrOfflineStatus")[0]; // Accéder au premier élément avec cette classe
+		if(onlineStatusElementProfileView) {
+			console.log("onlineStatusElementProfileView existe");
+			if (data.status === "connected") {
+				onlineStatusElementProfileView.innerHTML = `en ligne`;  // Met à jour le texte
+				onlineStatusElementProfileView.id = "liveChat-onlineStatus";  // Change l'id de l'élément
+			} else {
+				onlineStatusElementProfileView.innerHTML = `hors ligne`;  // Met à jour le texte
+				onlineStatusElementProfileView.id = "liveChat-offlineStatus";  // Change l'id de l'élément
+			}
+		}
+		else {
+			console.log("onlineStatusElementProfileView n'existe pas");
+		}
 		if (destinataireId === data.user_id) {
 			const onlineStatusElement = document.getElementsByClassName("liveChat-online-offline-Status")[0]; // Accéder au premier élément avec cette classe
 			
@@ -54,7 +68,7 @@ function handleIncomingMessage(e) {
 			}
 		}
 	} else if (data.type === 'Partie non trouvée') {
-		console.log
+		console.log("partie non trouvée");
 	} else {
 		console.warn("Le type de message n'est pas reconnu. data : '", data, "' mesage : '", data.type, "', data.message : '", data.message, "'");
 	}
@@ -71,10 +85,10 @@ function handleWebSocketClose() {
 // gere les messages recu en rapport au partie via le liveCHat
 function invitationJeu(message) {
 	const messageContainer = document.getElementById('message-container');
-    if (!messageContainer) {
-        console.error("messageContainer introuvable !");
-        return;
-    }
+	if (!messageContainer) {
+		console.error("messageContainer introuvable !");
+		return;
+	}
 
 	charIdInvitation = "Invitation_" + message.message_id;
 	messageElement = document.getElementById(charIdInvitation);
@@ -136,16 +150,18 @@ function afficherInvitationJeu(message, messageElement) {
 		}
 	} else if (message.message === "invitation acceptée") {
 		if (message.expediteur_id === destinataireId) {
+			console.log("je recois l'invitation et j'accepte");
 			messageElement.innerHTML = `
 				invitation acceptée, partie en cours...
 			`;
 		} else {
+			console.log("j'ai invité");
 			messageElement.innerHTML = `
 				invitation acceptée, partie en cours...
 			`;
 	
 			// Appel de la fonction joinGame et vérification du succès
-			console.log("réponse joingam : ", PongGame.joinGame(message.gameId));
+			console.log("réponse joingame : ", PongGame.joinGame(message.gameId));
 		}
 	} else if (message.message === "resultats partie"){
 		if (message.winners.includes(parseInt(destinataireId)) && destinataireId === message.destinataire_id) {
@@ -180,20 +196,20 @@ function afficherInvitationJeu(message, messageElement) {
 
 // envoie un message via websocket si l'utilisateur annule la partie
 function invitationAnnule(destinataire_id, message_id) {
-    chatSocket.send(JSON.stringify({
-        'type': "pong_invitation_annulation",
-        'destinataire_id': destinataire_id,
+	chatSocket.send(JSON.stringify({
+		'type': "pong_invitation_annulation",
+		'destinataire_id': destinataire_id,
 		'message_id_db': message_id
-    }));
+	}));
 }
 
 // envoie un message via websocket si l'utilisateur refuse la partie
 function invitationRefuse(expediteur_id, message_id) {
-    chatSocket.send(JSON.stringify({
-        'type': "pong_invitation_refuse",
-        'destinataire_id': expediteur_id,
+	chatSocket.send(JSON.stringify({
+		'type': "pong_invitation_refuse",
+		'destinataire_id': expediteur_id,
 		'message_id_db': message_id
-    }));
+	}));
 }
 
 // Envoie une invitation à jouer à Pong via WebSocket à un destinataire spécifié par son IdDestinataire.
@@ -207,23 +223,23 @@ function inviterPartiePong(IdDestinataire) {
 
 // crée une partie en remote puis envoie un message via websocket si l'utilisateur accepte la partie
 function invitationAccepte(expediteur_id, message_id) {
-    PongGame.createNewGame(true, 2, true)
-        .then(gameId => {
-            if (gameId === null || gameId === undefined) {
-                console.error("Game ID invalide. Le message WebSocket ne sera pas envoyé.");
-                return;
-            }
+	PongGame.createNewGame(true, 2, true)
+		.then(gameId => {
+			if (gameId === null || gameId === undefined) {
+				console.error("Game ID invalide. Le message WebSocket ne sera pas envoyé.");
+				return;
+			}
 
-            chatSocket.send(JSON.stringify({
-                'type': "pong_invitation_accepté",
-                'destinataire_id': expediteur_id,
-                'message_id_db': message_id,
-                'gameId': gameId
-            }));
-        })
-        .catch(error => {
-            console.error("Erreur lors de la création du jeu ou de l'envoi via WebSocket :", error);
-        });
+			chatSocket.send(JSON.stringify({
+				'type': "pong_invitation_accepté",
+				'destinataire_id': expediteur_id,
+				'message_id_db': message_id,
+				'gameId': gameId
+			}));
+		})
+		.catch(error => {
+			console.error("Erreur lors de la création du jeu ou de l'envoi via WebSocket :", error);
+		});
 }
 
 
@@ -258,81 +274,154 @@ function afficherMessage(data) {
 // Affiche une notification avec le message donné, rend la pop-up visible, puis la cache après 5 secondes
 function showNotification(message) {
 	console.log("[showNotification] : '", message, "'");
-    const popup = document.getElementById('notification-popup');
-    popup.textContent = message;
-    popup.classList.add('show');
+	const popup = document.getElementById('notification-popup');
+	popup.textContent = message;
+	popup.classList.add('show');
 
-    // Cachez la pop-up après 5 secondes
-    setTimeout(() => {
+	// Cachez la pop-up après 5 secondes
+	setTimeout(() => {
 		console.log("[showNotification] : '", message, "' 2");
-        popup.classList.remove('show');
-    }, 5000);
+		popup.classList.remove('show');
+	}, 5000);
 }
+
+// // Affiche la liste des amis,
+// // réinitialise le champ de recherche,
+// // charge les conversations depuis l'API
+// function listeAmisLiveChat() {
+// 	console.log("[listeAmisLiveChat]");
+// 	document.getElementById('liste-amis-live-chat').style.display = 'block';
+// 	document.getElementById('conversation-live-chat').style.display = 'none';
+// 	document.getElementById('searchInput').value = '';
+// 	document.getElementById('userListContainer').innerHTML = '';
+// 	document.getElementById('searchInput').addEventListener('input', handleSearchInput);
+// 	destinataireId = null;
+
+// 	fetch('/api/listeconversation/')
+// 		.then(response => response.json())
+// 		.then(data => {
+// 			if (data.error) {
+// 				console.log("aucune conversation trouvée");
+// 				return;
+// 			}
+
+// 			const listeConversation = document.getElementById('liste-amis-live-chat-ul');
+// 			listeConversation.innerHTML = '';
+
+// 			const users = new Map();
+
+// 			// Ajouter les utilisateurs des conversations
+// 			data.conversations.forEach(user => {
+// 				users.set(user.id, user);
+// 			});
+
+// 			// Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
+// 			data.following.forEach(user => {
+// 				if (!users.has(user.id)) {
+// 					users.set(user.id, user);
+// 				}
+// 			});
+
+// 			// Générer la liste des utilisateurs
+// 			// /!\ ajouter la photo de profile de chaque utilisateur
+// 			listeConversation.innerHTML = Array.from(users.values()).map(user => `
+// 				<li>
+// 					<button class="btn nomListeConversation d-flex align-items-center" 
+// 							data-user-id="${user.id}" 
+// 							onclick="HistoriqueMessages(${user.id}, '${user.username}')">
+						
+// 						<img width="30px" height="30px" 
+// 							src="${getProfilePictureUrl(user.username)}" 
+// 							class="rounded-circle" 
+// 							id="profilePictureLiveChatList">
+
+// 						<p class="flex-grow-1 d-flex align-items-center justify-content-center m-0">${user.username}</p>
+// 					</button>
+// 				</li>
+// 			`).join('');
+// 		})
+// 		.catch(error => {
+// 			console.error('Erreur lors de la récupération des abonnements :', error);
+// 		});
+// }
 
 // Affiche la liste des amis,
 // réinitialise le champ de recherche,
 // charge les conversations depuis l'API
-function listeAmisLiveChat() {
-	console.log("[listeAmisLiveChat]");
-	document.getElementById('liste-amis-live-chat').style.display = 'block';
-	document.getElementById('conversation-live-chat').style.display = 'none';
-	document.getElementById('searchInput').value = '';
-	document.getElementById('userListContainer').innerHTML = '';
-	document.getElementById('searchInput').addEventListener('input', handleSearchInput);
-	destinataireId = null;
+async function listeAmisLiveChat() {
+    console.log("[listeAmisLiveChat]");
+    document.getElementById('liste-amis-live-chat').style.display = 'block';
+    document.getElementById('conversation-live-chat').style.display = 'none';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('userListContainer').innerHTML = '';
+    document.getElementById('searchInput').addEventListener('input', handleSearchInput);
+    destinataireId = null;
 
-	fetch('/api/listeconversation/')
-		.then(response => response.json())
-		.then(data => {
-			if (data.error) {
-				console.log("aucune conversation trouvée");
-				return;
-			}
+    try {
+        const response = await fetch('/api/listeconversation/');
+        const data = await response.json();
 
-			const listeConversation = document.getElementById('liste-amis-live-chat-ul');
-			listeConversation.innerHTML = '';
+        if (data.error) {
+            console.log("Aucune conversation trouvée");
+            return;
+        }
 
-			const users = new Map();
+        const listeConversation = document.getElementById('liste-amis-live-chat-ul');
+        listeConversation.innerHTML = '';
 
-			// Ajouter les utilisateurs des conversations
-			data.conversations.forEach(user => {
-				users.set(user.id, user);
-			});
+        const users = new Map();
 
-			// Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
-			data.following.forEach(user => {
-				if (!users.has(user.id)) {
-					users.set(user.id, user);
-				}
-			});
+        // Ajouter les utilisateurs des conversations
+        data.conversations.forEach(user => {
+            users.set(user.id, user);
+        });
 
-			// Générer la liste des utilisateurs
-			// /!\ ajouter la photo de profile de chaque utilisateur
-			listeConversation.innerHTML = Array.from(users.values()).map(user => `
-				<li>
-					<button class="btn nomListeConversation" data-user-id="${user.id}" onclick="HistoriqueMessages(${user.id}, '${user.username}')">
-						${user.username}
-					</button>
-				</li>
-			`).join('');
-		})
-		.catch(error => {
-			console.error('Erreur lors de la récupération des abonnements :', error);
-		});
+        // Ajouter les utilisateurs suivis, s'ils ne sont pas déjà dans la liste
+        data.following.forEach(user => {
+            if (!users.has(user.id)) {
+                users.set(user.id, user);
+            }
+        });
+
+        // Générer la liste des utilisateurs avec leur photo de profil
+        const usersArray = Array.from(users.values());
+
+        listeConversation.innerHTML = (await Promise.all(usersArray.map(async (user) => {
+            const profilePicUrl = await getProfilePictureUrl(user.username);
+            return `
+                <li>
+                    <button class="btn nomListeConversation d-flex align-items-center" 
+                            data-user-id="${user.id}" 
+                            onclick="HistoriqueMessages(${user.id}, '${user.username}')">
+                        
+                        <img width="30px" height="30px" 
+                            src="${profilePicUrl}" 
+                            class="rounded-circle" 
+                            id="profilePictureLiveChatList">
+
+                        <p class="flex-grow-1 d-flex align-items-center justify-content-center m-0">${user.username}</p>
+                    </button>
+                </li>
+            `;
+        }))).join('');
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des abonnements :', error);
+    }
 }
 
 // Fonction pour gérer la recherche en temps réel
 function handleSearchInput(event) {
-    const query = event.target.value.trim(); // Récupère la valeur du champ de recherche
-    const userListContainer = document.getElementById('userListContainer');
+	const query = event.target.value.trim(); // Récupère la valeur du champ de recherche
+	const userListContainer = document.getElementById('userListContainer');
 
-    if (query.length > 0) {
-        console.log("Recherche en cours : ", query); // Vérifie si la valeur de recherche est récupérée correctement
-        fetchUsers(query); // Appelle la fonction pour récupérer les utilisateurs
-    } else {
-        console.log("Recherche vide");
-        userListContainer.innerHTML = ''; // Efface les résultats affichés
-    }
+	if (query.length > 0) {
+		console.log("Recherche en cours : ", query); // Vérifie si la valeur de recherche est récupérée correctement
+		fetchUsers(query); // Appelle la fonction pour récupérer les utilisateurs
+	} else {
+		console.log("Recherche vide");
+		userListContainer.innerHTML = ''; // Efface les résultats affichés
+	}
 }
 
 // Fonction pour récupérer la liste des utilisateurs via l'API
@@ -438,7 +527,7 @@ function affichageConversation(id, destinataireUsername, data) {
 		</button>
 	`;
 	const viewProfileButtonFromLiveChat = enTeteConv.querySelector('#view-profile-btn-from-liveChat');
-    viewProfileButtonFromLiveChat.addEventListener('click', handleViewProfile);
+	viewProfileButtonFromLiveChat.addEventListener('click', handleViewProfile);
 
 	if (data["1bloque2"] === true) {
 		enTeteConv.innerHTML += `
@@ -595,14 +684,14 @@ function debloquerUtilisateur(idDestinataire, destinataireUsername) {
 
 // Fonction pour défiler en bas
 function scrollToBottom() {
-    const messageContainer = document.getElementById("message-container");
+	const messageContainer = document.getElementById("message-container");
 
-    // Vérifier si l'élément existe
-    if (messageContainer) {
-        messageContainer.scrollTop = messageContainer.scrollHeight;
-    } else {
-        console.error("L'élément #messageContainer est introuvable !");
-    }
+	// Vérifier si l'élément existe
+	if (messageContainer) {
+		messageContainer.scrollTop = messageContainer.scrollHeight;
+	} else {
+		console.error("L'élément #messageContainer est introuvable !");
+	}
 }
 
 // gestion de la modale liveChat
@@ -611,77 +700,77 @@ liveChatModal = document.getElementById('liveChatModal');
 
 // Gestionnaire pour le clic sur le lien liveChat
 liveChatLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    pushModalState6();
-    openLiveChatModal();
+	e.preventDefault();
+	pushModalState6();
+	openLiveChatModal();
 });
 
 function pushModalState6() {
-    console.log("[pushModalState] : '/liveChat'");
-    // Sauvegarde le chemin actuel avant de le modifier
-    previousPath = window.location.pathname;
-    // Ajoute le nouvel état dans l'historique
-    history.pushState(
-        {
-            modal: 'liveChat',
-            previousPath: previousPath
-        },
-        '',
-        '/liveChat'
-    );
+	console.log("[pushModalState] : '/liveChat'");
+	// Sauvegarde le chemin actuel avant de le modifier
+	previousPath = window.location.pathname;
+	// Ajoute le nouvel état dans l'historique
+	history.pushState(
+		{
+			modal: 'liveChat',
+			previousPath: previousPath
+		},
+		'',
+		'/liveChat'
+	);
 }
 
 function closeModal6() {
-    console.log("[closeModal6]");
-    const modal = bootstrap.Modal.getInstance(liveChatModal);
-    if (modal) {
-        modal.hide();
+	console.log("[closeModal6]");
+	const modal = bootstrap.Modal.getInstance(liveChatModal);
+	if (modal) {
+		modal.hide();
 		destinataireId = null;
-    }
+	}
 }
 
 // Gestionnaire pour la navigation dans l'historique
 window.addEventListener('popstate', (event) => {
-    if (event.state && event.state.modal === 'liveChat') {
-        openLiveChatModal();
-    } else {
-        closeModal6();
-    }
+	if (event.state && event.state.modal === 'liveChat') {
+		openLiveChatModal();
+	} else {
+		closeModal6();
+	}
 });
 
 // Gestionnaire pour la fermeture du modal
 liveChatModal.addEventListener('hidden.bs.modal', () => {
-    console.log("[liveChatModal.addEventListener('hidden.bs.modal'] : '/liveChat'");
-    if (window.location.pathname === '/liveChat') {
+	console.log("[liveChatModal.addEventListener('hidden.bs.modal'] : '/liveChat'");
+	if (window.location.pathname === '/liveChat') {
 		destinataireId = null;
-        // Au lieu de history.back(), on push un nouvel état
-        const targetPath = previousPath || '/';
-        history.pushState(
-            {
-                modal: null,
-                previousPath: '/liveChat'
-            },
-            '',
-            targetPath
-        );
-    }
+		// Au lieu de history.back(), on push un nouvel état
+		const targetPath = previousPath || '/';
+		history.pushState(
+			{
+				modal: null,
+				previousPath: '/liveChat'
+			},
+			'',
+			targetPath
+		);
+	}
 });
 
 // Gestion de l'état initial
 if (window.location.pathname === '/liveChat') {
-    history.replaceState(
-        {
-            modal: 'liveChat',
-            previousPath: '/'
-        },
-        '',
-        '/liveChat'
-    );
-    openLiveChatModal();
+	history.replaceState(
+		{
+			modal: 'liveChat',
+			previousPath: '/'
+		},
+		'',
+		'/liveChat'
+	);
+	openLiveChatModal();
 }
 
 function openLiveChatModal() {
-    const modal = new bootstrap.Modal(liveChatModal);
+	const modal = new bootstrap.Modal(liveChatModal);
 	listeAmisLiveChat();
-    modal.show();
+	modal.show();
 }

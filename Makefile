@@ -36,6 +36,7 @@ clean: down
 
 clean-db:
 	docker volume rm srcs_db_data || exit 0
+	docker volume rm postgres_data || exit 0
 
 fclean: clean
 
