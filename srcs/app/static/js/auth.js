@@ -407,11 +407,30 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 	});
 
-	const auth42Button = document.getElementById('auth42Button');
+	document.getElementById('auth42Button').addEventListener('click', function (event) {
+		event.preventDefault();  // 🔹 Empêche le rafraîchissement de la page
 	
-	auth42Button.addEventListener('click', function () {
-		console.log('Bouton 42 cliqué !');
+		fetch('https://localhost:8443/get-42-url/', {  // 🔹 Remplace `/get-42-url/` par l'URL complète
+			method: 'GET',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			}
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.url) {
+				console.log("🔹 Redirection vers 42 :", data.url);
+				window.location.href = data.url;  // 🔹 Redirige l’utilisateur vers 42
+			} else {
+				console.error("❌ Erreur : pas d'URL reçue");
+			}
+		})
+		.catch(error => console.error('❌ Erreur AJAX:', error));
+		
 	});
+	
+	
+
 });
 
 const bouttonSignupLogin = document.getElementById('boutton-signup-login');

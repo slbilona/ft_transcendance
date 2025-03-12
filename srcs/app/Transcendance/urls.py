@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from rest_framework import routers
 from game import views
+from auth_app.views import get_42_auth_url, callback_42, login_with_42, login_page, welcome  # 🔹 Assure-toi que cette ligne est bien là !
 from game.views import PlayCreateAPIView, PlayDetailAPIView, PlaySubscribeAPIView, PlayListAPIView
 from game.views import TournamentViewSet
 from authentication.views import LoginAPI, SignupAPI, Logout, UserInfoAPI, UserProfileView, UserProfileUpdateView, UserDeleteView, ProfilePictureRequest
@@ -30,10 +31,12 @@ router.register('tournaments', TournamentViewSet, basename='tournament')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('auth_app.urls')),
 	path('api/play/create', views.PlayCreateAPIView.as_view(), name='play_create'),
 	path('api/play/detail/<play_id>', views.PlayDetailAPIView.as_view(), name='play_detail'),
 	path('api/play/join/<play_id>', views.PlaySubscribeAPIView.as_view(), name="play_join"),
 	path('api/', include(router.urls)),
+     path('get-42-url/', get_42_auth_url, name='get_42_auth_url'),
 	path('api/user/match-history/', MatchHistoryView.as_view(), name='match-history'),
 	# path('users/<int:user_id>/match-history/', MatchHistoryView.as_view(), name='match-history'),#MatchHistory dautre joueurs (amis)??
     path('api/login/', LoginAPI.as_view(), name='login'),
@@ -57,5 +60,11 @@ urlpatterns = [
     path('api/utilisateurs/', listeUtilisateurs.as_view(), name='utilisateurs-list'),
     path('api/profilepicturerequest/<str:username>/', ProfilePictureRequest.as_view()),
 	re_path(r'^.*$', views.index, name='index'),
+    path('auth/', include('auth_app.urls')),  # ✅ Redirige vers `auth_app.urls`
+     path('get-42-url/', get_42_auth_url, name='get_42_auth_url'),
+    path('login-42/', login_with_42, name='login_42'),
+    path('login/callback/', callback_42, name='callback_42'),
+    path('login-page/', login_page, name='login_page'),
+    path('welcome/', welcome, name='welcome'),
 ]
 

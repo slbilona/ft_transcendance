@@ -31,6 +31,8 @@ SECRET_KEY = 'django-insecure-zz5ovspc-uqvzrt1hc513=_p8ey=+j^ary0+54m=hs@3k=p77a
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ['localhost']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 ALLOWED_HOSTS = ["*"]
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
 	'authentication',
 	'game',
     'liveChat',
+    'auth_app'
 ]
 
 MIDDLEWARE = [
@@ -144,6 +147,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+FORTYTWO_CLIENT_ID = "u-s4t2ud-17e27e6040bc6fc210c4133df2052eed87c4e40d0cf41862616d89b6c877686e"
+FORTYTWO_CLIENT_SECRET = "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"
+FORTYTWO_REDIRECT_URI = "https://127.0.0.1:8443/login/callback/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
