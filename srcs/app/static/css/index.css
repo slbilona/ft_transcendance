@@ -60,6 +60,8 @@ header {
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    height: 270px;
+    width: 200px;
 }
 
 /* Style de la carte (appliqué à toutes les cartes) */
@@ -67,7 +69,6 @@ header {
 	background-image: url('../images/wallpaper.png');
 	border: 2px solid #ef6930 !important;
 	border-radius: 10px;
-    height: 250px;
 }
 
 /* Style de la carte au survol */
@@ -87,7 +88,7 @@ header {
 
 .play-button {
     width: 130px;
-    margin-top: 10px;
+    margin-top: 30px;
 }
 
 .modal {
@@ -464,7 +465,16 @@ header, #barre-bas1 {
     height: 750px; /* Hauteur */
 }
 
-.main-content {
+#gameModal {
+    z-index: 3500;
+}
+
+.main-content ul {
+    list-style: none;
+    margin-left: 0;
+}
+
+.main-content li {
     list-style-type: none;
 }
 

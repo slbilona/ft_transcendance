@@ -24,8 +24,8 @@
 			<li class="nav-item"><a href="/friend/" class="nav-link" id="friendLink">Amis</a></li>
 			<li class="nav-item"><a href="/user/" class="nav-link" id="userLink">Profil</a></li>
 			<li class="nav-item"><a href="/historique/" class="nav-link" id="historiqueLink">historique</a></li>
-			<li class="nav-item"><a href="#" class="nav-link" id="logoutButton">déconnexion</a></li>
-			<li class="nav-item auth-button"><a href="#" class="nav-link" id="boutton-signup-login">connexion/inscription</a></li>
+			<li class="nav-item"><a class="nav-link" id="logoutButton">déconnexion</a></li>
+			<li class="nav-item auth-button"><a href="/connexion/" class="nav-link" id="boutton-signup-login">connexion/inscription</a></li>
 		</ul>
 	</header>
 
@@ -35,7 +35,7 @@
 			<div class="col">
 				<div class="card custom-card">
 					<div class="card-body">
-						<h1 class="card-title pricing-card-title">Partie à distance</h1>
+						<h1 class="card-title pricing-card-title">Partie à<br>distance</h1>
 						<form id="playForm" class="visible">
 							{% csrf_token %}
 							<fieldset>
@@ -55,7 +55,7 @@
 			<div class="col">
 				<div class="card custom-card">
 					<div class="card-body">
-						<h1 class="card-title pricing-card-title">Tournoi local</h1>
+						<h1 class="card-title pricing-card-title">Tournoi<br>local</h1>
 						<button id="tournamentLink" class="btn play-button" type="button" class="w-100 btn">Jouer</button>
 					</div>
 				</div>
@@ -64,7 +64,7 @@
 			<div class="col">
 				<div class="card custom-card">
 					<div class="card-body">
-						<h1 class="card-title pricing-card-title">Partie locale</h1>
+						<h1 class="card-title pricing-card-title">Partie<br>locale</h1>
 						<form id="playForm2" class="visible">
 							{% csrf_token %}
 							<fieldset>

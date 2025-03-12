@@ -149,7 +149,7 @@ USE_TZ = True
 
 FORTYTWO_CLIENT_ID = "u-s4t2ud-9205acb50a60acab23b1002029b1bc11dfcfe3fd6005acbcfb70bc457ffce2a6"
 FORTYTWO_CLIENT_SECRET = "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"
-FORTYTWO_REDIRECT_URI = "https://127.0.0.1:8443/login/callback/"
+FORTYTWO_REDIRECT_URI = "https://localhost:8443/login/callback/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

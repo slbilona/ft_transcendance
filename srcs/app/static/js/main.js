@@ -126,9 +126,7 @@ const PongGame = (function() {
 	function draw(ctx) {
 		const canvas = ctx.canvas;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		// /!\ a voir de quel couleur on met les desins et les ecritures
 		ctx.fillStyle = '#1c4521';
-		// ctx.fillStyle = 'white';
 
 		const paddleWidth = 10, paddleHeight = 100, ballSize = 10;
 
@@ -453,7 +451,7 @@ const PongGame = (function() {
 				games.forEach(game => {
 					console.log("game info : ", game);
 					const listItem = document.createElement('li');
-					listItem.innerHTML = `<button class="btn">Game ${game.id} créée par ${game.player1_username} (${game.player_connected}/${game.nb_players} players)</button>`;
+					listItem.innerHTML = `<button class="btn">Game ${game.id} crée par ${game.player1_username} (${game.player_connected}/${game.nb_players} players)</button>`;
 					//Ajoute Post Merge
 					listItem.addEventListener('click', () => {
 						if (game.player_connected == 1) {
@@ -478,7 +476,8 @@ const PongGame = (function() {
 			}
 
 			const newGameButton = document.createElement('button');
-			newGameButton.textContent = 'Create New Game';
+			newGameButton.textContent = 'Créer une nouvelle partie';
+			newGameButton.classList.add('btn');
 			newGameButton.addEventListener('click', () => {
 				createNewGame(true, nbPlayers, false);
 				container.style.display = 'none';
