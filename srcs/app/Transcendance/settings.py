@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zz5ovspc-uqvzrt1hc513=_p8ey=+j^ary0+54m=hs@3k=p77a'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -147,8 +147,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-FORTYTWO_CLIENT_ID = "u-s4t2ud-17e27e6040bc6fc210c4133df2052eed87c4e40d0cf41862616d89b6c877686e"
-FORTYTWO_CLIENT_SECRET = "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"
+FORTYTWO_CLIENT_ID = "u-s4t2ud-9205acb50a60acab23b1002029b1bc11dfcfe3fd6005acbcfb70bc457ffce2a6"
+FORTYTWO_CLIENT_SECRET = "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"
 FORTYTWO_REDIRECT_URI = "https://127.0.0.1:8443/login/callback/"
 
 # Static files (CSS, JavaScript, Images)
