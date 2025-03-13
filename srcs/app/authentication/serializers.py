@@ -77,7 +77,6 @@ class LoginSerializer(serializers.Serializer):
 		}
 
 # verification des données fournies lors de l'inscription
-# /!\ ajouter la photo de profil
 class SignupSerializer(serializers.ModelSerializer):
 	username = serializers.CharField(required=True)
 	alias = serializers.CharField(required=True)

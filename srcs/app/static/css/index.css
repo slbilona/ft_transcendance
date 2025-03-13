@@ -54,8 +54,14 @@ header {
 /* Style de la carte body */
 .card-body {
 	background-color: #ef6930;
-	margin: 1rem;
-	border-radius: 1rem;
+    margin: 1rem;
+	border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    height: 270px;
+    width: 200px;
 }
 
 /* Style de la carte (appliqué à toutes les cartes) */
@@ -67,7 +73,6 @@ header {
 
 /* Style de la carte au survol */
 .card:hover {
-	border-radius: 10px;
 	box-shadow: 5px 5px 15px #f8cdaa;
 }
 
@@ -79,6 +84,11 @@ header {
 	align-items: center; /* Centrer verticalement */
 	gap: 2rem; /* Espace entre les cartes (augmenter l'espace ici) */
 	padding: 1rem; /* Espace autour du contenu (si tu veux éviter que les cartes touchent les bords de la fenêtre) */
+}
+
+.play-button {
+    width: 130px;
+    margin-top: 30px;
 }
 
 .modal {
@@ -455,7 +465,16 @@ header, #barre-bas1 {
     height: 750px; /* Hauteur */
 }
 
-.main-content {
+#gameModal {
+    z-index: 3500;
+}
+
+.main-content ul {
+    list-style: none;
+    margin-left: 0;
+}
+
+.main-content li {
     list-style-type: none;
 }
 

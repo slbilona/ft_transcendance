@@ -27,10 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zz5ovspc-uqvzrt1hc513=_p8ey=+j^ary0+54m=hs@3k=p77a'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ['localhost']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 ALLOWED_HOSTS = ["*"]
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
 	'authentication',
 	'game',
     'liveChat',
+    'auth_app'
 ]
 
 MIDDLEWARE = [
@@ -144,6 +147,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+FORTYTWO_CLIENT_ID = "u-s4t2ud-9205acb50a60acab23b1002029b1bc11dfcfe3fd6005acbcfb70bc457ffce2a6"
+FORTYTWO_CLIENT_SECRET = "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"
+FORTYTWO_REDIRECT_URI = "https://localhost:8443/login/callback/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
