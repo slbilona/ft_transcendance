@@ -26,7 +26,7 @@ function validatePassword(password) {
 	return passwordRegex.test(password);
 }
 
-async function updateUserProfile(formData) {
+async function updateUserProfile(formData, userVia42) {
 	try {
 		const username = formData.get('username');
 		const email = formData.get('email');
@@ -36,7 +36,9 @@ async function updateUserProfile(formData) {
 		const validAlias = validateInput(alias, 'alias');
 		const validUsername = validateInput(username, 'username');
 		const validEmail = validateInput(email, 'email');
-		const validPassword = validateInput(password, 'password');
+		if (!userVia42) {
+			const validPassword = validateInput(password, 'password');
+		}
 
 		// Lancer des erreurs de validation
 		if (validUsername == "1" && username) {
@@ -45,7 +47,7 @@ async function updateUserProfile(formData) {
 			throw new Error(t('invalidEmailFormat'));
 		} else if (validAlias == "1" && alias) {
 			throw new Error(t('invalidAliasFormat'));
-		} else if (validPassword == "1" && password) {
+		} else if (!userVia42 && validPassword == "1" && password) {
 			throw new Error(t('invalidPasswordFormat'));
 		}
 
@@ -68,13 +70,15 @@ async function updateUserProfile(formData) {
 				}
 			}
 		}
-		const settingsNewPassword = document.getElementById('settingsNewPassword');
-		const settingsConfirmPassword = document.getElementById('settingsConfirmPassword');
-		// Validation du mot de passe
-		const newPassword = sanitizedFormData.get('password');
-		const confirmPassword = sanitizeAttribute(settingsConfirmPassword.value);
+		if (!userVia42) {
+			const settingsNewPassword = document.getElementById('settingsNewPassword');
+			const settingsConfirmPassword = document.getElementById('settingsConfirmPassword');
+			// Validation du mot de passe
+			const newPassword = sanitizedFormData.get('password');
+			const confirmPassword = sanitizeAttribute(settingsConfirmPassword.value);
+		}
 
-		if (newPassword) {
+		if (!userVia42 && newPassword) {
 			if (!validatePassword(newPassword)) {
 				throw new Error(t('invalidPasswordFormat'));
 			}
@@ -105,8 +109,10 @@ async function updateUserProfile(formData) {
 			settingsForm.insertBefore(alertDiv, settingsForm.firstChild);
 			setTimeout(() => alertDiv.remove(), 3000);
 
-			settingsNewPassword.value = '';
-			settingsConfirmPassword.value = '';
+			if(!userVia42) {
+				settingsNewPassword.value = '';
+				settingsConfirmPassword.value = '';
+			}
 			document.getElementById('settingsUsername').value = '';
 			document.getElementById('settingsEmail').value = '';
 			document.getElementById('settingsAlias').value = '';
@@ -150,42 +156,6 @@ async function updateUserProfile(formData) {
 		}
 	}
 }
-
-// function opensettingsModal() {
-//     const modal = new bootstrap.Modal(settingsModal);
-
-//     fetchWithCsrf('/api/user/', {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         }
-//     })
-//     .then(response => {
-//         if (response.ok) {
-//             settingsForm.style.display = 'block';
-//             errorMessage.style.display = 'none';
-//         } else if (response.status === 401) {
-//             settingsForm.style.display = 'none';
-//             errorMessage.style.display = 'block';
-//         } else {
-//             throw new Error('Erreur inattendue lors de la vérification de l\'état de connexion.');
-//         }
-//     })
-//     .catch(error => {
-//         settingsForm.style.display = 'none';
-//         errorMessage.style.display = 'block';
-//     });
-
-//     modal.show();
-// }
-
-// if (settingsForm) {
-// 	settingsForm.addEventListener('submit', async (e) => {
-// 		e.preventDefault();
-// 		const formData = new FormData(settingsForm);
-// 		await updateUserProfile(formData);
-// 	});
-// }
 
 const photoInput = document.getElementById('settingsPhoto');
 if (photoInput) {

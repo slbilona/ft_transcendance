@@ -428,9 +428,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		.catch(error => console.error('❌ Erreur AJAX:', error));
 		
 	});
-	
-	
-
 });
 
 const bouttonSignupLogin = document.getElementById('boutton-signup-login');

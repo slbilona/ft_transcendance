@@ -103,8 +103,64 @@ function rempliProfileView (data, user) {
 	`;
 }
 
-function rempliProfileEdit () {
-	document.getElementById('profile-edit').innerHTML = `
+// function rempliProfileEdit () {
+// 	document.getElementById('profile-edit').innerHTML = `
+// 		<form id="settingsForm">
+// 			<div class="mb-3">
+// 				<p class="form-label">Username</p>
+// 				<input type="text" class="form-control" id="settingsUsername" name="username">
+// 			</div>
+// 			<div class="mb-3">
+// 				<p class="form-label">Email</p>
+// 				<input type="email" class="form-control" id="settingsEmail" name="email">
+// 			</div>
+// 			<div class="mb-3">
+// 				<p class="form-label">Alias</p>
+// 				<input type="text" class="form-control" id="settingsAlias" name="alias">
+// 			</div>
+// 			<div class="mb-3">
+// 				<p class="form-label">Profile Photo</p>
+// 				<input type="file"
+// 					class="form-control"
+// 					id="settingsPhoto"
+// 					name="photoProfile"
+// 					accept="image/*"
+// 					title="Choisir un fichier">
+// 				<img id="photoPreview" class="mt-2" style="max-width: 200px; display: none;">
+// 			</div>
+// 			<div class="mb-3">
+// 				<p class="form-label">New Password</p>
+// 				<input type="password" class="form-control" id="settingsNewPassword" name="password">
+// 			</div>
+// 			<div class="mb-3">
+// 				<p class="form-label">Confirm New Password</p>
+// 				<input type="password" class="form-control" id="settingsConfirmPassword">
+// 			</div>
+
+// 			<button type="submit" class="btn">Save Changes</button>
+// 		</form>
+// 		<!-- Ajoute par clement  -->
+// 		<div id="errorMessage" style="display: none;">
+// 			<div class="auth-message">
+// 				<i class="fas fa-lock"></i>
+// 				<p>Aucune information utilisateur disponible</p>
+// 			</div>;
+// 		</div>
+// 	`;
+// 	const settingsForm = document.getElementById('settingsForm');
+// 	if (settingsForm) {
+// 		settingsForm.addEventListener('submit', async (e) => {
+// 			e.preventDefault();
+// 			const formData = new FormData(settingsForm);
+// 			await updateUserProfile(formData);
+// 		});
+// 	} else {
+// 		console.error("Erreur : settingsForm non trouvé !");
+// 	}
+// }
+
+function rempliProfileEdit (data) {
+	let formHTML = `
 		<form id="settingsForm">
 			<div class="mb-3">
 				<p class="form-label">Nom d'utilisateur</p>
@@ -127,7 +183,9 @@ function rempliProfileEdit () {
 					accept="image/*"
 					title="Choisir un fichier">
 				<img id="photoPreview" class="mt-2" style="max-width: 200px; display: none;">
-			</div>
+			</div>`
+	if (!data.userVia42) {
+		formHTML += `
 			<div class="mb-3">
 				<p class="form-label">Nouveau mot de passe</p>
 				<input type="password" class="form-control" id="settingsNewPassword" name="password">
@@ -135,8 +193,9 @@ function rempliProfileEdit () {
 			<div class="mb-3">
 				<p class="form-label">Confirmer le nouveau mot de passe</p>
 				<input type="password" class="form-control" id="settingsConfirmPassword">
-			</div>
-
+			</div>`
+	}
+	formHTML += `
 			<button type="submit" class="btn">Sauvegarder les modifications</button>
 		</form>
 		<div id="errorMessage" style="display: none;">
@@ -146,12 +205,14 @@ function rempliProfileEdit () {
 			</div>;
 		</div>
 	`;
+	document.getElementById('profile-edit').innerHTML = formHTML;
 	const settingsForm = document.getElementById('settingsForm');
 	if (settingsForm) {
 		settingsForm.addEventListener('submit', async (e) => {
+			console.log("click sur le bouton submit");
 			e.preventDefault();
 			const formData = new FormData(settingsForm);
-			await updateUserProfile(formData);
+			await updateUserProfile(formData, data.userVia42);
 		});
 	} else {
 		console.error("Erreur : settingsForm non trouvé !");

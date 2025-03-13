@@ -88,7 +88,7 @@ const errorMessages2 = {
     PasswordLengthError: "Ce mot de passe est trop court. Il doit conetenir au moins 8 caracteres.",
     EmailError: "Email déjà utlisé",
     UsernameError: "Nom d\'utilisateur déjà utlisé",
-    AliasError: "Alias name déjà utlisé",
+    AliasError: "Alias déjà utlisé",
     noUpdateFieldsProvided: "Veuillez inclure au moins un champs a modifier",
     languageSetting : "Langue préférée",
     errorFriend : "Veuillez entrer un nom d\'utilisateur",

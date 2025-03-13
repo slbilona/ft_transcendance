@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
+	username_42 = models.CharField(max_length=50, unique=True, null=True, blank=True)
 	alias = models.CharField(unique=True, max_length=50, null=True, blank=True)
 	email = models.EmailField(unique=True)
 	nbPartiesJouees = models.IntegerField(default=0, verbose_name='Nombre de parties jouées')
@@ -15,6 +16,7 @@ class User(AbstractUser):
 	USERNAME_FIELD = 'username'
 	onlineStatus = models.BooleanField(default=False)
 	blockedUser = models.ManyToManyField('self', related_name='blocked_by', symmetrical=False)
+	userVia42 = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.username

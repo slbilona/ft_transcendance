@@ -59,12 +59,12 @@ urlpatterns = [
     path('debloquer-utilisateur/<int:id>/', DebloquerUtilisateurView.as_view(), name='debloquer_utilisateur'),
     path('api/utilisateurs/', listeUtilisateurs.as_view(), name='utilisateurs-list'),
     path('api/profilepicturerequest/<str:username>/', ProfilePictureRequest.as_view()),
-	re_path(r'^.*$', views.index, name='index'),
     path('auth/', include('auth_app.urls')),  # ✅ Redirige vers `auth_app.urls`
      path('get-42-url/', get_42_auth_url, name='get_42_auth_url'),
     path('login-42/', login_with_42, name='login_42'),
     path('login/callback/', callback_42, name='callback_42'),
     path('login-page/', login_page, name='login_page'),
     path('welcome/', welcome, name='welcome'),
+	re_path(r'^.*$', views.index, name='index'),
 ]
 

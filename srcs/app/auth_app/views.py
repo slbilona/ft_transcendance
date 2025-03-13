@@ -40,65 +40,81 @@ def login_with_42(request):
     )
     return redirect(auth_url)
 
+import os
+import requests
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 @csrf_exempt
 def callback_42(request):
-    """ Récupère le token OAuth, crée l'utilisateur et le connecte """
+    # Récupère le code de l'authentification
     code = request.GET.get("code")
     if not code:
-        print("❌ Aucune valeur `code` reçue dans la requête.")
         return JsonResponse({"error": "No code provided"}, status=400)
 
-    print(f"🔹 Code reçu depuis 42 : {code}")
-
-    # 🔹 Échange du "code" contre un "token"
+    # Échange du code contre un token
     token_url = "https://api.intra.42.fr/oauth/token"
     data = {
         "grant_type": "authorization_code",
-        "client_id": "u-s4t2ud-9205acb50a60acab23b1002029b1bc11dfcfe3fd6005acbcfb70bc457ffce2a6",  # ✅ Récupéré depuis settings.py
-        "client_secret": "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",  # ✅ Récupéré depuis settings.py
+        "client_id": settings.FORTYTWO_CLIENT_ID,
+        "client_secret": settings.FORTYTWO_CLIENT_SECRET,
         "code": code,
-        "redirect_uri": "https://localhost:8443/login/callback/",
+        "redirect_uri": settings.FORTYTWO_REDIRECT_URI,
     }
-
     response = requests.post(token_url, data=data)
-    
-    print("🔹 Réponse API 42:", response.status_code, response.text)
-    
     if response.status_code != 200:
-        print("❌ Erreur lors de la récupération du token:", response.json())
         return JsonResponse({"error": "Failed to get token"}, status=400)
 
     access_token = response.json().get("access_token")
-    print(f"🔹 Token reçu : {access_token}")
 
-    # 🔹 Récupère les infos de l'utilisateur avec le token
+    # Récupère les informations de l'utilisateur avec le token
     user_info_url = "https://api.intra.42.fr/v2/me"
     headers = {"Authorization": f"Bearer {access_token}"}
     user_info_response = requests.get(user_info_url, headers=headers)
 
     if user_info_response.status_code != 200:
-        print("❌ Erreur lors de la récupération des infos utilisateur:", user_info_response.json())
         return JsonResponse({"error": "Failed to fetch user info"}, status=400)
 
     user_data = user_info_response.json()
-    username = user_data.get("login")
+    username_42 = user_data.get("login")
     email = user_data.get("email")
+    profile_pic_url = user_data.get("image", {}).get("link")  # Récupère l'image
 
-    print(f"🔹 Infos utilisateur reçues : username={username}, email={email}")
+    # Recherche l'utilisateur via `username_42`
+    user = User.objects.filter(username_42=username_42).first()
 
-    # 🔹 Vérifie si l'utilisateur existe, sinon le crée
-    user, created = User.objects.get_or_create(username=username, defaults={"email": email})
-    
-    if created:
-        # 🔹 Génère un mot de passe aléatoire car on utilise OAuth
+    if not user:
+        # Crée un nouvel utilisateur
+        unique_username = username_42
+        counter = 1
+        while User.objects.filter(username=unique_username).exists():
+            unique_username = f"{username_42}{counter}"
+            counter += 1
+
+        user = User.objects.create(
+            username=unique_username,
+            email=email if not User.objects.filter(email=email).exists() else None,
+            alias=unique_username,
+            username_42=username_42,
+            userVia42 = True
+        )
+
+        # Télécharge et sauvegarde l'image de profil
+        if profile_pic_url:
+            filename = f"profile_pics/{username_42}.jpg"
+            response = requests.get(profile_pic_url)
+            if response.status_code == 200:
+                file_content = ContentFile(response.content)
+                user.photoProfile.save(filename, file_content, save=True)
+
+        # Génère un mot de passe aléatoire
         random_password = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
         user.set_password(random_password)
         user.save()
-        print(f"🆕 Nouvel utilisateur créé: {username}")
 
-    # 🔹 Connecte automatiquement l'utilisateur
+        print(f"🆕 Nouvel utilisateur créé : {user.username} (username_42: {username_42})")
+
+    # Connecte l'utilisateur
     login(request, user)
-
     print(f"✅ Utilisateur connecté : {user}")
 
-    return JsonResponse({"success": True, "username": username, "email": email})
+    return redirect("https://localhost:8443/game/")
