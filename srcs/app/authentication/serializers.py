@@ -105,8 +105,8 @@ class SignupSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError("Cet email est deja utilisé.")
 		if user.objects.filter(username=username).exists():
 			raise serializers.ValidationError("Ce nom d'utilisateur est deja utilisé.")
-		# if user.objects.filter(alias=alias).exists():
-		# 	raise serializers.ValidationError("Cet alias est deja utilisé.")
+		if user.objects.filter(alias=alias).exists():
+			raise serializers.ValidationError("Cet alias est deja utilisé.")
 		if len(password) < 8 or not re.search("[a-z]", password) or not re.search("[A-Z]", password) or not re.search("[0-9]", password) or not re.search("[.@,#$%^&+=!_-]", password):
 			raise serializers.ValidationError("Le mot de passe ne répond pas aux critères.")
 		return data

@@ -141,11 +141,11 @@ function afficherInvitationJeu(message, messageElement) {
 	} else if (message.message === "invitation refusée") {
 		if (message.expediteur_id === destinataireId) {
 			messageElement.innerHTML = `
-				${message.expediteur_username} a refusé votre invitation
+				Vous avez refusé l'invitation
 			`;
 		} else {
 			messageElement.innerHTML = `
-				Vous avez refusé l'invitation
+				${message.destinataire_username} a refusé votre invitation
 			`;
 		}
 	} else if (message.message === "invitation acceptée") {
