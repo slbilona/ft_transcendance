@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['localhost']
+# ALLOWED_HOSTS = ['localhost', '10.12.1.6']
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 ALLOWED_HOSTS = ["*"]
@@ -147,8 +147,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-FORTYTWO_CLIENT_ID = "u-s4t2ud-9205acb50a60acab23b1002029b1bc11dfcfe3fd6005acbcfb70bc457ffce2a6"
-FORTYTWO_CLIENT_SECRET = "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"
+
+FORTYTWO_CLIENT_ID = os.getenv("FORTYTWO_CLIENT_ID")
+FORTYTWO_CLIENT_SECRET = os.getenv("FORTYTWO_CLIENT_SECRET")
 FORTYTWO_REDIRECT_URI = "https://localhost:8443/login/callback/"
 
 # Static files (CSS, JavaScript, Images)

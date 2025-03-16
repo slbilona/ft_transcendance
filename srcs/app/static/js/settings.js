@@ -36,8 +36,13 @@ async function updateUserProfile(formData, userVia42) {
 		const validAlias = validateInput(alias, 'alias');
 		const validUsername = validateInput(username, 'username');
 		const validEmail = validateInput(email, 'email');
+		let validPassword;
+		let settingsNewPassword;
+		let settingsConfirmPassword;
+		let newPassword;
+		let confirmPassword;
 		if (!userVia42) {
-			const validPassword = validateInput(password, 'password');
+			validPassword = validateInput(password, 'password');
 		}
 
 		// Lancer des erreurs de validation
@@ -71,11 +76,11 @@ async function updateUserProfile(formData, userVia42) {
 			}
 		}
 		if (!userVia42) {
-			const settingsNewPassword = document.getElementById('settingsNewPassword');
-			const settingsConfirmPassword = document.getElementById('settingsConfirmPassword');
+			settingsNewPassword = document.getElementById('settingsNewPassword');
+			settingsConfirmPassword = document.getElementById('settingsConfirmPassword');
 			// Validation du mot de passe
-			const newPassword = sanitizedFormData.get('password');
-			const confirmPassword = sanitizeAttribute(settingsConfirmPassword.value);
+			newPassword = sanitizedFormData.get('password');
+			confirmPassword = sanitizeAttribute(settingsConfirmPassword.value);
 		}
 
 		if (!userVia42 && newPassword) {
