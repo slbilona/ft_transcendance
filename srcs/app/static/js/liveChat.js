@@ -1,5 +1,3 @@
-//const PongGame = require("./main");
-
 let chatSocket;
 const listeConversation = document.getElementById('liste-amis-live-chat-ul');
 let destinataireId = null;
@@ -161,9 +159,14 @@ function afficherInvitationJeu(message, messageElement) {
 			`;
 	
 			// Appel de la fonction joinGame et vérification du succès
+			console.log("[afficherInvitationJeu] isplayer1 : ", PongGame.isPlayer1, ", isplayer2 : ", PongGame.isPlayer2);
+			PongGame.setIsPlayer2(true);
+			PongGame.setIsLocalGame(false);
 			console.log("réponse joingame : ", PongGame.joinGame(message.gameId));
+
 		}
 	} else if (message.message === "resultats partie"){
+		// /!\ changer les mesage de victoires/defaites
 		if (message.winners.includes(parseInt(destinataireId)) && destinataireId === message.destinataire_id) {
 			messageElement.innerHTML = `
 				Partie terminée<br>
@@ -223,6 +226,8 @@ function inviterPartiePong(IdDestinataire) {
 
 // crée une partie en remote puis envoie un message via websocket si l'utilisateur accepte la partie
 function invitationAccepte(expediteur_id, message_id) {
+	console.log("fonction createnewgame");
+	PongGame.setIsLocalGame(false);
 	PongGame.createNewGame(true, 2, true)
 		.then(gameId => {
 			if (gameId === null || gameId === undefined) {

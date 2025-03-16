@@ -13,15 +13,15 @@ const PongGame = (function() {
 	let isTournamentGame = false;
 	let keyState = { w: false, s: false, ArrowUp: false, ArrowDown: false, t: false, g: false, i: false, k: false };
 
-	function initializeGame(gameId, nbPlayers,isCreator = false) {
-
+	function initializeGame(gameId, nbPlayers,isCreator = false)
+	{
 		console.log(`[initializeGame] Initializing game with ID: ${gameId}, Number of Players: ${nbPlayers}`);
 		isTournamentGame = checkIfTournamentGame();
 		updateCloseButton();
 		isPlayer1 = isCreator;
 		const canvas = document.getElementById('gameCanvas');
 		const ctx = canvas.getContext('2d');
-
+		console.log('gameid = ', gameId);
 		socket = new WebSocket(`wss://${window.location.host}/wss/game/${gameId}/`);
 
 		socket.onopen = function(e) {
@@ -149,7 +149,9 @@ const PongGame = (function() {
 	}
 
 	function updatePaddlePositions() {
+		console.log("islocalgame : ", isLocalGame, ", isPlayer1 = ", isPlayer1, ", isPlayer2 = ", isPlayer2);
 		if (!isLocalGame) {
+			console.log('entree dns le if hihi');
 			if (isPlayer1) {
 				if (keyState.w) sendPaddleMovement(1, 'up');
 				if (keyState.s) sendPaddleMovement(1, 'down');
@@ -309,6 +311,8 @@ const PongGame = (function() {
     }
 
 	function joinGame(gameId) {
+		console.log("isPlayer1 : ", isPlayer1, " isplayer2 : ", isPlayer2, ", islocalgame = ", isLocalGame);
+		console.log("fonction joingame");
 		fetchWithCsrf(`/api/play/join/${gameId}`, {
 			method: 'PUT',
 			headers: {
@@ -518,7 +522,22 @@ const PongGame = (function() {
 		fetchGameDetails: fetchGameDetails,
 		handleTournamentBackNavigation: handleTournamentBackNavigation,
 		createNewGame: createNewGame,
-		joinGame: joinGame
+		joinGame: joinGame,
+		isPlayer1: isPlayer1,
+		isPlayer2: isPlayer2,
+		isLocalGame: isLocalGame,
+        // Getter pour isPlayer2
+        getIsPlayer2: function() {
+            return isPlayer2;
+        },
+        // Setter pour isPlayer2
+        setIsPlayer2: function(value) {
+            isPlayer2 = value;
+        },
+		// Setter pour isPlayer2
+		setIsLocalGame: function(value) {
+			isLocalGame = value;
+		}
 	};
 })();
 

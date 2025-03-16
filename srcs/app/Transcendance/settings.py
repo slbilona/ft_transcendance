@@ -31,10 +31,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-# ALLOWED_HOSTS = ['localhost', '10.12.1.6']
+ALLOWED_HOSTS = ['localhost', '10.12.1.6']
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
-ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -51,12 +50,14 @@ INSTALLED_APPS = [
 	'authentication',
 	'game',
     'liveChat',
-    'auth_app'
+    'auth_app',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -77,6 +78,7 @@ CSRF_TRUSTED_ORIGINS = get_local_ips() + [
     'https://localhost:8443',
     'https://127.0.0.1:8443',
 	'https://10.25.1.3:8443',
+    "https://10.12.1.6:8443",
 ]
 
 ROOT_URLCONF = 'Transcendance.urls'
@@ -192,6 +194,11 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "https://10.12.1.6:8443",  # Ajoute l'IP de ton serveur
+    "https://localhost:8443",
+]
 
 LOGGING = {
     'version': 1,
