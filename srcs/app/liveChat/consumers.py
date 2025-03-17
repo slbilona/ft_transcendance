@@ -525,7 +525,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		print("\nFin du jeu\n", flush=True)
 
 		# Une fois que la partie est terminée, récupérer les résultats
-		results = await self.get_game_results(message)
+		try:
+			results = await self.get_game_results(message)
+		except Exception as e:
+			print(f"Erreur lors de l'utilisation de get_game_results : {e}", flush=True)
 
 		winners = results['winners']
 		losers = results['losers']

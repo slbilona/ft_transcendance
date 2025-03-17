@@ -117,10 +117,8 @@ def callback_42(request):
 		user.set_password(random_password)
 		user.save()
 
-		print(f"🆕 Nouvel utilisateur créé : {user.username} (username_42: {username_42})")
 
 	# Connecte l'utilisateur
 	login(request, user)
-	print(f"✅ Utilisateur connecté : {user}")
 
 	return redirect("https://localhost:8443/game/")

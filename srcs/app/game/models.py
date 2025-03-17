@@ -51,7 +51,6 @@ class Play(models.Model):
 			player.nbVictoires += 1
 			await database_sync_to_async(player.save)()
 
-			print(f"\n\n\Apres sauvegarde victoire : user {player.id} username : {player.username} - victoires : {player.nbVictoires}, defaites : {player.nbDefaites}, online : {player.onlineStatus}")
 			sys.stdout.flush()
 
 	async def add_defeat(self, nb_player):
@@ -69,7 +68,6 @@ class Play(models.Model):
 		if player is not None :
 			player.nbDefaites += 1
 			await database_sync_to_async(player.save)()
-			print(f"\n\n\Apres sauvegarde defaite : user {player.id} username : {player.username} - victoires : {player.nbVictoires}, defaites : {player.nbDefaites}, online : {player.onlineStatus}")
 			sys.stdout.flush()
 
 	def add_player(self, player):
@@ -98,7 +96,6 @@ class Tournament(models.Model):
 	current_round = models.IntegerField(default=0)
 
 	def create_next_round(self):
-		# print("\n\n\n TESTT CREATE NEXT ROUND\n\n\n", flush=True)
 
 		if self.current_round == 0: #Cas du premier round
 			players = self.players.all()
