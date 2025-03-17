@@ -15,19 +15,16 @@ const PongGame = (function() {
 
 	function initializeGame(gameId, nbPlayers,isCreator = false)
 	{
-		console.log(`[initializeGame] Initializing game with ID: ${gameId}, Number of Players: ${nbPlayers}`);
 		isTournamentGame = checkIfTournamentGame();
 		updateCloseButton();
 		isPlayer1 = isCreator;
 		const canvas = document.getElementById('gameCanvas');
 		const ctx = canvas.getContext('2d');
-		console.log('gameid = ', gameId);
 		socket = new WebSocket(`wss://${window.location.host}/wss/game/${gameId}/`);
 
 		socket.onopen = function(e) {
 			console.log(`[WebSocket] Connection established for game ${gameId}`);
 		};
-		console.log("1");
 		socket.onmessage = function(e) {
 			const data = JSON.parse(e.data);
 			if (data.message === 'end_game') {
@@ -37,16 +34,12 @@ const PongGame = (function() {
 				draw(ctx);
 			}
 		};
-		console.log("2");
 		socket.onclose = function(e) {
 			terminateGame();
 		};
-		console.log("3");
 		socket.onerror = function(error) {
 		};
-		console.log("4");
 		gameLoopInterval = setInterval(updatePaddlePositions, 1000 / 60);
-		console.log("5");
 	}
 
 	function checkIfTournamentGame() {
@@ -149,9 +142,7 @@ const PongGame = (function() {
 	}
 
 	function updatePaddlePositions() {
-		console.log("islocalgame : ", isLocalGame, ", isPlayer1 = ", isPlayer1, ", isPlayer2 = ", isPlayer2);
 		if (!isLocalGame) {
-			console.log('entree dns le if hihi');
 			if (isPlayer1) {
 				if (keyState.w) sendPaddleMovement(1, 'up');
 				if (keyState.s) sendPaddleMovement(1, 'down');
@@ -274,45 +265,38 @@ const PongGame = (function() {
 	}
 
 	function createNewGame(remote, nbPlayers, private) {
-        console.log(`[createNewGame] Creating new game. Remote: ${remote}, Players: ${nbPlayers}`);
-        const data = {
-            remote: remote,
-            nb_players: nbPlayers,
-            private: private
-        };
+		const data = {
+			remote: remote,
+			nb_players: nbPlayers,
+			private: private
+		};
+		return fetchWithCsrf(`api/play/create`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': getCsrfToken()
+			},
+			body: JSON.stringify(data),
+			credentials: 'include'
+		})
+		.then(response => response.json())
+		.then(result => {
+			const gameId = result.id;
+			const newUrl = `/game/${gameId}`;
+			const newTitle = `Pong Game ${gameId}`;
+			const newContent = `Playing Pong Game ${gameId}`;
+			navigateTo(newTitle, newUrl, newContent, gameId);
+			initializeGame(gameId, nbPlayers, true);
 
-        console.log(`[createNewGame] Sending game creation request with data:`, data);
-
-        return fetchWithCsrf(`api/play/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken()
-            },
-            body: JSON.stringify(data),
-            credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(result => {
-            console.log(`[createNewGame] Game creation response:`, result);
-            const gameId = result.id;
-            const newUrl = `/game/${gameId}`;
-            const newTitle = `Pong Game ${gameId}`;
-            const newContent = `Playing Pong Game ${gameId}`;
-            navigateTo(newTitle, newUrl, newContent, gameId);
-            initializeGame(gameId, nbPlayers, true);
-
-            return gameId;
-        })
-        .catch(error => {
-            console.error('[createNewGame] Error:', error);
-            alert(error.message);
-        });
-    }
+			return gameId;
+		})
+		.catch(error => {
+			console.error('[createNewGame] Error:', error);
+			alert(error.message);
+		});
+	}
 
 	function joinGame(gameId) {
-		console.log("isPlayer1 : ", isPlayer1, " isplayer2 : ", isPlayer2, ", islocalgame = ", isLocalGame);
-		console.log("fonction joingame");
 		fetchWithCsrf(`/api/play/join/${gameId}`, {
 			method: 'PUT',
 			headers: {
@@ -328,7 +312,6 @@ const PongGame = (function() {
 			return response.json();
 		})
 		.then(result => {
-			console.log(`[joinGame] Game joining response:`, result);
 			const newUrl = `/game/${gameId}`;
 			const newTitle = `Pong Game ${gameId}`;
 			const newContent = `Playing Pong Game ${gameId}`;
@@ -350,13 +333,8 @@ const PongGame = (function() {
 			navigateTo('Jeu de Pong', '/', 'The game has been terminated.');
 		});
 
-		
-			console.log("je suis entré ici");
-
-		
 		// Fonction générique pour gérer la soumission du formulaire
 		function handleFormSubmission(event) {
-			console.log("ici aussi");
 			event.preventDefault();
 	
 			const form = event.target; // Récupère le formulaire soumis
@@ -383,8 +361,6 @@ const PongGame = (function() {
 					break;
 			}
 			
-			console.log("apres le switch, remote = ", remote, " nbPlayers = ", nbPlayers);
-
 			isLocalGame = !remote;
 	
 			if (remote) {
@@ -436,7 +412,6 @@ const PongGame = (function() {
 		}
 
 		function closeModal7() {
-			console.log("[closeModal7]");
 			const modal = bootstrap.Modal.getInstance(remoteGameAvailableModal);
 			if (modal) {
 				modal.hide();
@@ -453,7 +428,6 @@ const PongGame = (function() {
 			if (games.length > 0) {
 				const gameList = document.createElement('ul');
 				games.forEach(game => {
-					console.log("game info : ", game);
 					const listItem = document.createElement('li');
 					listItem.innerHTML = `<button class="btn">Game ${game.id} crée par ${game.player1_username} (${game.player_connected}/${game.nb_players} players)</button>`;
 					//Ajoute Post Merge
@@ -526,14 +500,14 @@ const PongGame = (function() {
 		isPlayer1: isPlayer1,
 		isPlayer2: isPlayer2,
 		isLocalGame: isLocalGame,
-        // Getter pour isPlayer2
-        getIsPlayer2: function() {
-            return isPlayer2;
-        },
-        // Setter pour isPlayer2
-        setIsPlayer2: function(value) {
-            isPlayer2 = value;
-        },
+		// Getter pour isPlayer2
+		getIsPlayer2: function() {
+			return isPlayer2;
+		},
+		// Setter pour isPlayer2
+		setIsPlayer2: function(value) {
+			isPlayer2 = value;
+		},
 		// Setter pour isPlayer2
 		setIsLocalGame: function(value) {
 			isLocalGame = value;

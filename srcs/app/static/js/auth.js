@@ -440,7 +440,6 @@ function openSignupLoginModal() {
 }
 
 function closeModal5() {
-	console.log("[closeModal5]");
 	const modal = bootstrap.Modal.getInstance(authModal);
 	if (modal) {
 		modal.hide();

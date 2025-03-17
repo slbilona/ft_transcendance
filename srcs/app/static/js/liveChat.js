@@ -146,12 +146,10 @@ function afficherInvitationJeu(message, messageElement) {
 		}
 	} else if (message.message === "invitation acceptée") {
 		if (message.expediteur_id === destinataireId) {
-			console.log("je recois l'invitation et j'accepte");
 			messageElement.innerHTML = `
 				invitation acceptée, partie en cours...
 			`;
 		} else {
-			console.log("j'ai invité");
 			messageElement.innerHTML = `
 				invitation acceptée, partie en cours...
 			`;
@@ -194,7 +192,7 @@ function afficherInvitationJeu(message, messageElement) {
 			Erreur<br>
 		`;
 	}
-	 else {
+	else {
 		console.log("Une erreur est survenue, message.mesage = '", message.message, "'");
 	}
 }
@@ -219,7 +217,6 @@ function invitationRefuse(expediteur_id, message_id) {
 
 // Envoie une invitation à jouer à Pong via WebSocket à un destinataire spécifié par son IdDestinataire.
 function inviterPartiePong(IdDestinataire) {
-	console.log("fonction inviterPartiePong, IdDestinataire = ", IdDestinataire);
 	chatSocket.send(JSON.stringify({
 		'type': "pong_invitation",
 		'destinataire_id': IdDestinataire
@@ -228,7 +225,6 @@ function inviterPartiePong(IdDestinataire) {
 
 // crée une partie en remote puis envoie un message via websocket si l'utilisateur accepte la partie
 function invitationAccepte(expediteur_id, message_id) {
-	console.log("fonction createnewgame");
 	PongGame.setIsLocalGame(false);
 	PongGame.createNewGame(true, 2, true)
 		.then(gameId => {
@@ -260,7 +256,6 @@ function afficherMessage(data) {
 
 	// Création de l'élément pour chaque message
 	const messageElement = document.createElement('div');
-	console.log("destinataireId = ", destinataireId, ", message.expediteur_id = ", message.expediteur_id);
 	if (message.expediteur_id === destinataireId)
 	{
 		messageElement.classList.add('message-destinataire');
@@ -268,7 +263,6 @@ function afficherMessage(data) {
 	else if (message.destinataire_id === destinataireId)
 		messageElement.classList.add('message-expediteur');
 	else {
-		console.log("message recu de ", message.expediteur_id);
 		showNotification(`Nouveau message de ${message.expediteur}`);
 	}
 
@@ -279,14 +273,12 @@ function afficherMessage(data) {
 
 // Affiche une notification avec le message donné, rend la pop-up visible, puis la cache après 5 secondes
 function showNotification(message) {
-	console.log("[showNotification] : '", message, "'");
 	const popup = document.getElementById('notification-popup');
 	popup.textContent = message;
 	popup.classList.add('show');
 
 	// Cachez la pop-up après 5 secondes
 	setTimeout(() => {
-		console.log("[showNotification] : '", message, "' 2");
 		popup.classList.remove('show');
 	}, 5000);
 }
@@ -295,7 +287,6 @@ function showNotification(message) {
 // réinitialise le champ de recherche,
 // charge les conversations depuis l'API
 async function listeAmisLiveChat() {
-    console.log("[listeAmisLiveChat]");
     document.getElementById('liste-amis-live-chat').style.display = 'block';
     document.getElementById('conversation-live-chat').style.display = 'none';
     document.getElementById('searchInput').value = '';
@@ -308,7 +299,6 @@ async function listeAmisLiveChat() {
         const data = await response.json();
 
         if (data.error) {
-            console.log("Aucune conversation trouvée");
             return;
         }
 
@@ -362,17 +352,14 @@ function handleSearchInput(event) {
 	const userListContainer = document.getElementById('userListContainer');
 
 	if (query.length > 0) {
-		console.log("Recherche en cours : ", query); // Vérifie si la valeur de recherche est récupérée correctement
 		fetchUsers(query); // Appelle la fonction pour récupérer les utilisateurs
 	} else {
-		console.log("Recherche vide");
 		userListContainer.innerHTML = ''; // Efface les résultats affichés
 	}
 }
 
 // Fonction pour récupérer la liste des utilisateurs via l'API
 function fetchUsers(query = '') {
-	console.log("Envoi de la requête avec la recherche :", query);
 	fetch(`/api/utilisateurs/?search=${query}`, {
 		method: 'GET',
 		headers: {
@@ -382,7 +369,6 @@ function fetchUsers(query = '') {
 	})
 	.then(response => response.json())
 	.then(data => {
-		console.log("Réponse de l'API :", data); // Vérifier la réponse de l'API
 		displayUserList(data);  // Affiche les utilisateurs dans la liste
 	})
 	.catch(error => {
@@ -392,7 +378,6 @@ function fetchUsers(query = '') {
 
 // Fonction pour afficher la liste des utilisateurs
 function displayUserList(users) {
-	console.log("Affichage de la liste des utilisateurs :", users);  // Vérifier les utilisateurs récupérés
 	const userListContainer = document.getElementById('userListContainer');
 	userListContainer.innerHTML = '';  // Réinitialiser la liste avant d'ajouter les nouveaux résultats
 	
@@ -403,7 +388,6 @@ function displayUserList(users) {
 
 	// Créez un élément HTML pour chaque utilisateur
 	users.forEach(user => {
-		console.log("utilisateur individuel : ", user.username, ", id : ", user.id);
 		const userElement = document.createElement('div');
 		userElement.classList.add('user-item');
 		userElement.innerHTML = `
@@ -423,7 +407,6 @@ function HistoriqueMessages(id, destinataireUsername) {
 	enTeteConv = document.getElementById('en-tete-conversation-live-chat');
 	envoieOuBloque = document.getElementById('envoie-ou-message-bloque');
 	conversationLiveChat = document.getElementById('conversation-live-chat');
-	console.log("username : ", destinataireUsername, " id : ", id);
 	document.getElementById('liste-amis-live-chat').style.display = 'none';
 	conversationLiveChat.style.display = 'block';
 	enTeteConv.innerHTML = '';
@@ -443,14 +426,12 @@ function HistoriqueMessages(id, destinataireUsername) {
 			affichageConversation(id, destinataireUsername, data);
 		} else {
 			destinataireId = null;
-			console.log("destinataireId = null");
 			console.error("Les messages ne sont pas disponibles ou ne sont pas dans le bon format.");
 		}
 	})
 	.catch(error => {
 		destinataireId = null;
-			console.log("destinataireId = null");
-			console.error('Erreur lors du chargement de l\'historique des messages :', error);
+		console.error('Erreur lors du chargement de l\'historique des messages :', error);
 	});
 }
 
@@ -565,12 +546,9 @@ function bloquerUtilisateur(idDestinataire, destinataireUsername) {
 		},
 	})
 	.then(response => {
-		console.log("Statut HTTP:", response.status);
 		return response.text();  // Lire la réponse en texte brut pour debug
 	})
 	.then(text => {
-		console.log("Réponse brute du serveur:", text);
-		
 		let data;
 		try {
 			data = JSON.parse(text);  // Tente de parser le texte en JSON
@@ -588,8 +566,6 @@ function bloquerUtilisateur(idDestinataire, destinataireUsername) {
 				'block_type': "bloqueur",
 				'destinataire_id': idDestinataire
 			}));
-	
-			console.log(data.message);
 			alert(data.message);
 			HistoriqueMessages(idDestinataire, destinataireUsername);
 		}
@@ -620,7 +596,6 @@ function debloquerUtilisateur(idDestinataire, destinataireUsername) {
 				'block_type': "bloqué",  // Fix du champ
 				'destinataire_id': idDestinataire
 			}));
-			console.log(data.message);
 			alert(data.message);
 			HistoriqueMessages(idDestinataire, destinataireUsername)
 		}
@@ -652,7 +627,6 @@ liveChatLink.addEventListener('click', (e) => {
 });
 
 function pushModalState6() {
-	console.log("[pushModalState] : '/liveChat'");
 	// Sauvegarde le chemin actuel avant de le modifier
 	previousPath = window.location.pathname;
 	// Ajoute le nouvel état dans l'historique
@@ -667,7 +641,6 @@ function pushModalState6() {
 }
 
 function closeModal6() {
-	console.log("[closeModal6]");
 	const modal = bootstrap.Modal.getInstance(liveChatModal);
 	if (modal) {
 		modal.hide();
@@ -686,7 +659,6 @@ window.addEventListener('popstate', (event) => {
 
 // Gestionnaire pour la fermeture du modal
 liveChatModal.addEventListener('hidden.bs.modal', () => {
-	console.log("[liveChatModal.addEventListener('hidden.bs.modal'] : '/liveChat'");
 	if (window.location.pathname === '/liveChat') {
 		destinataireId = null;
 		// Au lieu de history.back(), on push un nouvel état

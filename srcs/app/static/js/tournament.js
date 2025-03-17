@@ -146,8 +146,6 @@ tournamentForm.addEventListener('submit', async (e) => {
                 alias_names: aliasNames,
             }),
         });
-        console.log(playerCount);
-        console.log(aliasNames);
         if (response.status === 201) {
             const tournamentData = await response.json();
             bootstrap.Modal.getInstance(tournamentModal).hide();
@@ -348,7 +346,6 @@ function openTournamentResultsModal() {
 }
 
 function pushModalState8() {
-    console.log("[pushModalState] : '/tournamentResults'");
     // Sauvegarde le chemin actuel avant de le modifier
     previousPath = window.location.pathname;
     // Ajoute le nouvel état dans l'historique
@@ -364,7 +361,6 @@ function pushModalState8() {
 
 // Gestionnaire pour la fermeture du modal
 tournamentResultsModal.addEventListener('hidden.bs.modal', () => {
-    console.log("[tournamentResultsModal.addEventListener('hidden.bs.modal'] : '/tournamentResults'");
     if (window.location.pathname === '/tournamentResults') {
 		destinataireId = null;
         // Au lieu de history.back(), on push un nouvel état
@@ -381,7 +377,6 @@ tournamentResultsModal.addEventListener('hidden.bs.modal', () => {
 });
 
 function closeModal8() {
-    console.log("[closeModal8]");
     const modal = bootstrap.Modal.getInstance(tournamentModal);
     if (modal) {
         modal.hide();
@@ -411,13 +406,11 @@ if (window.location.pathname === '/tournamentResults') {
 }
 
 async function displayTournamentResults(tournamentId) {
-    console.log("[displayTournamentResults]")
     try {
         const response = await fetch(`/api/tournaments/${tournamentId}/`);
         const data = await response.json();
 
         if (response.status === 200) {
-            console.log('Résultats du tournoi:', data);
             pushModalState8();
             openTournamentResultsModal();
             divResults = document.getElementById("divTournamentResults");

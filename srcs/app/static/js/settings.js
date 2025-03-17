@@ -104,7 +104,6 @@ async function updateUserProfile(formData, userVia42) {
 		});
 
 		const responseBody = await response.clone().json();
-		console.log("reponse", response);
 		// Traitement de la réponse
 		if (response.ok) {
 			const alertDiv = document.createElement('div');

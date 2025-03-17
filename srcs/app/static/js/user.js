@@ -209,7 +209,6 @@ function rempliProfileEdit (data) {
 	const settingsForm = document.getElementById('settingsForm');
 	if (settingsForm) {
 		settingsForm.addEventListener('submit', async (e) => {
-			console.log("click sur le bouton submit");
 			e.preventDefault();
 			const formData = new FormData(settingsForm);
 			await updateUserProfile(formData, data.userVia42);
@@ -353,7 +352,6 @@ function openuserModal() {
 // // // let previousPath = null;
 
 function pushModalState() {
-	console.log("[pushModalState] : '/user'");
 	// Sauvegarde le chemin actuel avant de le modifier
 	previousPath = window.location.pathname;
 	// Ajoute le nouvel état dans l'historique
@@ -375,7 +373,6 @@ userLink.addEventListener('click', (e) => {
 });
 
 function closeModal() {
-	console.log("[closeModal]");
 	const modal = bootstrap.Modal.getInstance(userModal);
 	if (modal) {
 		modal.hide();
@@ -393,7 +390,6 @@ window.addEventListener('popstate', (event) => {
 
 // Gestionnaire pour la fermeture du modal
 userModal.addEventListener('hidden.bs.modal', () => {
-	console.log("[userModal.addEventListener('hidden.bs.modal'] : '/user'");
 	if (window.location.pathname === '/user') {
 		// Au lieu de history.back(), on push un nouvel état
 		const targetPath = previousPath || '/';
