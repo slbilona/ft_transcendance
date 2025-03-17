@@ -62,24 +62,6 @@ class TestPlayAPI(APITestCase):
 		repsonse_id_does_not_exist = self.client.get(url_detail_id_does_not_exist)
 		self.assertEqual(repsonse_id_does_not_exist.status_code, 404)
 
-# class TestPlaySubscribe(APITestCase):
-
-# 	def setUP(self):
-# 		self.user = User.objects.create_user(username="testplayer", password="P@ssword123")
-# 		self.play = Play.objects.create()
-# 		self.url = f"/api/play/join/{self.play.id}/"
-
-# 	def test_add_player_authenticated(self):
-# 		self.client.login(username="testplayer", password="P@ssword123")
-
-# 		response = self.client.put(self.url)
-
-# 		self.assertEqual(response.status_code, 400)
-
-# 		self.play.refresh_from_db()  # Rechargez l'objet depuis la base de données
-# 		self.assertEqual(self.play.player1, self.user)
-# 		print("LE TEST A FONCTIONNE CEST CHELOU")
-
 class TestTournamentAPI(APITestCase):
 
 	def setUp(self):

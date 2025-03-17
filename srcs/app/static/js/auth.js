@@ -1,6 +1,5 @@
 //Ajoute post Merge
 function resetAuthForms() {
-	console.log("[resetAuthForms]");
 	const loginForm = document.getElementById('loginForm');
 	const signupForm = document.getElementById('signupForm');
 
@@ -9,7 +8,6 @@ function resetAuthForms() {
 }
 
 function escapeHtml(unsafe) {
-	console.log("[escapeHtml]");
 	return unsafe
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
@@ -19,7 +17,6 @@ function escapeHtml(unsafe) {
 }
 
 function validateInput(input, type) {
-	console.log("[validateInput]");
 	input = input.trim();
 
 	switch(type) {
@@ -45,7 +42,6 @@ function validateInput(input, type) {
 }
 
 function updateCsrfToken() {
-	console.log("[updateCsrfToken]");
 	return fetch('/api/get-csrf-token/', {
 		method: 'GET',
 		credentials: 'include'
@@ -58,7 +54,6 @@ function updateCsrfToken() {
 
 //requête avec le token CSRF à jour
 function fetchWithCsrf(url, options = {}) {
-	console.log("[fetchWithCsrf]");
 	return updateCsrfToken()
 		.then(() => {
 			options.headers = options.headers || {};
@@ -70,7 +65,6 @@ function fetchWithCsrf(url, options = {}) {
 
 
 function updateUserInfo(username, photoProfile) {
-	console.log("[updateUserInfo]");
 	//const profilePictureElement = document.getElementById("profilePicture");
 
 	if (username) {
@@ -96,7 +90,6 @@ function updateUserInfo(username, photoProfile) {
 			const img = new Image();
 			img.onload = function() {
 				// Si l'image se charge correctement, l'URL est valide
-				console.log("Image existante : ", imageUrl);
 				// Mettre à jour l'image dans l'élément HTML
 				document.getElementById('userUsernamePhoto').innerHTML = `
 					<img width="62" height="62"
@@ -108,7 +101,6 @@ function updateUserInfo(username, photoProfile) {
 			};
 			img.onerror = function() {
 				// Si l'image ne se charge pas, afficher un message d'erreur
-				console.log("Image non trouvée : ", imageUrl);
 				// Tu peux aussi mettre une image par défaut ici, si tu veux
 				document.getElementById('userUsernamePhoto').innerHTML = `
 					<img width="62" height="62"
@@ -130,7 +122,6 @@ function updateUserInfo(username, photoProfile) {
 		}		
 		initWebSocket();
 	} else {
-		console.log("non authentifié");
 		document.getElementById('userUsernamePhoto').style.display = 'none';
 		document.getElementById('liveChatLink').style.display = 'none';
 		document.getElementById('friendLink').style.display = 'none';
@@ -143,7 +134,6 @@ function updateUserInfo(username, photoProfile) {
 }
 
 function checkLoginStatus() {
-	console.log("[checkLoginStatus]");
 	return fetchWithCsrf('/api/user/', {
 		method: 'GET',
 		headers: {
@@ -166,7 +156,6 @@ function checkLoginStatus() {
 }
 
 async function login(username, password) {
-	console.log("[login]");
 	return new Promise((resolve, reject) => {
 		const validUsername = validateInput(username, 'username');
 		const validPassword = validateInput(password, 'password');
@@ -199,8 +188,6 @@ async function login(username, password) {
 				reject(new Error(data.message || 'Authentification échouée'));
 				return;
 			}
-			
-			console.log("Connexion réussie");
 			const safeUser = {
 				username: escapeHtml(data.user.username),
 				photoProfile: data.user.photoProfile
@@ -218,7 +205,6 @@ async function login(username, password) {
 }
 
 async function signup(formData) {
-	console.log("[signup]");
 	return new Promise((resolve, reject) => {
 		const username = formData.get('username');
 		const email = formData.get('email');
@@ -291,7 +277,6 @@ async function signup(formData) {
 }
 
 async function logout() {
-	console.log("[logout]");
 	// Ferme la connexion WebSocket si elle est ouverte
 	if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
 	    console.log("Fermeture de la WebSocket à la déconnexion.");
@@ -328,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const logoutButton = document.getElementById('logoutButton');
 
 	loginForm.addEventListener('submit', function(e) {
-		console.log("[loginForm.addEventListener]");
 		e.preventDefault();
 		const username = document.getElementById('loginUsername').value;
 		const password = document.getElementById('loginPassword').value;
@@ -348,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	signupForm.addEventListener('submit', function(e) {
-		console.log("[signupForm.addEventListener]");
 		e.preventDefault();
 		const formData = new FormData(this);
 
@@ -397,7 +380,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	logoutButton.addEventListener('click', function() {
-		console.log("[logoutButton.addEventListener]");
 		logout()
 			.then(() => {
 			})
@@ -419,7 +401,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		.then(response => response.json())
 		.then(data => {
 			if (data.url) {
-				console.log("🔹 Redirection vers 42 :", data.url);
 				window.location.href = data.url;  // 🔹 Redirige l’utilisateur vers 42
 			} else {
 				console.error("❌ Erreur : pas d'URL reçue");
@@ -434,14 +415,12 @@ const bouttonSignupLogin = document.getElementById('boutton-signup-login');
 
 // Gestionnaire pour le clic sur le lien utilisateur
 bouttonSignupLogin.addEventListener('click', (e) => {
-	console.log("[bouttonSignupLogin.addEventListener]");
 	e.preventDefault();
 	pushModalState5();
 	openSignupLoginModal();
 });
 
 function pushModalState5() {
-	console.log("[pushModalState5] : '/connexion'");
 	// Sauvegarde le chemin actuel avant de le modifier
 	previousPath = window.location.pathname;
 	// Ajoute le nouvel état dans l'historique
@@ -456,7 +435,6 @@ function pushModalState5() {
 }
 
 function openSignupLoginModal() {
-	console.log("[openSignupLoginModal]");
 	const modal = new bootstrap.Modal(authModal);
 	modal.show();
 }
@@ -471,7 +449,6 @@ function closeModal5() {
 
 // Gestionnaire pour la navigation dans l'historique
 window.addEventListener('popstate', (event) => {
-	console.log("[window.addEventListener]");
 	if (event.state && event.state.modal === 'connexion') {
 		openSignupLoginModal();
 	} else {
@@ -481,7 +458,6 @@ window.addEventListener('popstate', (event) => {
 
 // Gestionnaire pour la fermeture du modal
 authModal.addEventListener('hidden.bs.modal', () => {
-	console.log("[authModal.addEventListener('hidden.bs.modal'] : '/connexion'");
 	if (window.location.pathname === '/connexion') {
 		// Au lieu de history.back(), on push un nouvel état
 		const targetPath = previousPath || '/';
@@ -498,7 +474,6 @@ authModal.addEventListener('hidden.bs.modal', () => {
 
 // Gestion de l'état initial
 if (window.location.pathname === '/connexion') {
-	console.log("[if (window.location.pathname === '/connexion')]");
 	history.replaceState(
 		{
 			modal: 'connexion',

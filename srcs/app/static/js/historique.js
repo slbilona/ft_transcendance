@@ -84,7 +84,6 @@ function displayMatchHistory(data) {
             : '-';
         const score = escapeHtmlHistorique(matchResults.score || '-');
         const gameType = (match.nb_players === 2) ? "1v1" : "2v2";
-        console.log("match.nb_players : ", match.nb_players);
         row.innerHTML = `
             <td class="datetime-cell">${formattedDateTime}</td>
             <td class="type-cell">${gameType}</td>

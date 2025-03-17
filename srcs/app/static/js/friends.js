@@ -48,7 +48,6 @@ function closeModal4() {
 
 // Gestionnaire pour le clic sur le lien utilisateur
 friendLink.addEventListener('click', (e) => {
-	console.log("[friendLink.addEventListener]");
 	e.preventDefault();
 	pushModalState4();
 	openFriendModal();
@@ -153,7 +152,7 @@ function handleAddFriend(e) {
 		}
 	}
 	catch(error) {
-		// /console.log(error);
+		console.log(error);
 		return ;
 	}
 
@@ -203,23 +202,6 @@ window.addEventListener('userLoggedIn', () => {
 	loadFriendLists();
 });
 
-// function getProfilePictureUrl(username) {
-// 	return new Promise((resolve, reject) => {
-// 	const imageUrl = `/media/${username}?timestamp=${Date.now()}`;
-
-// 	const img = new Image();
-// 	img.onload = function() {
-// 		console.log(`la photo '/media/${username}?timestamp=${Date.now()}'existe`);
-// 		resolve(`/media/${escapeHtmlFriend(username)}.jpg`);
-// 	};
-// 	img.onerror = function() {
-// 		console.log(`la photo '/media/${username}?timestamp=${Date.now()}' n'existe pas`);
-// 		resolve(`/static/images/base_pfp.png`);
-// 	};
-// 	img.src = imageUrl; // Lance la vérification de l'image
-// 	});
-// }
-
 async function getProfilePictureUrl(username) {
 	try {
 		const response = await fetch(`api/profilepicturerequest/${username}/`, {
@@ -243,8 +225,6 @@ async function loadFriendLists() {
     const followingList = document.getElementById('followingList');
     const followersList = document.getElementById('followersList');
     
-    console.log("call api /api/following/");
-    
     try {
         // Récupère les données des personnes suivies
         const followingResponse = await fetch('/api/following/', {
@@ -257,8 +237,6 @@ async function loadFriendLists() {
         if (!followingResponse.ok) throw new Error('Erreur lors du chargement des amis');
         
         const followingData = await followingResponse.json();
-        console.log("Il y a une réponse positive au call API : ");
-        
         if (followingList) {
             if (followingData.length === 0) {
                 followingList.innerHTML = `<li class="custom-list-group-item text-muted">${t('noFollowing')}</li>`;
@@ -292,8 +270,6 @@ async function loadFriendLists() {
                 followingList.innerHTML = items.join('');
             }
         }
-        
-        console.log("2");
         attachEventListeners();
     } catch (error) {
         console.log("Erreur : ", error);
@@ -303,8 +279,6 @@ async function loadFriendLists() {
                 <p>Aucune information utilisateur disponible</p>
             </div>`;
     }
-
-    console.log("call api /api/followers/");
 
     try {
         // Récupère les données des followers
@@ -410,7 +384,6 @@ async function handleViewProfile(e) {
             if (!response.ok) throw new Error("L'utilisateur n'existe pas");
 
             const data = await response.json();
-            console.log("[handleViewProfile] data : ", data);
 
             // Récupérer l'URL de la photo de profil
             const profilePicUrl = await getProfilePictureUrl(data.username);

@@ -23,7 +23,6 @@ function initWebSocket() {
 // gere les messages recus
 function handleIncomingMessage(e) {
 	const data = JSON.parse(e.data);
-	console.log("data.type : '", data.type, "', data.message : '", data.message, "'");
 	if (data.type === 'message') {
 		afficherMessage(data);
 	} else if (data.type === 'block_user') {
@@ -42,7 +41,6 @@ function handleIncomingMessage(e) {
 	} else if (data.type === 'connection_status') {
 		const onlineStatusElementProfileView = document.getElementsByClassName("onlineOrOfflineStatus")[0]; // Accéder au premier élément avec cette classe
 		if(onlineStatusElementProfileView) {
-			console.log("onlineStatusElementProfileView existe");
 			if (data.status === "connected") {
 				onlineStatusElementProfileView.innerHTML = `en ligne`;  // Met à jour le texte
 				onlineStatusElementProfileView.id = "liveChat-onlineStatus";  // Change l'id de l'élément
@@ -159,10 +157,9 @@ function afficherInvitationJeu(message, messageElement) {
 			`;
 	
 			// Appel de la fonction joinGame et vérification du succès
-			console.log("[afficherInvitationJeu] isplayer1 : ", PongGame.isPlayer1, ", isplayer2 : ", PongGame.isPlayer2);
 			PongGame.setIsPlayer2(true);
 			PongGame.setIsLocalGame(false);
-			console.log("réponse joingame : ", PongGame.joinGame(message.gameId));
+			PongGame.joinGame(message.gameId);
 
 		}
 	} else if (message.message === "resultats partie"){

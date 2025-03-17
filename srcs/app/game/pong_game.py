@@ -132,7 +132,6 @@ class PongGame:
 
 	async def update_player_position(self, player_number, move_direction):
 		async with self._lock:  # Utilisation du lock pour éviter les conflits
-			print(f"Updating player {player_number} position, direction: {move_direction}")
 			if player_number in self.players_y:
 				step = 10
 				current_y = self.players_y[player_number]
@@ -141,8 +140,6 @@ class PongGame:
 					self.players_y[player_number] = max(0, current_y - step)
 				elif move_direction == 'down' and current_y < self.height - self.paddle_height:
 					self.players_y[player_number] = min(self.height - self.paddle_height, current_y + step)
-				
-				print(f"New position for player {player_number}: {self.players_y[player_number]}")
 
 	async def update_game_state(self):
 		# Update ball position

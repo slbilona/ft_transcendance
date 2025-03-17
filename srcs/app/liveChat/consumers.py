@@ -45,17 +45,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			# Recharger les données de l'utilisateur depuis la base
 			await database_sync_to_async(self.user.refresh_from_db)()
 
-			# Debugging avant modification
-			print(f"\n\n\nAvant accept: user {self.user.id} - username : {self.user.username} - victoires : {self.user.nbVictoires}, defaites : {self.user.nbDefaites}, online : {self.user.onlineStatus}")
-			sys.stdout.flush()
-
 			# Mise à jour du statut en ligne
 			self.user.onlineStatus = False
 			await database_sync_to_async(self.user.save)()
-
-			# Debugging après modification
-			print(f"\n\n\nAprès accept: user {self.user.id} - victoires : {self.user.nbVictoires}, defaites : {self.user.nbDefaites}, online : {self.user.onlineStatus}")
-			sys.stdout.flush()
 
 			# Retirer des groupes
 			await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
@@ -70,7 +62,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					"status": "disconnected",
 				}
 			)
-			# print("A")
 			
 	async def connection_status(self, event):
 		user_id = event["user_id"]
@@ -424,8 +415,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		conversation.invitationAJouer = False
 		await database_sync_to_async(conversation.save)()
 
-		print(f"\nDestinataire : '{destinataire.username}', Expéditeur : '{self.user.username}'\n", flush=True)
-
 		# Étape 3: Renvoyer l'info aux deux personnes
 		message_data = {
 			"style": style,
@@ -461,12 +450,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		# Attente asynchrone jusqu'à ce que la partie commence
 		while not pong_game_instance.is_running:
-			print(f"En attente du lancement de la partie {gameId}...", flush=True)
 			await asyncio.sleep(1)  # On attend 1 seconde avant de vérifier à nouveau
 
 		# Une fois que is_running est True, on attend la fin du jeu
 		try:
-			print(f"Début de l'attente de la fin du jeu : {message.play}", flush=True)
 			await self.wait_for_game_to_finish(destinataire, message)
 		except Exception as e:
 			print(f"Erreur lors de l'attente de la fin du jeu : {e}", flush=True)
@@ -506,7 +493,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		}
 
 	async def wait_for_game_to_finish(self, destinataire, message):
-		print("\nen attente de la fin du jeu\n", flush=True)
 		#Attendre que la partie soit terminée.
 		await sync_to_async(message.play.refresh_from_db)()
 
@@ -517,12 +503,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			# Vérifier si la partie est terminée
 			if message.play.is_finished:
 				break
-			print("\nest ce fini ?\n", flush=True)
 
 			# Attendre 1 seconde avant de vérifier à nouveau
 			await asyncio.sleep(1)
-
-		print("\nFin du jeu\n", flush=True)
 
 		# Une fois que la partie est terminée, récupérer les résultats
 		try:

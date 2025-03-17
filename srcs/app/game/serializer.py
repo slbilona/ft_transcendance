@@ -96,7 +96,6 @@ class TournamentSerializer(serializers.ModelSerializer):
 
 		data = clean_user_data(data)  # Protection contre les injections XSS
 
-		# print(f'{data}')
 		alias_name = data.get('alias_names', [])
 		if len(alias_name) !=  data['nb_players']:
 			raise serializers.ValidationError('Alias_names number must match nb_players')
