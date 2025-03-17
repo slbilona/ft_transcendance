@@ -185,11 +185,16 @@ function afficherInvitationJeu(message, messageElement) {
 				Vous avez gagné, ${message.expediteur_username} a perdu
 			`;
 		}
+	} else if (message.message === "erreur resultats partie"){
+		messageElement.innerHTML = `
+			Erreur lors de la récupération des résultats
+		`;
 	} else if (message.message === "Partie non trouvée"){
 		messageElement.innerHTML = `
 			Erreur<br>
 		`;
-	} else {
+	}
+	 else {
 		console.log("Une erreur est survenue, message.mesage = '", message.message, "'");
 	}
 }

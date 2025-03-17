@@ -493,8 +493,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		}
 
 	async def wait_for_game_to_finish(self, destinataire, message):
-		#Attendre que la partie soit terminée.
+		# Attendre que la partie soit terminée
 		await sync_to_async(message.play.refresh_from_db)()
+
+		# Tentatives pour récupérer les résultats
+		attempts = 0
+		max_attempts = 15  # Nombre maximal d'essais
 
 		while True:
 			# Rafraîchir l'objet Play depuis la base de données
@@ -507,11 +511,54 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			# Attendre 1 seconde avant de vérifier à nouveau
 			await asyncio.sleep(1)
 
-		# Une fois que la partie est terminée, récupérer les résultats
-		try:
-			results = await self.get_game_results(message)
-		except Exception as e:
-			print(f"Erreur lors de l'utilisation de get_game_results : {e}", flush=True)
+		# Tentatives pour obtenir les résultats
+		results = None  # Initialisation de results
+		while attempts < max_attempts:
+			await sync_to_async(message.play.refresh_from_db)()
+			try:
+				print(f"\n\ntentative de recuperation des resultat numero {attempts}\n game_id = ", message.play.id)
+				results = await self.get_game_results(message)
+				
+				# Si les résultats sont valides (non vide), on peut sortir de la boucle
+				if results['winners'] or results['losers'] or results['score']:
+					break
+			except Exception as e:
+				print(f"\n\nErreur lors de l'utilisation de get_game_results : {e}", flush=True)
+				message_data = {
+					"style": "jeu",
+					"expediteur_id": destinataire.id,
+					"expediteur_username": destinataire.username,
+					"destinataire_id": self.user.id,
+					"destinataire_username": self.user.username,
+					"message_id": message.id,
+					"message": "erreur resultats partie",
+					"gameId": message.play.id,
+					"date": message.date.isoformat()  # Utilisation de isoformat() pour la date
+				}
+
+				await sync_to_async(setattr)(message, 'message', "erreur resultats partie")
+				await sync_to_async(message.save)()
+
+				await self.send(text_data=json.dumps({
+					"type": "pong_invitation",
+					"message": message_data
+				}))
+
+				await self.channel_layer.group_send(
+					f"user_{destinataire.id}",
+					{
+						"type": "pong_invitation_resultats_event",
+						"message_data": message_data
+					})
+			
+			# Si les résultats ne sont toujours pas récupérés, attendre 1 seconde et réessayer
+			attempts += 1
+			if attempts < max_attempts:
+				await asyncio.sleep(1)
+
+		# Si après max_attempts, les résultats sont toujours absents, lever une erreur
+		if attempts == max_attempts and (not results or not (results['winners'] or results['losers'] or results['score'])):
+			raise ValueError("Les résultats du jeu sont introuvables après plusieurs tentatives.")
 
 		winners = results['winners']
 		losers = results['losers']
@@ -529,7 +576,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			'winners': winners,
 			'losers': losers,
 			'score': score,
-			"date": message.date.isoformat() # Utilisation de isoformat() pour la date
+			"date": message.date.isoformat()  # Utilisation de isoformat() pour la date
 		}
 
 		await sync_to_async(setattr)(message, 'message', "resultats partie")
