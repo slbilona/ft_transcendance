@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '10.12.1.6']
+ALLOWED_HOSTS = ['localhost', os.getenv('IP')]
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 
@@ -67,6 +67,8 @@ MIDDLEWARE = [
 	#python manage.py collectstatic pour trouver les fichier static (Django le fait seul)
 ]
 
+SERVER_IP = os.getenv('IP')
+
 # Fonction pour recuperer l'adresse IP du poste sur lequel tourne le serveur et l'ajouter a CSRF_TRUSTED_ORIGINS
 def get_local_ips():
     hostname = socket.gethostname()
@@ -77,8 +79,7 @@ def get_local_ips():
 CSRF_TRUSTED_ORIGINS = get_local_ips() + [
     'https://localhost:8443',
     'https://127.0.0.1:8443',
-	'https://10.25.1.3:8443',
-    "https://10.12.1.6:8443",
+    f"https://{SERVER_IP}:8443",
 ]
 
 ROOT_URLCONF = 'Transcendance.urls'
@@ -196,7 +197,7 @@ CHANNEL_LAYERS = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "https://10.12.1.6:8443",  # Ajoute l'IP de ton serveur
+    f"https://{SERVER_IP}:8443",  # Ajoute l'IP de ton serveur
     "https://localhost:8443",
 ]
 
