@@ -498,7 +498,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		# Tentatives pour récupérer les résultats
 		attempts = 0
-		max_attempts = 15  # Nombre maximal d'essais
+		max_attempts = 5  # Nombre maximal d'essais
 
 		while True:
 			# Rafraîchir l'objet Play depuis la base de données
