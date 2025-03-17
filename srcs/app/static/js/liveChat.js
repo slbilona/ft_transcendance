@@ -161,7 +161,6 @@ function afficherInvitationJeu(message, messageElement) {
 
 		}
 	} else if (message.message === "resultats partie"){
-		// /!\ changer les mesage de victoires/defaites
 		if (message.winners.includes(parseInt(destinataireId)) && destinataireId === message.destinataire_id) {
 			messageElement.innerHTML = `
 				Partie terminée<br>

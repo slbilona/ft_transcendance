@@ -132,8 +132,7 @@ class UserProfileView(APIView):
 			serializer = PublicUserSerializer(user)
 		return Response(serializer.data)
 
-#ajoute par Clement pour faire le MatchHistory
-	#ListAPIView gere les requetes de type List et Pagination
+#ListAPIView gere les requetes de type List et Pagination
 class MatchHistoryView(generics.ListAPIView):
 
 	serializer_class = PlayDetailSerializer #Specifie a ListAPIView comment serializer les donnees

@@ -103,62 +103,6 @@ function rempliProfileView (data, user) {
 	`;
 }
 
-// function rempliProfileEdit () {
-// 	document.getElementById('profile-edit').innerHTML = `
-// 		<form id="settingsForm">
-// 			<div class="mb-3">
-// 				<p class="form-label">Username</p>
-// 				<input type="text" class="form-control" id="settingsUsername" name="username">
-// 			</div>
-// 			<div class="mb-3">
-// 				<p class="form-label">Email</p>
-// 				<input type="email" class="form-control" id="settingsEmail" name="email">
-// 			</div>
-// 			<div class="mb-3">
-// 				<p class="form-label">Alias</p>
-// 				<input type="text" class="form-control" id="settingsAlias" name="alias">
-// 			</div>
-// 			<div class="mb-3">
-// 				<p class="form-label">Profile Photo</p>
-// 				<input type="file"
-// 					class="form-control"
-// 					id="settingsPhoto"
-// 					name="photoProfile"
-// 					accept="image/*"
-// 					title="Choisir un fichier">
-// 				<img id="photoPreview" class="mt-2" style="max-width: 200px; display: none;">
-// 			</div>
-// 			<div class="mb-3">
-// 				<p class="form-label">New Password</p>
-// 				<input type="password" class="form-control" id="settingsNewPassword" name="password">
-// 			</div>
-// 			<div class="mb-3">
-// 				<p class="form-label">Confirm New Password</p>
-// 				<input type="password" class="form-control" id="settingsConfirmPassword">
-// 			</div>
-
-// 			<button type="submit" class="btn">Save Changes</button>
-// 		</form>
-// 		<!-- Ajoute par clement  -->
-// 		<div id="errorMessage" style="display: none;">
-// 			<div class="auth-message">
-// 				<i class="fas fa-lock"></i>
-// 				<p>Aucune information utilisateur disponible</p>
-// 			</div>;
-// 		</div>
-// 	`;
-// 	const settingsForm = document.getElementById('settingsForm');
-// 	if (settingsForm) {
-// 		settingsForm.addEventListener('submit', async (e) => {
-// 			e.preventDefault();
-// 			const formData = new FormData(settingsForm);
-// 			await updateUserProfile(formData);
-// 		});
-// 	} else {
-// 		console.error("Erreur : settingsForm non trouvé !");
-// 	}
-// }
-
 function rempliProfileEdit (data) {
 	let formHTML = `
 		<form id="settingsForm">
@@ -305,51 +249,6 @@ function openuserModal() {
 		});
 	modal.show();
 }
-
-// window.addEventListener('userLoggedOut', function() {
-//     clearUserInfo();
-//     // loadFriendLists();//Ajoute par Clement
-//     const modal = bootstrap.Modal.getInstance(userModal);
-//     if (modal) {
-//         modal.hide();
-//     }
-// });
-
-
-// userLink.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     history.pushState(
-//         { modal: 'user' },
-//         '',
-//         '/user'
-//     );
-//     openuserModal();
-// });
-
-// window.addEventListener('popstate', (event) => {
-//     if (event.state && event.state.modal === 'user') {
-//         openuserModal();
-//     } else {
-//         const modal = bootstrap.Modal.getInstance(userModal);
-//         if (modal) {
-//             modal.hide();
-//         }
-//     }
-// });
-
-// userModal.addEventListener('hidden.bs.modal', () => {
-//     if (window.location.pathname === '/user') {
-//         history.back();
-//     }
-// });
-
-// if (window.location.pathname === '/user') {
-//     history.replaceState({ modal: 'user' }, '', '/user');
-//     openuserModal();
-// }
-
-
-// // // let previousPath = null;
 
 function pushModalState() {
 	// Sauvegarde le chemin actuel avant de le modifier

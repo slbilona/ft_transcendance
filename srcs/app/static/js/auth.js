@@ -367,7 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
 						// Si le parsing échoue (le format n'est pas du JSON), on ajoute un message générique
 						console.log(e);
 					}
-					// /!\ voir si ca focntionne toujours sans ca
 					setErrorMessages();
 					if (errorMessages[errorMessage.trim()]) {
 						alert(errorMessages[errorMessage.trim()]);
