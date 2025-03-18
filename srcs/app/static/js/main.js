@@ -254,10 +254,10 @@ const PongGame = (function() {
 		setTimeout(() => {
 			gameModal.hide();
 			document.body.classList.remove('modal-open');
-			const modalBackdrop = document.querySelector('.modal-backdrop');
-			if (modalBackdrop) {
-				modalBackdrop.remove();
-			}
+			// const modalBackdrop = document.querySelector('.modal-backdrop');
+			// if (modalBackdrop) {
+			// 	modalBackdrop.remove();
+			// }
 
 			if (!isTournamentGame) {
 				const playForm = document.getElementById('playForm');
