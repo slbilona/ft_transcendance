@@ -428,8 +428,16 @@ const PongGame = (function() {
 			if (games.length > 0) {
 				const gameList = document.createElement('ul');
 				games.forEach(game => {
+					if (game.player1_username === "") {
+						txtHTML = `<button class="btn">Game ${game.id} (${game.player_connected}/${game.nb_players} players)</button>`;
+						console.log("version 1 : '", txtHTML,"'");
+					}
+					else {
+						txtHTML = `<button class="btn">Game ${game.id} crée par ${game.player1_username} (${game.player_connected}/${game.nb_players} players)</button>`;
+						console.log("version 2 : '", txtHTML,"'");
+					}
 					const listItem = document.createElement('li');
-					listItem.innerHTML = `<button class="btn">Game ${game.id} crée par ${game.player1_username} (${game.player_connected}/${game.nb_players} players)</button>`;
+					listItem.innerHTML = txtHTML;
 					//Ajoute Post Merge
 					listItem.addEventListener('click', () => {
 						if (game.player_connected == 1) {

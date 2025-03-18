@@ -147,9 +147,11 @@ class TournamentSerializer(serializers.ModelSerializer):
 		return transformed_results
 
 class PlayListSerializer(serializers.ModelSerializer):
-    player1_username = serializers.CharField(source="player1.username", read_only=True)
+    player1_username = serializers.SerializerMethodField()
 
     class Meta:
         model = Play
         fields = ['id', 'nb_players', 'player_connected', 'player1', 'player1_username']
 
+    def get_player1_username(self, obj):
+        return obj.player1.username if obj.player1 else ""
