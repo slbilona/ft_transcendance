@@ -38,7 +38,6 @@ class PlayCreateAPIView(APIView):
 		#Recuperer les donnees depuis la requete directement grace au serializer pour simplifier la vue
 		serializer = PlayCreateSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
-			# A RETIRER PUISQUE API POUR INSCRIRE UN JOUEUR A UNE PARTIE
 			if request.user.is_authenticated:
 				serializer.save(player1=request.user)
 			else :
