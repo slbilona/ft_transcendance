@@ -26,12 +26,12 @@ const PongGame = (function() {
 			console.log(`[WebSocket] Connection established for game ${gameId}`);
 		};
 		socket.onmessage = function(e) {
-			const data = JSON.parse(e.data);
+				const data = JSON.parse(e.data);
 			if (data.message === 'end_game') {
 				fetchGameDetails(currentGameId);
 			} else {
 				gameState = data;
-				draw(ctx);
+				draw(canvas, ctx);
 			}
 		};
 		socket.onclose = function(e) {
@@ -104,6 +104,12 @@ const PongGame = (function() {
 			const ctx = canvas.getContext('2d');
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 		}
+		
+		messageAttente = document.getElementById("messageAttente");
+		if (canvas.style.display === "block" || window.getComputedStyle(canvas).display === "block") {
+			canvas.style.display = "none";
+			messageAttente.style.display = "block";
+		}
 	}
 
 	function handleTournamentBackNavigation() {
@@ -116,7 +122,14 @@ const PongGame = (function() {
 		updateCloseButton();
 	}
 
-	function draw(ctx) {
+	function draw(canva, ctx) {
+		messageAttente = document.getElementById("messageAttente");
+		
+		if (messageAttente.style.display === "block" || window.getComputedStyle(messageAttente).display === "block") {
+			canva.style.display = "block";
+			messageAttente.style.display = "none";
+		}
+	
 		const canvas = ctx.canvas;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = '#1c4521';
@@ -430,11 +443,9 @@ const PongGame = (function() {
 				games.forEach(game => {
 					if (game.player1_username === "") {
 						txtHTML = `<button class="btn">Game ${game.id} (${game.player_connected}/${game.nb_players} players)</button>`;
-						console.log("version 1 : '", txtHTML,"'");
 					}
 					else {
 						txtHTML = `<button class="btn">Game ${game.id} crée par ${game.player1_username} (${game.player_connected}/${game.nb_players} players)</button>`;
-						console.log("version 2 : '", txtHTML,"'");
 					}
 					const listItem = document.createElement('li');
 					listItem.innerHTML = txtHTML;
