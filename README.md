@@ -15,11 +15,34 @@
 ---
 
 ## 💡 Fonctionnalités principales
+- Interface avec Bootstrap et CSS custom
+
+![page d'accueil](imageReadMe/accueil.png)
+
 
 - Jeu **Pong** en ligne avec score en temps réel  
+
 ![Partie de pong](imageReadMe\partie.png)
-- Gestion de **profil utilisateur** (création, modification)  
-- Ajouter et supprimer des amis  
-- Historique des parties jouées  
-- **Chat en direct** entre joueurs via WebSockets  
-- Interface avec Bootstrap et CSS custom  
+
+
+- Gestion de **profil utilisateur** (création, modification)
+
+![Accueil en etant connecté](imageReadMe/AccueilConnexion.png)
+
+
+- Ajouter et supprimer des amis
+
+![gestion des amis](imageReadMe/gestionAmis.png)
+
+
+- Historique des parties jouées
+
+![Profil et nombre de parties jouées](imageReadMe/profilePerso.png)
+
+
+- **Chat en direct** entre joueurs via WebSockets
+
+![live chat](imageReadMe/liveChat.png)
+
+
+
