@@ -2,10 +2,6 @@
 
 `ft_transcendance` est un projet de jeu **Pong en ligne** avec fonctionnalités sociales et temps réel, développé dans le cadre de mes projets. Il permet de jouer, créer un profil, gérer ses amis et discuter en direct avec d'autres joueurs.
 
-## 🌐 Démo
-
-Le projet peut être lancé localement via Docker (voir la section "Installation").  
-
 ---
 
 ## 🛠️ Technologies utilisées
