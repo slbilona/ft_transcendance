@@ -22,7 +22,7 @@
 
 - Jeu **Pong** en ligne avec score en temps réel  
 
-![Partie de pong](imageReadMe\partie.png)
+![Partie de pong](imageReadMe/partie.png)
 
 
 - Gestion de **profil utilisateur** (création, modification)
