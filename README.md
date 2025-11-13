@@ -17,7 +17,7 @@
 ## 💡 Fonctionnalités principales
 
 - Jeu **Pong** en ligne avec score en temps réel  
-![Partie de pong](imageReadMe\partie.png)
+![Partie de pong](imageReadMe/partie.png)
 - Gestion de **profil utilisateur** (création, modification)  
 - Ajouter et supprimer des amis  
 - Historique des parties jouées  
