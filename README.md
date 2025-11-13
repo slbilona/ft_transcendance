@@ -17,7 +17,7 @@
 ## 💡 Fonctionnalités principales
 
 - Jeu **Pong** en ligne avec score en temps réel  
-![Ecran d'accueil](imageReadMe\Capture d'écran 2025-11-13 141551.png)
+![Ecran d'accueil](imageReadMe/Capture d'écran 2025-11-13 141551.png)
 - Gestion de **profil utilisateur** (création, modification)  
 - Ajouter et supprimer des amis  
 - Historique des parties jouées  
