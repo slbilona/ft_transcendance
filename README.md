@@ -43,6 +43,3 @@
 - **Chat en direct** entre joueurs via WebSockets
 
 ![live chat](imageReadMe/liveChat.png)
-
-
-
