@@ -6,12 +6,11 @@
 
 ## 🛠️ Technologies utilisées
 
-- **Frontend** : JavaScript, HTML, CSS, Bootstrap (pour le style et le visuel FT)  
+- **Frontend** : JavaScript, HTML, CSS, Bootstrap (pour le style et le visuel)  
 - **Backend** : Django, Django REST Framework  
 - **Websockets** : pour le chat en direct et la communication temps réel du jeu  
 - **Base de données** : PostgreSQL  
-- **Conteneurisation** : Docker  
-- **Design** : visuel inspiré du style FT, responsive  
+- **Conteneurisation** : Docker 
 
 ---
 
@@ -22,4 +21,4 @@
 - Ajouter et supprimer des amis  
 - Historique des parties jouées  
 - **Chat en direct** entre joueurs via WebSockets  
-- Interface responsive avec Bootstrap et CSS custom  
+- Interface avec Bootstrap et CSS custom  
