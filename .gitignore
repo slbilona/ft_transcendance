@@ -3,3 +3,4 @@ private.key
 certificate.crt
 *.pyc
 __pycache__/
+aFaire.txt
